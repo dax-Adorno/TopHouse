@@ -1,3 +1,4 @@
+
 # TopHouse
 
 Plataforma web para la gestión y publicación de propiedades de Inmobiliaria Samanta.
@@ -60,6 +61,16 @@ TopHouse/
 
 
 ## Backend
+
+## Calidad de código
+
+El proyecto utiliza pre-commit para ejecutar controles automáticos antes de cada commit.
+
+Después de instalar las dependencias de desarrollo, instalar los hooks de Git:
+
+```powershell
+pre-commit install
+```
 
 El backend utiliza FastAPI y Python 3.13.
 
