@@ -1,6 +1,5 @@
 from fastapi import FastAPI, status
 
-
 app = FastAPI(
     title="TopHouse API",
     description="API para la plataforma inmobiliaria TopHouse.",
