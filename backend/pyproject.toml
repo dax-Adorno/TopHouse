@@ -27,3 +27,6 @@ plugins = ["pydantic.mypy"]
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
+
+[tool.ruff.lint.per-file-ignores]
+"migrations/versions/*.py" = ["E501"]
