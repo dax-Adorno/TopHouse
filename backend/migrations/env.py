@@ -4,7 +4,7 @@ from alembic import context
 
 from app.core.config import settings
 from app.core.database import Base, engine
-from app.modules.properties.models import Property  # noqa: F401
+from app.modules.propiedades.models import Propiedad  # noqa: F401
 
 config = context.config
 
