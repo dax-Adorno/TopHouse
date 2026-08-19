@@ -95,6 +95,67 @@ feature / fix / chore / test branch
               ↓
         Merge to main
 
+Branch conventions
+feat/* — new functionality
+fix/* — bug fixes
+chore/* — tooling, maintenance and infrastructure
+test/* — automated testing work
+docs/* — documentation changes
+refactor/* — internal improvements without changing expected behavior
+Backend Quality Gates
+
+The backend uses automated quality controls locally and in CI.
+
+Formatting
+Black is the official Python formatter.
+CI executes Black in --check mode and fails if formatting is inconsistent.
+Linting
+Ruff performs linting, import validation and static code-quality checks.
+Static typing
+mypy runs in strict mode.
+Pydantic's mypy plugin is enabled for settings and schema validation.
+Automated tests
+Pytest is used for backend tests.
+Integration coverage will include PostgreSQL and database migrations.
+Database validation
+PostgreSQL 17 runs as an isolated service inside GitHub Actions.
+Alembic applies all database migrations up to head.
+CI verifies that a clean PostgreSQL instance can reproduce the current schema.
+Local pre-commit checks
+
+Before a commit is accepted, pre-commit validates:
+
+trailing whitespace
+end-of-file consistency
+YAML and TOML syntax
+merge-conflict markers
+large files
+accidental private keys
+Ruff
+Black
+Continuous Integration
+
+GitHub Actions automatically validates backend changes using:
+
+Python 3.13
+    ↓
+Install dependencies
+    ↓
+Black --check
+    ↓
+Ruff
+    ↓
+mypy
+    ↓
+PostgreSQL 17
+    ↓
+Alembic upgrade head
+    ↓
+Pytest
+    ↓
+CI passed
+
+A change is considered ready for main only after its required quality gates pass.
 ### Crear el entorno virtual
 
 Desde la raíz del proyecto:
