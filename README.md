@@ -74,6 +74,27 @@ pre-commit install
 
 El backend utiliza FastAPI y Python 3.13.
 
+## Development Workflow
+
+TopHouse follows a branch-based development workflow designed to keep `main` stable and production-ready.
+
+```text
+feature / fix / chore / test branch
+              ↓
+      Local quality gates
+              ↓
+            Commit
+              ↓
+             Push
+              ↓
+        Pull Request
+              ↓
+       GitHub Actions
+              ↓
+        CI validation
+              ↓
+        Merge to main
+
 ### Crear el entorno virtual
 
 Desde la raíz del proyecto:
