@@ -1,12 +1,14 @@
 name: Backend CI
 
 on:
-  push:
+  pull_request:
+    branches:
+      - main
     paths:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
 
-  pull_request:
+  push:
     branches:
       - main
     paths:
@@ -81,6 +83,12 @@ jobs:
 
       - name: Verify Alembic revision
         run: python -m alembic current
+
+      - name: Verify migration downgrade
+        run: python -m alembic downgrade base
+
+      - name: Reapply database migrations
+        run: python -m alembic upgrade head
 
       - name: Run tests
         run: python -m pytest -q
