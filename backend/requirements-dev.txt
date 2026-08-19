@@ -1,10 +1,9 @@
 -r requirements.txt
 
--r requirements.txt
-
 pytest
 pytest-cov
-httpx2
+httpx
 ruff
+black==26.5.1
 mypy
 pre-commit

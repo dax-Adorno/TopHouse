@@ -128,9 +128,7 @@ def upgrade() -> None:
 
     # 4. Traducir datos existentes
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             UPDATE propiedades
             SET tipo_operacion = CASE tipo_operacion
                 WHEN 'sale' THEN 'venta'
@@ -138,13 +136,9 @@ def upgrade() -> None:
                 WHEN 'temporary' THEN 'temporario'
                 ELSE tipo_operacion
             END
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             UPDATE propiedades
             SET estado = CASE estado
                 WHEN 'draft' THEN 'borrador'
@@ -156,9 +150,7 @@ def upgrade() -> None:
                 WHEN 'unavailable' THEN 'no_disponible'
                 ELSE estado
             END
-            """
-        )
-    )
+            """))
 
     # 5. Cambiar el valor por defecto de estado
 
@@ -195,67 +187,43 @@ def upgrade() -> None:
 
     # 7. Renombrar constraints numéricos
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_properties_bathrooms_non_negative
             TO ck_propiedades_banios_no_negativo
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_properties_bedrooms_non_negative
             TO ck_propiedades_dormitorios_no_negativo
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_properties_covered_area_non_negative
             TO ck_propiedades_superficie_cubierta_no_negativa
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_properties_price_non_negative
             TO ck_propiedades_precio_no_negativo
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_properties_total_area_non_negative
             TO ck_propiedades_superficie_total_no_negativa
-            """
-        )
-    )
+            """))
 
     # 8. Renombrar primary key
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT properties_pkey
             TO propiedades_pkey
-            """
-        )
-    )
+            """))
 
     # 9. Renombrar índices
 
@@ -268,25 +236,17 @@ def upgrade() -> None:
     op.execute(
         sa.text("ALTER INDEX ix_properties_featured RENAME TO ix_propiedades_destacada")
     )
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER INDEX ix_properties_operation_type
             RENAME TO ix_propiedades_tipo_operacion
-            """
-        )
-    )
+            """))
     op.execute(
         sa.text("ALTER INDEX ix_properties_price RENAME TO ix_propiedades_precio")
     )
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER INDEX ix_properties_property_type
             RENAME TO ix_propiedades_tipo_propiedad
-            """
-        )
-    )
+            """))
     op.execute(sa.text("ALTER INDEX ix_properties_slug RENAME TO ix_propiedades_slug"))
     op.execute(
         sa.text("ALTER INDEX ix_properties_status RENAME TO ix_propiedades_estado")
@@ -295,14 +255,10 @@ def upgrade() -> None:
 
     # 10. Renombrar la secuencia del id
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER SEQUENCE properties_id_seq
             RENAME TO propiedades_id_seq
-            """
-        )
-    )
+            """))
 
 
 def downgrade() -> None:
@@ -323,9 +279,7 @@ def downgrade() -> None:
 
     # 2. Restaurar datos originales
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             UPDATE propiedades
             SET tipo_operacion = CASE tipo_operacion
                 WHEN 'venta' THEN 'sale'
@@ -333,13 +287,9 @@ def downgrade() -> None:
                 WHEN 'temporario' THEN 'temporary'
                 ELSE tipo_operacion
             END
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             UPDATE propiedades
             SET estado = CASE estado
                 WHEN 'borrador' THEN 'draft'
@@ -351,9 +301,7 @@ def downgrade() -> None:
                 WHEN 'no_disponible' THEN 'unavailable'
                 ELSE estado
             END
-            """
-        )
-    )
+            """))
 
     # 3. Restaurar default original
 
@@ -366,65 +314,41 @@ def downgrade() -> None:
 
     # 4. Restaurar nombres de constraints
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_propiedades_banios_no_negativo
             TO ck_properties_bathrooms_non_negative
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_propiedades_dormitorios_no_negativo
             TO ck_properties_bedrooms_non_negative
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_propiedades_superficie_cubierta_no_negativa
             TO ck_properties_covered_area_non_negative
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_propiedades_precio_no_negativo
             TO ck_properties_price_non_negative
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT ck_propiedades_superficie_total_no_negativa
             TO ck_properties_total_area_non_negative
-            """
-        )
-    )
+            """))
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER TABLE propiedades
             RENAME CONSTRAINT propiedades_pkey
             TO properties_pkey
-            """
-        )
-    )
+            """))
 
     # 5. Restaurar índices
 
@@ -437,25 +361,17 @@ def downgrade() -> None:
     op.execute(
         sa.text("ALTER INDEX ix_propiedades_destacada RENAME TO ix_properties_featured")
     )
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER INDEX ix_propiedades_tipo_operacion
             RENAME TO ix_properties_operation_type
-            """
-        )
-    )
+            """))
     op.execute(
         sa.text("ALTER INDEX ix_propiedades_precio RENAME TO ix_properties_price")
     )
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER INDEX ix_propiedades_tipo_propiedad
             RENAME TO ix_properties_property_type
-            """
-        )
-    )
+            """))
     op.execute(sa.text("ALTER INDEX ix_propiedades_slug RENAME TO ix_properties_slug"))
     op.execute(
         sa.text("ALTER INDEX ix_propiedades_estado RENAME TO ix_properties_status")
@@ -464,14 +380,10 @@ def downgrade() -> None:
 
     # 6. Restaurar nombre de secuencia
 
-    op.execute(
-        sa.text(
-            """
+    op.execute(sa.text("""
             ALTER SEQUENCE propiedades_id_seq
             RENAME TO properties_id_seq
-            """
-        )
-    )
+            """))
 
     # 7. Restaurar nombres de columnas
 

@@ -12,9 +12,6 @@ select = [
     "SIM",
 ]
 
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
 
 [tool.mypy]
 python_version = "3.13"
@@ -30,3 +27,7 @@ disallow_untyped_defs = false
 
 [tool.ruff.lint.per-file-ignores]
 "migrations/versions/*.py" = ["E501"]
+
+[tool.black]
+line-length = 88
+target-version = ["py313"]
