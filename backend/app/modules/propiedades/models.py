@@ -8,6 +8,7 @@ from sqlalchemy import (
     Numeric,
     String,
     Text,
+    false,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column
@@ -58,6 +59,22 @@ class Propiedad(Base):
         CheckConstraint(
             "superficie_total IS NULL OR superficie_total >= 0",
             name="ck_propiedades_superficie_total_no_negativa",
+        ),
+        CheckConstraint(
+            "latitud IS NULL OR (latitud >= -90 AND latitud <= 90)",
+            name="ck_propiedades_latitud_valida",
+        ),
+        CheckConstraint(
+            "longitud IS NULL OR (longitud >= -180 AND longitud <= 180)",
+            name="ck_propiedades_longitud_valida",
+        ),
+        CheckConstraint(
+            """
+            (latitud IS NULL AND longitud IS NULL)
+            OR
+            (latitud IS NOT NULL AND longitud IS NOT NULL)
+            """,
+            name="ck_propiedades_coordenadas_completas",
         ),
     )
 
@@ -113,6 +130,28 @@ class Propiedad(Base):
         String(100),
         nullable=True,
         index=True,
+    )
+
+    direccion: Mapped[str | None] = mapped_column(
+        String(200),
+        nullable=True,
+    )
+
+    latitud: Mapped[Decimal | None] = mapped_column(
+        Numeric(9, 6),
+        nullable=True,
+    )
+
+    longitud: Mapped[Decimal | None] = mapped_column(
+        Numeric(10, 6),
+        nullable=True,
+    )
+
+    mostrar_ubicacion_exacta: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=False,
+        server_default=false(),
     )
 
     dormitorios: Mapped[int | None] = mapped_column(
