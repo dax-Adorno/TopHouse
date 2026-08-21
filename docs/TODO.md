@@ -10,9 +10,9 @@ propiedades generan registros de auditoría.
 
 1. Completar pruebas específicas contra IDOR en recursos administrativos.
 2. Definir la estrategia de CDN/cache para producción.
-3. Iniciar la aplicación React + TypeScript + Vite.
-4. Implementar catálogo, filtros y detalle público.
-5. Ejecutar todos los quality gates y crear un Pull Request.
+3. Implementar catálogo, tarjetas y estados de carga/error.
+4. Conectar filtros y paginación con la API pública.
+5. Implementar detalle, galería, mapa y contacto por WhatsApp.
 
 ## Después de autenticación y auditoría
 
