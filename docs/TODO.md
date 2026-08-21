@@ -4,20 +4,20 @@ Actualizado: 21 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
-1. Exponer API REST administrativa para Propiedades.
-2. Agregar dependencias de sesión, Repository y Service para FastAPI.
-3. Implementar creación, consulta por ID/slug, PATCH y listado paginado.
-4. Traducir errores de dominio a respuestas HTTP consistentes.
-5. Agregar tests de API con PostgreSQL real.
+1. Definir la API pública de Propiedades.
+2. Listar únicamente propiedades publicadas.
+3. Exponer detalle por slug sin dirección ni coordenadas exactas.
+4. Agregar filtros públicos iniciales y paginación.
+5. Agregar tests que demuestren que los datos geográficos privados no se
+   filtran.
 6. Ejecutar todos los quality gates y crear un Pull Request.
 
 Los schemas ya fueron recuperados y adaptados a ubicación. El stash original se
 mantiene temporalmente como copia de seguridad y solo debe eliminarse después de
 que el PR de schemas esté integrado en `main`.
 
-## Después de la API administrativa
+## Después de la API pública
 
-- Definir y probar la respuesta pública sin coordenadas exactas.
 - Implementar autenticación segura, RBAC y audit log.
 - Diseñar e implementar imágenes con S3, Pillow, WebP y thumbnails.
 - Iniciar frontend público y panel administrativo.

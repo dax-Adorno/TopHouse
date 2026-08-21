@@ -23,7 +23,8 @@ Estado: en ejecución.
 - [x] Separación entre contratos públicos y administrativos.
 - [x] Repository de propiedades.
 - [x] Service con reglas de negocio, slug y transiciones de estado.
-- [ ] API REST `/api/v1/propiedades` con CRUD, filtros y paginación.
+- [x] API administrativa con creación, consultas, PATCH y paginación.
+- [ ] Filtros y política de eliminación de propiedades.
 - [ ] Respuestas públicas que protejan la ubicación exacta.
 - [ ] Autenticación, RBAC y auditoría.
 

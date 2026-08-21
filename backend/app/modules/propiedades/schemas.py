@@ -146,3 +146,10 @@ class PropiedadPublicaRespuesta(PropiedadContenidoBase):
     destacada: bool
     creado_en: datetime
     actualizado_en: datetime
+
+
+class PaginaPropiedadesAdmin(SchemaBase):
+    items: list[PropiedadAdminRespuesta]
+    total: int = Field(ge=0)
+    offset: int = Field(ge=0)
+    limit: int = Field(ge=1, le=100)
