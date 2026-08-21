@@ -3,7 +3,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, status
 
+from app.modules.imagenes.dependencies import ImagenServiceDep
+from app.modules.imagenes.models import ImagenPropiedad
+from app.modules.imagenes.schemas import ImagenPublicaRespuesta
 from app.modules.propiedades.dependencies import ServiceDep
+from app.modules.propiedades.models import Propiedad
 from app.modules.propiedades.schemas import (
     PaginaPropiedadesPublicas,
     PropiedadPublicaRespuesta,
@@ -22,6 +26,7 @@ router = APIRouter(
 )
 def listar_propiedades_publicas(
     service: ServiceDep,
+    imagen_service: ImagenServiceDep,
     offset: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
     tipo_operacion: TipoOperacion | None = None,
@@ -49,9 +54,16 @@ def listar_propiedades_publicas(
         dormitorios_min=dormitorios_min,
         destacada=destacada,
     )
+    imagenes_por_propiedad = imagen_service.listar_por_propiedades(
+        [propiedad.id for propiedad in propiedades]
+    )
     return PaginaPropiedadesPublicas(
         items=[
-            PropiedadPublicaRespuesta.model_validate(propiedad)
+            _crear_respuesta_publica(
+                propiedad,
+                imagen_service,
+                imagenes=imagenes_por_propiedad[propiedad.id],
+            )
             for propiedad in propiedades
         ],
         total=total,
@@ -67,6 +79,37 @@ def listar_propiedades_publicas(
 def obtener_propiedad_publica(
     slug: str,
     service: ServiceDep,
+    imagen_service: ImagenServiceDep,
 ) -> PropiedadPublicaRespuesta:
     propiedad = service.obtener_publicada_por_slug(slug)
-    return PropiedadPublicaRespuesta.model_validate(propiedad)
+    return _crear_respuesta_publica(propiedad, imagen_service)
+
+
+def _crear_respuesta_publica(
+    propiedad: Propiedad,
+    imagen_service: ImagenServiceDep,
+    *,
+    imagenes: list[ImagenPropiedad] | None = None,
+) -> PropiedadPublicaRespuesta:
+    modelos_imagen = (
+        imagen_service.listar(propiedad.id) if imagenes is None else imagenes
+    )
+    respuestas_imagen = [imagen_service.respuesta(imagen) for imagen in modelos_imagen]
+    datos = PropiedadPublicaRespuesta.model_validate(propiedad).model_dump()
+    datos["imagenes"] = [
+        ImagenPublicaRespuesta.model_validate(
+            imagen.model_dump(
+                include={
+                    "id",
+                    "url",
+                    "url_thumbnail",
+                    "ancho",
+                    "alto",
+                    "orden",
+                    "es_portada",
+                }
+            )
+        )
+        for imagen in respuestas_imagen
+    ]
+    return PropiedadPublicaRespuesta.model_validate(datos)

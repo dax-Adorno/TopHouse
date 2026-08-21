@@ -52,6 +52,18 @@ class ImagenApiRespuesta(ImagenRespuesta):
     url_thumbnail: str
 
 
+class ImagenPublicaRespuesta(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: int
+    url: str
+    url_thumbnail: str
+    ancho: int
+    alto: int
+    orden: int
+    es_portada: bool
+
+
 class ImagenOrdenActualizar(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

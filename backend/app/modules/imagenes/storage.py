@@ -26,14 +26,20 @@ class AlmacenamientoS3:
         cliente: Any | None = None,
     ) -> None:
         self.bucket = bucket
-        self.cliente = cliente or boto3.client(
-            "s3",
-            endpoint_url=endpoint_url,
-            aws_access_key_id=access_key_id,
-            aws_secret_access_key=secret_access_key,
-            region_name=region,
-            use_ssl=use_ssl,
-        )
+        self._cliente = cliente
+        self._configuracion = {
+            "endpoint_url": endpoint_url or None,
+            "aws_access_key_id": access_key_id or None,
+            "aws_secret_access_key": secret_access_key or None,
+            "region_name": region,
+            "use_ssl": use_ssl,
+        }
+
+    @property
+    def cliente(self) -> Any:
+        if self._cliente is None:
+            self._cliente = boto3.client("s3", **self._configuracion)
+        return self._cliente
 
     def guardar(self, clave: str, contenido: bytes, *, content_type: str) -> None:
         try:

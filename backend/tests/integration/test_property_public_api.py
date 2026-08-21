@@ -123,6 +123,7 @@ def test_api_publica_solo_lista_publicadas_y_oculta_ubicacion(
     assert borrador["id"] not in ids
     item_publicado = next(item for item in items if item["id"] == publicada["id"])
     assert_sin_ubicacion_privada(item_publicado)
+    assert item_publicado["imagenes"] == []
 
 
 def test_api_publica_detalle_por_slug_sin_ubicacion(
@@ -135,6 +136,7 @@ def test_api_publica_detalle_por_slug_sin_ubicacion(
     assert respuesta.status_code == 200
     assert respuesta.json()["id"] == publicada["id"]
     assert_sin_ubicacion_privada(respuesta.json())
+    assert respuesta.json()["imagenes"] == []
 
 
 def test_api_publica_no_expone_borrador_por_slug(

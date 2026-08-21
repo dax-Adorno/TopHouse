@@ -96,6 +96,17 @@ class ImagenService:
         self.propiedad_service.obtener_por_id(propiedad_id)
         return self.repository.listar(propiedad_id)
 
+    def listar_por_propiedades(
+        self,
+        propiedad_ids: list[int],
+    ) -> dict[int, list[ImagenPropiedad]]:
+        resultado: dict[int, list[ImagenPropiedad]] = {
+            propiedad_id: [] for propiedad_id in propiedad_ids
+        }
+        for imagen in self.repository.listar_varias(propiedad_ids):
+            resultado[imagen.propiedad_id].append(imagen)
+        return resultado
+
     def obtener(self, propiedad_id: int, imagen_id: int) -> ImagenPropiedad:
         imagen = self.repository.obtener(imagen_id)
         if imagen is None or imagen.propiedad_id != propiedad_id:

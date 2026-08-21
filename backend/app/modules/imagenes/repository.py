@@ -46,6 +46,20 @@ class ImagenRepository:
         )
         return list(self.session.scalars(consulta))
 
+    def listar_varias(self, propiedad_ids: list[int]) -> list[ImagenPropiedad]:
+        if not propiedad_ids:
+            return []
+        consulta = (
+            select(ImagenPropiedad)
+            .where(ImagenPropiedad.propiedad_id.in_(propiedad_ids))
+            .order_by(
+                ImagenPropiedad.propiedad_id,
+                ImagenPropiedad.orden,
+                ImagenPropiedad.id,
+            )
+        )
+        return list(self.session.scalars(consulta))
+
     def obtener(self, imagen_id: int) -> ImagenPropiedad | None:
         return self.session.get(ImagenPropiedad, imagen_id)
 
