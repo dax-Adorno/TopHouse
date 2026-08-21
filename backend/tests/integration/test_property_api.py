@@ -3,7 +3,7 @@ from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import delete
+from sqlalchemy import delete, select
 
 from app.core.database import SessionLocal
 from app.main import app
@@ -178,6 +178,37 @@ def test_api_rechaza_transicion_invalida(
     assert respuesta.status_code == 409
     assert respuesta.json()["estado_actual"] == "borrador"
     assert respuesta.json()["estado_nuevo"] == "vendida"
+
+
+def test_api_archiva_propiedad_sin_borrarla(
+    limpiar_propiedades_api: None,
+    datos_propiedad: dict[str, object],
+) -> None:
+    creada = client.post("/api/v1/propiedades", json=datos_propiedad).json()
+    publicada = client.patch(
+        f"/api/v1/propiedades/{creada['id']}/admin",
+        json={"estado": "publicada", "destacada": True},
+    )
+    assert publicada.status_code == 200
+
+    respuesta = client.delete(f"/api/v1/propiedades/{creada['id']}")
+    consulta_admin = client.get(f"/api/v1/propiedades/{creada['id']}")
+    consulta_publica = client.get(f"/api/v1/publico/propiedades/{creada['slug']}")
+
+    assert respuesta.status_code == 204
+    assert consulta_admin.status_code == 200
+    assert consulta_admin.json()["estado"] == "no_disponible"
+    assert consulta_admin.json()["destacada"] is False
+    assert consulta_publica.status_code == 404
+    with SessionLocal() as session:
+        auditoria = session.scalar(
+            select(RegistroAuditoria).where(
+                RegistroAuditoria.accion == "propiedad.archivada",
+                RegistroAuditoria.recurso_id == str(creada["id"]),
+            )
+        )
+        assert auditoria is not None
+        assert auditoria.detalles["estado_anterior"] == "publicada"
 
 
 @pytest.mark.parametrize(

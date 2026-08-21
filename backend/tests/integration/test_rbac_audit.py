@@ -87,10 +87,15 @@ def test_operador_crea_con_auditoria_pero_no_ejecuta_accion_admin(
         json={"estado": "publicada"},
         headers=headers,
     )
+    eliminar_restringido = client.delete(
+        f"/api/v1/propiedades/{propiedad_id}",
+        headers=headers,
+    )
 
     assert creada.status_code == 201
     assert restringida.status_code == 403
     assert restringida.json()["detail"] == "Se requiere rol de administrador"
+    assert eliminar_restringido.status_code == 403
 
     with SessionLocal() as session:
         registro = session.scalar(

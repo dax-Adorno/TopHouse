@@ -8,11 +8,10 @@ La API administrativa ya exige autenticación y CSRF. El RBAC reserva los
 cambios de estado y destacado al rol `administrador`, y las mutaciones de
 propiedades generan registros de auditoría.
 
-1. Definir e implementar la política de eliminación de propiedades.
-2. Completar pruebas específicas contra IDOR en recursos administrativos.
-3. Diseñar límites y contratos para imágenes por propiedad.
-4. Implementar validación segura, WebP y thumbnails.
-5. Ejecutar todos los quality gates y crear un Pull Request.
+1. Completar pruebas específicas contra IDOR en recursos administrativos.
+2. Diseñar límites y contratos para imágenes por propiedad.
+3. Implementar validación segura, WebP y thumbnails.
+4. Ejecutar todos los quality gates y crear un Pull Request.
 
 ## Después de autenticación y auditoría
 
