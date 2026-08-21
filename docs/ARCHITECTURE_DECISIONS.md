@@ -121,6 +121,9 @@ documentación y en el Pull Request que introduzca el cambio.
   contenido real, rechaza archivos dañados, animaciones y posibles bombas de
   descompresión antes de decodificar y reexportar.
 - El orden y la portada son gestionables desde administración.
+- Las rutas de imágenes verifican que cada identificador pertenezca a la
+  propiedad de la URL para evitar IDOR. Las respuestas entregan URLs firmadas
+  temporales y nunca exponen claves internas del bucket.
 
 ## Inteligencia artificial
 

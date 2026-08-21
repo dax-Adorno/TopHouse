@@ -3,11 +3,19 @@ from pathlib import Path
 from uuid import uuid4
 
 from app.modules.imagenes.constants import MAX_IMAGENES_POR_PROPIEDAD
-from app.modules.imagenes.exceptions import LimiteImagenesError
+from app.modules.imagenes.exceptions import (
+    ImagenNoEncontradaError,
+    LimiteImagenesError,
+    OrdenImagenesInvalidoError,
+)
 from app.modules.imagenes.models import ImagenPropiedad
 from app.modules.imagenes.processing import procesar_imagen
 from app.modules.imagenes.repository import ImagenRepository
-from app.modules.imagenes.schemas import ImagenMetadatosCrear
+from app.modules.imagenes.schemas import (
+    ImagenApiRespuesta,
+    ImagenMetadatosCrear,
+    ImagenRespuesta,
+)
 from app.modules.imagenes.storage import AlmacenamientoImagenes
 from app.modules.propiedades.service import PropiedadService
 
@@ -83,3 +91,56 @@ class ImagenService:
                         clave,
                     )
             raise
+
+    def listar(self, propiedad_id: int) -> list[ImagenPropiedad]:
+        self.propiedad_service.obtener_por_id(propiedad_id)
+        return self.repository.listar(propiedad_id)
+
+    def obtener(self, propiedad_id: int, imagen_id: int) -> ImagenPropiedad:
+        imagen = self.repository.obtener(imagen_id)
+        if imagen is None or imagen.propiedad_id != propiedad_id:
+            raise ImagenNoEncontradaError("No existe la imagen en esa propiedad")
+        return imagen
+
+    def reordenar(
+        self,
+        propiedad_id: int,
+        imagen_ids: list[int],
+    ) -> list[ImagenPropiedad]:
+        imagenes = self.listar(propiedad_id)
+        por_id = {imagen.id: imagen for imagen in imagenes}
+        if set(imagen_ids) != set(por_id) or len(imagen_ids) != len(imagenes):
+            raise OrdenImagenesInvalidoError(
+                "Deben enviarse todas las imágenes de la propiedad una sola vez"
+            )
+        ordenadas = [por_id[imagen_id] for imagen_id in imagen_ids]
+        self.repository.reordenar(ordenadas)
+        return ordenadas
+
+    def establecer_portada(
+        self,
+        propiedad_id: int,
+        imagen_id: int,
+    ) -> ImagenPropiedad:
+        portada = self.obtener(propiedad_id, imagen_id)
+        imagenes = self.repository.listar(propiedad_id)
+        self.repository.establecer_portada(imagenes, portada)
+        return portada
+
+    def eliminar(self, propiedad_id: int, imagen_id: int) -> None:
+        imagen = self.obtener(propiedad_id, imagen_id)
+        era_portada = imagen.es_portada
+        self.almacenamiento.eliminar(imagen.clave_objeto)
+        self.almacenamiento.eliminar(imagen.clave_thumbnail)
+        self.repository.eliminar(imagen)
+        restantes = self.repository.listar(propiedad_id)
+        if era_portada and restantes:
+            self.repository.establecer_portada(restantes, restantes[0])
+
+    def respuesta(self, imagen: ImagenPropiedad) -> ImagenApiRespuesta:
+        datos = ImagenRespuesta.model_validate(imagen).model_dump()
+        return ImagenApiRespuesta(
+            **datos,
+            url=self.almacenamiento.obtener_url(imagen.clave_objeto),
+            url_thumbnail=self.almacenamiento.obtener_url(imagen.clave_thumbnail),
+        )

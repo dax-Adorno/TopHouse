@@ -12,3 +12,11 @@ class LimiteImagenesError(ValueError):
 
 class AlmacenamientoImagenError(RuntimeError):
     """El almacenamiento externo no pudo completar una operación."""
+
+
+class ImagenNoEncontradaError(LookupError):
+    """La imagen no existe o no pertenece a la propiedad indicada."""
+
+
+class OrdenImagenesInvalidoError(ValueError):
+    """El orden no representa exactamente las imágenes de la propiedad."""

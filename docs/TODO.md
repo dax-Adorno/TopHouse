@@ -9,9 +9,9 @@ cambios de estado y destacado al rol `administrador`, y las mutaciones de
 propiedades generan registros de auditoría.
 
 1. Completar pruebas específicas contra IDOR en recursos administrativos.
-2. Incorporar endpoints administrativos de carga, orden, portada y eliminación.
-3. Exponer URLs públicas o firmadas sin revelar claves internas innecesarias.
-4. Agregar auditoría y pruebas de permisos para operaciones de imágenes.
+2. Incorporar imágenes y URLs firmadas en los contratos públicos de propiedades.
+3. Definir la estrategia de CDN/cache para producción.
+4. Iniciar la aplicación React + TypeScript + Vite.
 5. Ejecutar todos los quality gates y crear un Pull Request.
 
 ## Después de autenticación y auditoría

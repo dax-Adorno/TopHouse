@@ -1,5 +1,7 @@
 from fastapi import FastAPI, status
 
+from app.modules.imagenes.api import router as imagenes_router
+from app.modules.imagenes.handlers import registrar_manejadores_imagenes
 from app.modules.propiedades.api import router as propiedades_router
 from app.modules.propiedades.handlers import registrar_manejadores_propiedades
 from app.modules.propiedades.public_api import router as propiedades_publicas_router
@@ -14,7 +16,9 @@ app = FastAPI(
 app.include_router(propiedades_router)
 app.include_router(propiedades_publicas_router)
 app.include_router(usuarios_router)
+app.include_router(imagenes_router)
 registrar_manejadores_propiedades(app)
+registrar_manejadores_imagenes(app)
 
 
 @app.get(

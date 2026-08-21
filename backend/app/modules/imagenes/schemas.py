@@ -47,6 +47,11 @@ class ImagenRespuesta(BaseModel):
     creado_en: datetime
 
 
+class ImagenApiRespuesta(ImagenRespuesta):
+    url: str
+    url_thumbnail: str
+
+
 class ImagenOrdenActualizar(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

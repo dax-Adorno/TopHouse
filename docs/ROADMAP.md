@@ -38,7 +38,7 @@ Estado: en ejecución.
 - [x] Validación segura por contenido real con Pillow.
 - [x] Normalización, limpieza de metadata, WebP y thumbnails.
 - [x] Repository, Service e integración con almacenamiento compatible con S3.
-- [ ] Ordenamiento y selección de portada.
+- [x] API administrativa, ordenamiento y selección de portada.
 
 ## Fase 4 - Frontend
 
