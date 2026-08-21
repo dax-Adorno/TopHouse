@@ -4,16 +4,14 @@ Actualizado: 21 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
-El núcleo de usuarios ya incluye schemas estrictos, hash y verificación con
-Argon2, Repository, Service y pruebas de credenciales y usuarios inactivos.
+La autenticación ya incluye login, logout, cookies seguras, protección CSRF,
+expiración y revocación de sesiones persistidas.
 
-1. Implementar login, logout y sesiones administrativas.
-2. Incorporar cookies seguras y protección CSRF.
-3. Agregar pruebas de ciclo de vida, expiración y revocación de sesiones.
-4. Ejecutar todos los quality gates y crear un Pull Request.
-
-Después de las sesiones se protegerán los endpoints administrativos con RBAC y
-se incorporará el registro de auditoría.
+1. Proteger todos los endpoints administrativos con autenticación.
+2. Aplicar RBAC para `administrador` y `operador` en backend.
+3. Incorporar el registro de auditoría para acciones administrativas.
+4. Agregar pruebas de permisos, IDOR y trazabilidad.
+5. Ejecutar todos los quality gates y crear un Pull Request.
 
 ## Después de autenticación y auditoría
 

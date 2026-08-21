@@ -57,6 +57,12 @@ documentación y en el Pull Request que introduzca el cambio.
   ni devuelve contraseñas en texto plano.
 - Los emails se normalizan a minúsculas antes de persistir o buscar, y un
   usuario inactivo no puede autenticarse.
+- Las sesiones son opacas, expiran y pueden revocarse; PostgreSQL conserva solo
+  hashes SHA-256 de tokens aleatorios de alta entropía, nunca los tokens que
+  recibe el navegador.
+- La cookie de sesión es `HttpOnly`, `Secure` y `SameSite=Lax`. El token CSRF
+  separado debe enviarse en `X-CSRF-Token` para operaciones autenticadas que
+  modifican estado.
 - Rate limiting en superficies sensibles y controles contra IDOR, mass
   assignment, XSS e inyección.
 - Acciones administrativas importantes deben producir audit log.
