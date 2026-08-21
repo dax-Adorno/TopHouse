@@ -5,6 +5,7 @@ from alembic import context
 from app.core.config import settings
 from app.core.database import Base, engine
 from app.modules.propiedades.models import Propiedad  # noqa: F401
+from app.modules.usuarios.models import Usuario  # noqa: F401
 
 config = context.config
 

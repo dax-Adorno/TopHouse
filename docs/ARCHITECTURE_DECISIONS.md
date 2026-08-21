@@ -47,6 +47,9 @@ documentación y en el Pull Request que introduzca el cambio.
 
 - Autenticación administrativa con sesión/cookie segura; no persistir JWT en
   `localStorage`.
+- Los roles iniciales son `administrador` y `operador`; todo usuario nuevo nace
+  como `operador` y `activo=true` salvo decisión administrativa explícita.
+- El email identifica de forma única a cada usuario.
 - Autorización y RBAC se aplican en backend, no solo en la interfaz.
 - Contraseñas con Argon2 y protección CSRF para operaciones autenticadas por
   cookie.

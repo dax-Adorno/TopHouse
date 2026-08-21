@@ -4,14 +4,15 @@ Actualizado: 21 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
-1. Diseñar usuarios, roles y sesiones administrativas.
-2. Crear migraciones para usuarios y auditoría.
-3. Implementar hash de contraseñas con Argon2.
-4. Proteger endpoints administrativos con autenticación y RBAC.
-5. Incorporar protección CSRF para operaciones autenticadas por cookie.
-6. Registrar acciones administrativas relevantes.
-7. Agregar pruebas de autenticación, autorización e IDOR.
-8. Ejecutar todos los quality gates y crear Pull Requests cohesivos.
+1. Implementar hash y verificación de contraseñas con Argon2.
+2. Crear Repository y Service de usuarios.
+3. Implementar login, logout y sesiones administrativas.
+4. Incorporar cookies seguras y protección CSRF.
+5. Agregar pruebas de credenciales, sesiones y usuarios inactivos.
+6. Ejecutar todos los quality gates y crear un Pull Request.
+
+Después de las sesiones se protegerán los endpoints administrativos con RBAC y
+se incorporará el registro de auditoría.
 
 Los schemas ya fueron recuperados y adaptados a ubicación. El stash original se
 mantiene temporalmente como copia de seguridad y solo debe eliminarse después de

@@ -27,7 +27,9 @@ Estado: en ejecución.
 - [x] Filtros públicos iniciales y paginación.
 - [x] Respuestas públicas que protegen la ubicación exacta.
 - [ ] Política de eliminación de propiedades.
-- [ ] Autenticación, RBAC y auditoría.
+- [x] Modelo de usuarios, roles y migración PostgreSQL.
+- [ ] Autenticación y sesiones administrativas.
+- [ ] RBAC y auditoría.
 
 ## Fase 3 - Gestión de imágenes
 
