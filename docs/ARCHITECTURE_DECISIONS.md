@@ -124,6 +124,8 @@ documentación y en el Pull Request que introduzca el cambio.
 - Las rutas de imágenes verifican que cada identificador pertenezca a la
   propiedad de la URL para evitar IDOR. Las respuestas entregan URLs firmadas
   temporales y nunca exponen claves internas del bucket.
+- El catálogo público incorpora la galería ordenada y la portada dentro de cada
+  propiedad. No publica nombres originales, MIME internos ni claves de objetos.
 
 ## Inteligencia artificial
 

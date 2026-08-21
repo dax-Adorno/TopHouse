@@ -5,6 +5,8 @@ from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from app.modules.imagenes.schemas import ImagenPublicaRespuesta
+
 
 class TipoOperacion(StrEnum):
     VENTA = "venta"
@@ -146,6 +148,7 @@ class PropiedadPublicaRespuesta(PropiedadContenidoBase):
     destacada: bool
     creado_en: datetime
     actualizado_en: datetime
+    imagenes: list[ImagenPublicaRespuesta] = Field(default_factory=list)
 
 
 class PaginaPropiedadesAdmin(SchemaBase):
