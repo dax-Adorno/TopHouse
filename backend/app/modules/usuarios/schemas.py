@@ -31,3 +31,10 @@ class UsuarioRespuesta(BaseModel):
     ultimo_acceso_en: datetime | None
     creado_en: datetime
     actualizado_en: datetime
+
+
+class LoginSolicitud(BaseModel):
+    email: EmailStr
+    contrasena: str = Field(min_length=1, max_length=128)
+
+    model_config = ConfigDict(extra="forbid")

@@ -29,7 +29,7 @@ Estado: en ejecución.
 - [ ] Política de eliminación de propiedades.
 - [x] Modelo de usuarios, roles y migración PostgreSQL.
 - [x] Núcleo de autenticación: schemas, Argon2, Repository y Service.
-- [ ] Autenticación y sesiones administrativas.
+- [x] Autenticación y sesiones administrativas con cookies seguras y CSRF.
 - [ ] RBAC y auditoría.
 
 ## Fase 3 - Gestión de imágenes
