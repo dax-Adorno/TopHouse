@@ -2,6 +2,13 @@
 
 Plataforma web para la gestión y publicación de propiedades de Inmobiliaria Samanta.
 
+## Documentación operativa
+
+- [Contexto del proyecto](docs/PROJECT_CONTEXT.md)
+- [Decisiones arquitectónicas](docs/ARCHITECTURE_DECISIONS.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Próximos pasos](docs/TODO.md)
+
 ## Objetivo
 
 Centralizar la administración de propiedades, optimizar imágenes, publicar inmuebles y facilitar las consultas comerciales desde una aplicación web segura y escalable.
