@@ -21,7 +21,7 @@ Estado: en ejecución.
 - [x] Dirección, coordenadas, privacidad y constraints geográficos (PR #5).
 - [x] Schemas Pydantic de creación, actualización y respuesta.
 - [x] Separación entre contratos públicos y administrativos.
-- [ ] Repository de propiedades.
+- [x] Repository de propiedades.
 - [ ] Service con reglas de negocio, slug y transiciones de estado.
 - [ ] API REST `/api/v1/propiedades` con CRUD, filtros y paginación.
 - [ ] Respuestas públicas que protejan la ubicación exacta.

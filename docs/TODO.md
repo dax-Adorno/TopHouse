@@ -4,20 +4,19 @@ Actualizado: 21 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
-1. Implementar Repository de Propiedad con SQLAlchemy.
-2. Definir operaciones de creación, consulta por ID, consulta por slug,
-   actualización y listado paginado.
-3. Manejar de forma explícita códigos y slugs duplicados.
-4. Agregar tests de integración contra PostgreSQL.
-5. Ejecutar todos los quality gates y crear un Pull Request.
+1. Implementar Service de Propiedad.
+2. Generar slugs únicos a partir del título sin acoplar esa regla al Repository.
+3. Definir y validar transiciones permitidas entre estados.
+4. Orquestar creación, actualización y consulta de propiedades.
+5. Agregar tests unitarios de reglas de negocio.
+6. Ejecutar todos los quality gates y crear un Pull Request.
 
 Los schemas ya fueron recuperados y adaptados a ubicación. El stash original se
 mantiene temporalmente como copia de seguridad y solo debe eliminarse después de
 que el PR de schemas esté integrado en `main`.
 
-## Después del Repository
+## Después del Service
 
-- Implementar Service con generación de slug y transiciones de estado.
 - Exponer CRUD, filtros y paginación en `/api/v1/propiedades`.
 - Definir y probar la respuesta pública sin coordenadas exactas.
 - Implementar autenticación segura, RBAC y audit log.
