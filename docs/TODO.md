@@ -4,20 +4,19 @@ Actualizado: 21 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
-1. Implementar Service de Propiedad.
-2. Generar slugs únicos a partir del título sin acoplar esa regla al Repository.
-3. Definir y validar transiciones permitidas entre estados.
-4. Orquestar creación, actualización y consulta de propiedades.
-5. Agregar tests unitarios de reglas de negocio.
+1. Exponer API REST administrativa para Propiedades.
+2. Agregar dependencias de sesión, Repository y Service para FastAPI.
+3. Implementar creación, consulta por ID/slug, PATCH y listado paginado.
+4. Traducir errores de dominio a respuestas HTTP consistentes.
+5. Agregar tests de API con PostgreSQL real.
 6. Ejecutar todos los quality gates y crear un Pull Request.
 
 Los schemas ya fueron recuperados y adaptados a ubicación. El stash original se
 mantiene temporalmente como copia de seguridad y solo debe eliminarse después de
 que el PR de schemas esté integrado en `main`.
 
-## Después del Service
+## Después de la API administrativa
 
-- Exponer CRUD, filtros y paginación en `/api/v1/propiedades`.
 - Definir y probar la respuesta pública sin coordenadas exactas.
 - Implementar autenticación segura, RBAC y audit log.
 - Diseñar e implementar imágenes con S3, Pillow, WebP y thumbnails.

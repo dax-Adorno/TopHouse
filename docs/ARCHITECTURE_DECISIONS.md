@@ -65,6 +65,22 @@ documentación y en el Pull Request que introduzca el cambio.
 - Deben existir respuestas públicas y administrativas separadas antes de
   exponer datos sensibles de ubicación.
 
+## Ciclo de vida de Propiedad
+
+- Los slugs se generan una sola vez al crear la propiedad y permanecen estables
+  aunque cambie el título.
+- Un slug duplicado recibe sufijos numéricos (`-2`, `-3`, etc.).
+- `borrador` puede pasar a `publicada` o `no_disponible`.
+- `publicada` puede pasar a `pausada`, `reservada`, `alquilada`, `vendida` o
+  `no_disponible`.
+- `pausada` puede volver a `publicada` o pasar a `no_disponible`.
+- `reservada` puede volver a `publicada` o pasar a `alquilada`, `vendida` o
+  `no_disponible`.
+- `alquilada` puede volver a `publicada` al finalizar el contrato o pasar a
+  `no_disponible`.
+- `vendida` solo puede pasar a `no_disponible`.
+- `no_disponible` puede reabrirse únicamente como `borrador`.
+
 ## Imágenes
 
 - Producción utiliza object storage compatible con S3; no archivos locales
