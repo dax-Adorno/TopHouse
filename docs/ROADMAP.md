@@ -35,8 +35,8 @@ Estado: en ejecución.
 ## Fase 3 - Gestión de imágenes
 
 - [x] Modelo y límites de tamaño, dimensiones y cantidad por propiedad.
-- [ ] Validación segura con Pillow.
-- [ ] Normalización, limpieza de metadata, WebP y thumbnails.
+- [x] Validación segura por contenido real con Pillow.
+- [x] Normalización, limpieza de metadata, WebP y thumbnails.
 - [ ] Integración con almacenamiento compatible con S3.
 - [ ] Ordenamiento y selección de portada.
 

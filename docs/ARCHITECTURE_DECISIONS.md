@@ -114,6 +114,9 @@ documentación y en el Pull Request que introduzca el cambio.
 - Los uploads se validan por contenido real, tamaño, dimensiones y formato.
 - El pipeline normaliza orientación, elimina metadata innecesaria y genera WebP
   y thumbnails.
+- El tipo declarado por el cliente no es confiable: Pillow verifica el
+  contenido real, rechaza archivos dañados, animaciones y posibles bombas de
+  descompresión antes de decodificar y reexportar.
 - El orden y la portada son gestionables desde administración.
 
 ## Inteligencia artificial
