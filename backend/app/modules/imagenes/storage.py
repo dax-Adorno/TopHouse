@@ -10,6 +10,8 @@ class AlmacenamientoImagenes(Protocol):
 
     def eliminar(self, clave: str) -> None: ...
 
+    def obtener_url(self, clave: str, *, expiracion_segundos: int = 3600) -> str: ...
+
 
 class AlmacenamientoS3:
     def __init__(
@@ -53,4 +55,18 @@ class AlmacenamientoS3:
         except Exception as error:
             raise AlmacenamientoImagenError(
                 "No fue posible eliminar la imagen"
+            ) from error
+
+    def obtener_url(self, clave: str, *, expiracion_segundos: int = 3600) -> str:
+        try:
+            return str(
+                self.cliente.generate_presigned_url(
+                    "get_object",
+                    Params={"Bucket": self.bucket, "Key": clave},
+                    ExpiresIn=expiracion_segundos,
+                )
+            )
+        except Exception as error:
+            raise AlmacenamientoImagenError(
+                "No fue posible generar la URL de la imagen"
             ) from error

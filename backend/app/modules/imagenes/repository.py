@@ -52,3 +52,23 @@ class ImagenRepository:
     def eliminar(self, imagen: ImagenPropiedad) -> None:
         self.session.delete(imagen)
         self.session.commit()
+
+    def reordenar(self, imagenes: list[ImagenPropiedad]) -> None:
+        desplazamiento = max((imagen.orden for imagen in imagenes), default=-1) + 1
+        for indice, imagen in enumerate(imagenes):
+            imagen.orden = desplazamiento + indice
+        self.session.flush()
+        for indice, imagen in enumerate(imagenes):
+            imagen.orden = indice
+        self.session.commit()
+
+    def establecer_portada(
+        self,
+        imagenes: list[ImagenPropiedad],
+        portada: ImagenPropiedad,
+    ) -> None:
+        for imagen in imagenes:
+            imagen.es_portada = False
+        self.session.flush()
+        portada.es_portada = True
+        self.session.commit()
