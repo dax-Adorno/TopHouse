@@ -28,6 +28,7 @@ Estado: en ejecución.
 - [x] Respuestas públicas que protegen la ubicación exacta.
 - [ ] Política de eliminación de propiedades.
 - [x] Modelo de usuarios, roles y migración PostgreSQL.
+- [x] Núcleo de autenticación: schemas, Argon2, Repository y Service.
 - [ ] Autenticación y sesiones administrativas.
 - [ ] RBAC y auditoría.
 
