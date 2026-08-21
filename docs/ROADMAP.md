@@ -30,7 +30,7 @@ Estado: en ejecución.
 - [x] Modelo de usuarios, roles y migración PostgreSQL.
 - [x] Núcleo de autenticación: schemas, Argon2, Repository y Service.
 - [x] Autenticación y sesiones administrativas con cookies seguras y CSRF.
-- [ ] RBAC y auditoría.
+- [x] RBAC inicial y auditoría de cambios administrativos.
 
 ## Fase 3 - Gestión de imágenes
 

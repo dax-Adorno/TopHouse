@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     CheckConstraint,
     DateTime,
@@ -82,4 +83,27 @@ class SesionUsuario(Base):
     creada_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
+    )
+
+
+class RegistroAuditoria(Base):
+    """Registro inmutable de una acción administrativa relevante."""
+
+    __tablename__ = "registros_auditoria"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    usuario_id: Mapped[int | None] = mapped_column(
+        ForeignKey("usuarios.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    usuario_email: Mapped[str] = mapped_column(String(254))
+    accion: Mapped[str] = mapped_column(String(60), index=True)
+    recurso: Mapped[str] = mapped_column(String(60), index=True)
+    recurso_id: Mapped[str] = mapped_column(String(80), index=True)
+    detalles: Mapped[dict[str, object]] = mapped_column(JSON, default=dict)
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        index=True,
     )

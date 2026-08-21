@@ -4,13 +4,14 @@ Actualizado: 21 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
-La autenticación ya incluye login, logout, cookies seguras, protección CSRF,
-expiración y revocación de sesiones persistidas.
+La API administrativa ya exige autenticación y CSRF. El RBAC reserva los
+cambios de estado y destacado al rol `administrador`, y las mutaciones de
+propiedades generan registros de auditoría.
 
-1. Proteger todos los endpoints administrativos con autenticación.
-2. Aplicar RBAC para `administrador` y `operador` en backend.
-3. Incorporar el registro de auditoría para acciones administrativas.
-4. Agregar pruebas de permisos, IDOR y trazabilidad.
+1. Definir e implementar la política de eliminación de propiedades.
+2. Completar pruebas específicas contra IDOR en recursos administrativos.
+3. Diseñar límites y contratos para imágenes por propiedad.
+4. Implementar validación segura, WebP y thumbnails.
 5. Ejecutar todos los quality gates y crear un Pull Request.
 
 ## Después de autenticación y auditoría

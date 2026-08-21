@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.modules.propiedades.dependencies import ServiceDep
 from app.modules.propiedades.schemas import (
@@ -8,10 +8,17 @@ from app.modules.propiedades.schemas import (
     PropiedadAdminRespuesta,
     PropiedadCrear,
 )
+from app.modules.usuarios.audit import AuditoriaDep
+from app.modules.usuarios.dependencies import (
+    AdminCsrfDep,
+    CsrfDep,
+    obtener_autenticacion,
+)
 
 router = APIRouter(
     prefix="/api/v1/propiedades",
     tags=["Propiedades"],
+    dependencies=[Depends(obtener_autenticacion)],
 )
 
 
@@ -23,8 +30,18 @@ router = APIRouter(
 def crear_propiedad(
     datos: PropiedadCrear,
     service: ServiceDep,
+    autenticacion: CsrfDep,
+    auditoria: AuditoriaDep,
 ) -> PropiedadAdminRespuesta:
     propiedad = service.crear(datos)
+    _sesion, usuario = autenticacion
+    auditoria.registrar(
+        usuario=usuario,
+        accion="propiedad.creada",
+        recurso="propiedad",
+        recurso_id=propiedad.id,
+        detalles={"codigo": propiedad.codigo},
+    )
     return PropiedadAdminRespuesta.model_validate(propiedad)
 
 
@@ -81,8 +98,18 @@ def actualizar_propiedad(
     propiedad_id: int,
     cambios: PropiedadActualizar,
     service: ServiceDep,
+    autenticacion: CsrfDep,
+    auditoria: AuditoriaDep,
 ) -> PropiedadAdminRespuesta:
     propiedad = service.actualizar(propiedad_id, cambios)
+    _sesion, usuario = autenticacion
+    auditoria.registrar(
+        usuario=usuario,
+        accion="propiedad.actualizada",
+        recurso="propiedad",
+        recurso_id=propiedad.id,
+        detalles=cambios.model_dump(exclude_unset=True, mode="json"),
+    )
     return PropiedadAdminRespuesta.model_validate(propiedad)
 
 
@@ -94,6 +121,16 @@ def actualizar_propiedad_admin(
     propiedad_id: int,
     cambios: PropiedadAdminActualizar,
     service: ServiceDep,
+    autenticacion: AdminCsrfDep,
+    auditoria: AuditoriaDep,
 ) -> PropiedadAdminRespuesta:
     propiedad = service.actualizar_admin(propiedad_id, cambios)
+    _sesion, usuario = autenticacion
+    auditoria.registrar(
+        usuario=usuario,
+        accion="propiedad.actualizada_admin",
+        recurso="propiedad",
+        recurso_id=propiedad.id,
+        detalles=cambios.model_dump(exclude_unset=True, mode="json"),
+    )
     return PropiedadAdminRespuesta.model_validate(propiedad)

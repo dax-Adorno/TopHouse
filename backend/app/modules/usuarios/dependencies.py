@@ -1,12 +1,10 @@
-from collections.abc import Iterator
 from datetime import timedelta
 from typing import Annotated
 
 from fastapi import Cookie, Depends, Header, HTTPException, status
-from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.database import SessionLocal
+from app.core.dependencies import SessionDep
 from app.modules.usuarios.models import SesionUsuario, Usuario
 from app.modules.usuarios.repository import UsuarioRepository
 from app.modules.usuarios.service import UsuarioService
@@ -14,17 +12,6 @@ from app.modules.usuarios.sessions import SesionRepository, SesionService
 
 SESSION_COOKIE = "tophouse_session"
 CSRF_COOKIE = "tophouse_csrf"
-
-
-def obtener_session() -> Iterator[Session]:
-    session = SessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
-
-
-SessionDep = Annotated[Session, Depends(obtener_session)]
 
 
 def obtener_sesion_service(session: SessionDep) -> SesionService:
@@ -72,3 +59,21 @@ def verificar_csrf(
 
 
 CsrfDep = Annotated[tuple[SesionUsuario, Usuario], Depends(verificar_csrf)]
+
+
+def requerir_administrador(
+    autenticacion: CsrfDep,
+) -> tuple[SesionUsuario, Usuario]:
+    _sesion, usuario = autenticacion
+    if usuario.rol != "administrador":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Se requiere rol de administrador",
+        )
+    return autenticacion
+
+
+AdminCsrfDep = Annotated[
+    tuple[SesionUsuario, Usuario],
+    Depends(requerir_administrador),
+]

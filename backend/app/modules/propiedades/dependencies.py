@@ -1,23 +1,10 @@
-from collections.abc import Iterator
 from typing import Annotated
 
 from fastapi import Depends
-from sqlalchemy.orm import Session
 
-from app.core.database import SessionLocal
+from app.core.dependencies import SessionDep
 from app.modules.propiedades.repository import PropiedadRepository
 from app.modules.propiedades.service import PropiedadService
-
-
-def obtener_session() -> Iterator[Session]:
-    session = SessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
-
-
-SessionDep = Annotated[Session, Depends(obtener_session)]
 
 
 def obtener_repository(session: SessionDep) -> PropiedadRepository:

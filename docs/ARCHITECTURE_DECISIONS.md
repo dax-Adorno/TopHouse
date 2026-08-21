@@ -66,6 +66,10 @@ documentación y en el Pull Request que introduzca el cambio.
 - Rate limiting en superficies sensibles y controles contra IDOR, mass
   assignment, XSS e inyección.
 - Acciones administrativas importantes deben producir audit log.
+- `administrador` y `operador` pueden consultar, crear y editar propiedades;
+  solo `administrador` puede cambiar su estado o condición de destacada.
+- La auditoría conserva una copia del email del actor, acción, recurso,
+  identificador y detalles del cambio aun si el usuario se elimina después.
 - Secretos solo mediante variables de entorno; `.env` nunca se versiona.
 
 ## Contratos de API
