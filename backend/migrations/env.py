@@ -4,6 +4,7 @@ from alembic import context
 
 from app.core.config import settings
 from app.core.database import Base, engine
+from app.modules.imagenes.models import ImagenPropiedad  # noqa: F401
 from app.modules.propiedades.models import Propiedad  # noqa: F401
 from app.modules.usuarios.models import (  # noqa: F401
     RegistroAuditoria,

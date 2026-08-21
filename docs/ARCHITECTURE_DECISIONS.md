@@ -107,6 +107,10 @@ documentación y en el Pull Request que introduzca el cambio.
 
 - Producción utiliza object storage compatible con S3; no archivos locales
   persistentes.
+- Cada propiedad admite hasta 20 imágenes; cada entrada acepta como máximo 10
+  MB, dimensiones entre 320 y 12000 píxeles y contenido JPEG, PNG o WebP.
+- PostgreSQL guarda metadatos y claves de objetos, no binarios. Garantiza orden
+  único y una sola portada por propiedad.
 - Los uploads se validan por contenido real, tamaño, dimensiones y formato.
 - El pipeline normaliza orientación, elimina metadata innecesaria y genera WebP
   y thumbnails.
