@@ -4,19 +4,16 @@ Actualizado: 21 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
-1. Implementar hash y verificación de contraseñas con Argon2.
-2. Crear Repository y Service de usuarios.
-3. Implementar login, logout y sesiones administrativas.
-4. Incorporar cookies seguras y protección CSRF.
-5. Agregar pruebas de credenciales, sesiones y usuarios inactivos.
-6. Ejecutar todos los quality gates y crear un Pull Request.
+El núcleo de usuarios ya incluye schemas estrictos, hash y verificación con
+Argon2, Repository, Service y pruebas de credenciales y usuarios inactivos.
+
+1. Implementar login, logout y sesiones administrativas.
+2. Incorporar cookies seguras y protección CSRF.
+3. Agregar pruebas de ciclo de vida, expiración y revocación de sesiones.
+4. Ejecutar todos los quality gates y crear un Pull Request.
 
 Después de las sesiones se protegerán los endpoints administrativos con RBAC y
 se incorporará el registro de auditoría.
-
-Los schemas ya fueron recuperados y adaptados a ubicación. El stash original se
-mantiene temporalmente como copia de seguridad y solo debe eliminarse después de
-que el PR de schemas esté integrado en `main`.
 
 ## Después de autenticación y auditoría
 

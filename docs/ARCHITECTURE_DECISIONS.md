@@ -53,6 +53,10 @@ documentación y en el Pull Request que introduzca el cambio.
 - Autorización y RBAC se aplican en backend, no solo en la interfaz.
 - Contraseñas con Argon2 y protección CSRF para operaciones autenticadas por
   cookie.
+- El backend genera y verifica hashes Argon2 mediante `pwdlib`; nunca persiste
+  ni devuelve contraseñas en texto plano.
+- Los emails se normalizan a minúsculas antes de persistir o buscar, y un
+  usuario inactivo no puede autenticarse.
 - Rate limiting en superficies sensibles y controles contra IDOR, mass
   assignment, XSS e inyección.
 - Acciones administrativas importantes deben producir audit log.
