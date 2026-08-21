@@ -9,9 +9,10 @@ cambios de estado y destacado al rol `administrador`, y las mutaciones de
 propiedades generan registros de auditoría.
 
 1. Completar pruebas específicas contra IDOR en recursos administrativos.
-2. Diseñar límites y contratos para imágenes por propiedad.
-3. Implementar validación segura, WebP y thumbnails.
-4. Ejecutar todos los quality gates y crear un Pull Request.
+2. Implementar validación del contenido real con Pillow.
+3. Normalizar orientación, eliminar metadata y generar WebP y thumbnails.
+4. Crear Repository y Service con límite de 20 imágenes por propiedad.
+5. Ejecutar todos los quality gates y crear un Pull Request.
 
 ## Después de autenticación y auditoría
 
