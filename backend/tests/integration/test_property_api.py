@@ -8,8 +8,53 @@ from sqlalchemy import delete
 from app.core.database import SessionLocal
 from app.main import app
 from app.modules.propiedades.models import Propiedad
+from app.modules.usuarios.models import RegistroAuditoria, SesionUsuario, Usuario
+from app.modules.usuarios.repository import UsuarioRepository
+from app.modules.usuarios.schemas import UsuarioCrear
+from app.modules.usuarios.service import UsuarioService
 
-client = TestClient(app)
+client = TestClient(app, base_url="https://testserver")
+
+
+@pytest.fixture(autouse=True)
+def autenticar_administrador() -> Iterator[None]:
+    identificador = uuid4().hex[:10]
+    with SessionLocal() as session:
+        usuario = UsuarioService(UsuarioRepository(session)).crear(
+            UsuarioCrear(
+                email=f"test-property-admin-{identificador}@example.com",
+                nombre="Administrador de pruebas",
+                contrasena="contrasena-segura-pruebas",
+                rol="administrador",
+            )
+        )
+        usuario_id = usuario.id
+
+    login = client.post(
+        "/api/v1/auth/login",
+        json={
+            "email": usuario.email,
+            "contrasena": "contrasena-segura-pruebas",
+        },
+    )
+    assert login.status_code == 200
+    csrf = client.cookies.get("tophouse_csrf")
+    assert csrf is not None
+    client.headers["X-CSRF-Token"] = csrf
+
+    yield
+
+    client.cookies.clear()
+    client.headers.pop("X-CSRF-Token", None)
+    with SessionLocal() as session:
+        session.execute(
+            delete(RegistroAuditoria).where(RegistroAuditoria.usuario_id == usuario_id)
+        )
+        session.execute(
+            delete(SesionUsuario).where(SesionUsuario.usuario_id == usuario_id)
+        )
+        session.execute(delete(Usuario).where(Usuario.id == usuario_id))
+        session.commit()
 
 
 @pytest.fixture
