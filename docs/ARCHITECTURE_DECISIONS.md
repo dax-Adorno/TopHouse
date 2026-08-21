@@ -64,6 +64,8 @@ documentación y en el Pull Request que introduzca el cambio.
   `destacada`; esos cambios pertenecen a flujos administrativos controlados.
 - Deben existir respuestas públicas y administrativas separadas antes de
   exponer datos sensibles de ubicación.
+- Los endpoints administrativos no se consideran aptos para producción hasta
+  que estén protegidos por autenticación y RBAC en backend.
 
 ## Ciclo de vida de Propiedad
 

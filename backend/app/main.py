@@ -1,10 +1,16 @@
 from fastapi import FastAPI, status
 
+from app.modules.propiedades.api import router as propiedades_router
+from app.modules.propiedades.handlers import registrar_manejadores_propiedades
+
 app = FastAPI(
     title="TopHouse API",
     description="API para la plataforma inmobiliaria TopHouse.",
     version="0.1.0",
 )
+
+app.include_router(propiedades_router)
+registrar_manejadores_propiedades(app)
 
 
 @app.get(
