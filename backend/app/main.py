@@ -2,6 +2,7 @@ from fastapi import FastAPI, status
 
 from app.modules.propiedades.api import router as propiedades_router
 from app.modules.propiedades.handlers import registrar_manejadores_propiedades
+from app.modules.propiedades.public_api import router as propiedades_publicas_router
 
 app = FastAPI(
     title="TopHouse API",
@@ -10,6 +11,7 @@ app = FastAPI(
 )
 
 app.include_router(propiedades_router)
+app.include_router(propiedades_publicas_router)
 registrar_manejadores_propiedades(app)
 
 

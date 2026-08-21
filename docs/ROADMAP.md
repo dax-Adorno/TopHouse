@@ -24,8 +24,9 @@ Estado: en ejecución.
 - [x] Repository de propiedades.
 - [x] Service con reglas de negocio, slug y transiciones de estado.
 - [x] API administrativa con creación, consultas, PATCH y paginación.
-- [ ] Filtros y política de eliminación de propiedades.
-- [ ] Respuestas públicas que protejan la ubicación exacta.
+- [x] Filtros públicos iniciales y paginación.
+- [x] Respuestas públicas que protegen la ubicación exacta.
+- [ ] Política de eliminación de propiedades.
 - [ ] Autenticación, RBAC y auditoría.
 
 ## Fase 3 - Gestión de imágenes

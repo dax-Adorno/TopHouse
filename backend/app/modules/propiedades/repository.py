@@ -1,4 +1,6 @@
-from sqlalchemy import func, select
+from decimal import Decimal
+
+from sqlalchemy import ColumnElement, func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -39,6 +41,13 @@ class PropiedadRepository:
         consulta = select(Propiedad).where(Propiedad.slug == slug)
         return self.session.scalar(consulta)
 
+    def obtener_publicada_por_slug(self, slug: str) -> Propiedad | None:
+        consulta = select(Propiedad).where(
+            Propiedad.slug == slug,
+            Propiedad.estado == "publicada",
+        )
+        return self.session.scalar(consulta)
+
     def listar(
         self,
         *,
@@ -57,6 +66,63 @@ class PropiedadRepository:
             .limit(limit)
         )
         total = self.session.scalar(select(func.count()).select_from(Propiedad))
+        propiedades = list(self.session.scalars(consulta))
+        return propiedades, total or 0
+
+    def listar_publicadas(
+        self,
+        *,
+        offset: int = 0,
+        limit: int = 20,
+        tipo_operacion: str | None = None,
+        tipo_propiedad: str | None = None,
+        localidad: str | None = None,
+        precio_min: Decimal | None = None,
+        precio_max: Decimal | None = None,
+        dormitorios_min: int | None = None,
+        destacada: bool | None = None,
+    ) -> tuple[list[Propiedad], int]:
+        if offset < 0:
+            raise ValueError("offset no puede ser negativo")
+        if not 1 <= limit <= 100:
+            raise ValueError("limit debe estar entre 1 y 100")
+        if (
+            precio_min is not None
+            and precio_max is not None
+            and precio_min > precio_max
+        ):
+            raise ValueError("precio_min no puede superar precio_max")
+
+        condiciones: list[ColumnElement[bool]] = [Propiedad.estado == "publicada"]
+        if tipo_operacion is not None:
+            condiciones.append(Propiedad.tipo_operacion == tipo_operacion)
+        if tipo_propiedad is not None:
+            condiciones.append(Propiedad.tipo_propiedad == tipo_propiedad)
+        if localidad is not None:
+            condiciones.append(Propiedad.localidad == localidad)
+        if precio_min is not None:
+            condiciones.append(Propiedad.precio >= precio_min)
+        if precio_max is not None:
+            condiciones.append(Propiedad.precio <= precio_max)
+        if dormitorios_min is not None:
+            condiciones.append(Propiedad.dormitorios >= dormitorios_min)
+        if destacada is not None:
+            condiciones.append(Propiedad.destacada == destacada)
+
+        consulta = (
+            select(Propiedad)
+            .where(*condiciones)
+            .order_by(
+                Propiedad.destacada.desc(),
+                Propiedad.creado_en.desc(),
+                Propiedad.id.desc(),
+            )
+            .offset(offset)
+            .limit(limit)
+        )
+        total = self.session.scalar(
+            select(func.count()).select_from(Propiedad).where(*condiciones)
+        )
         propiedades = list(self.session.scalars(consulta))
         return propiedades, total or 0
 

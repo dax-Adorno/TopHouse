@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from app.modules.propiedades.exceptions import (
     GeneracionSlugError,
     PropiedadNoEncontradaError,
@@ -82,6 +84,39 @@ class PropiedadService:
         self, *, offset: int = 0, limit: int = 20
     ) -> tuple[list[Propiedad], int]:
         return self.repository.listar(offset=offset, limit=limit)
+
+    def obtener_publicada_por_slug(self, slug: str) -> Propiedad:
+        propiedad = self.repository.obtener_publicada_por_slug(slug)
+        if propiedad is None:
+            raise PropiedadNoEncontradaError(
+                f"No existe la propiedad publicada con slug {slug}"
+            )
+        return propiedad
+
+    def listar_publicadas(
+        self,
+        *,
+        offset: int = 0,
+        limit: int = 20,
+        tipo_operacion: str | None = None,
+        tipo_propiedad: str | None = None,
+        localidad: str | None = None,
+        precio_min: Decimal | None = None,
+        precio_max: Decimal | None = None,
+        dormitorios_min: int | None = None,
+        destacada: bool | None = None,
+    ) -> tuple[list[Propiedad], int]:
+        return self.repository.listar_publicadas(
+            offset=offset,
+            limit=limit,
+            tipo_operacion=tipo_operacion,
+            tipo_propiedad=tipo_propiedad,
+            localidad=localidad,
+            precio_min=precio_min,
+            precio_max=precio_max,
+            dormitorios_min=dormitorios_min,
+            destacada=destacada,
+        )
 
     def actualizar(
         self,
