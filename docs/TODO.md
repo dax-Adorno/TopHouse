@@ -4,23 +4,19 @@ Actualizado: 21 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
-1. Crear una rama `feat/property-schemas` desde `main` actualizado.
-2. Confirmar que `stash@{0}` sigue disponible y revisar su contenido sin
-   eliminarlo.
-3. Aplicar el stash y adaptar los schemas a `direccion`, `latitud`, `longitud`
-   y `mostrar_ubicacion_exacta`.
-4. Separar los contratos públicos y administrativos para evitar filtraciones de
-   ubicación.
-5. Agregar pruebas de enums inválidos, números negativos, campos extra,
-   coordenadas, PATCH parcial y mass assignment.
-6. Ejecutar todos los quality gates y crear un Pull Request.
+1. Implementar Repository de Propiedad con SQLAlchemy.
+2. Definir operaciones de creación, consulta por ID, consulta por slug,
+   actualización y listado paginado.
+3. Manejar de forma explícita códigos y slugs duplicados.
+4. Agregar tests de integración contra PostgreSQL.
+5. Ejecutar todos los quality gates y crear un Pull Request.
 
-No eliminar el stash hasta confirmar que sus cambios fueron recuperados,
-probados, comprometidos y publicados correctamente.
+Los schemas ya fueron recuperados y adaptados a ubicación. El stash original se
+mantiene temporalmente como copia de seguridad y solo debe eliminarse después de
+que el PR de schemas esté integrado en `main`.
 
-## Después de schemas
+## Después del Repository
 
-- Implementar Repository de Propiedad con SQLAlchemy.
 - Implementar Service con generación de slug y transiciones de estado.
 - Exponer CRUD, filtros y paginación en `/api/v1/propiedades`.
 - Definir y probar la respuesta pública sin coordenadas exactas.
