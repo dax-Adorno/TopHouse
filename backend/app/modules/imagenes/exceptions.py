@@ -4,3 +4,11 @@ class ImagenInvalidaError(ValueError):
 
 class ImagenDemasiadoGrandeError(ImagenInvalidaError):
     """El archivo supera el límite de bytes permitido."""
+
+
+class LimiteImagenesError(ValueError):
+    """La propiedad ya alcanzó la cantidad máxima de imágenes."""
+
+
+class AlmacenamientoImagenError(RuntimeError):
+    """El almacenamiento externo no pudo completar una operación."""
