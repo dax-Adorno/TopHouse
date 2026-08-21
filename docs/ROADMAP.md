@@ -44,11 +44,13 @@ Estado: completada.
 
 ## Fase 4 - Frontend
 
-- [ ] Aplicación React + TypeScript + Vite.
+Estado: en ejecución.
+
+- [x] Aplicación React + TypeScript + Vite.
 - [ ] Home, catálogo, filtros y detalle público.
 - [ ] Galería, mapa y contacto por WhatsApp.
 - [ ] Panel administrativo.
-- [ ] Vitest y React Testing Library.
+- [x] Vitest y React Testing Library.
 - [ ] Playwright E2E.
 
 ## Fase 5 - Producción
