@@ -86,6 +86,9 @@ documentación y en el Pull Request que introduzca el cambio.
 
 ## Ciclo de vida de Propiedad
 
+- `DELETE` aplica eliminación lógica: un administrador cambia el estado a
+  `no_disponible`, quita `destacada` y genera auditoría. No se destruye el
+  registro ni su historial.
 - Los slugs se generan una sola vez al crear la propiedad y permanecen estables
   aunque cambie el título.
 - Un slug duplicado recibe sufijos numéricos (`-2`, `-3`, etc.).

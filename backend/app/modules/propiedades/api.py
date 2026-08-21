@@ -134,3 +134,29 @@ def actualizar_propiedad_admin(
         detalles=cambios.model_dump(exclude_unset=True, mode="json"),
     )
     return PropiedadAdminRespuesta.model_validate(propiedad)
+
+
+@router.delete(
+    "/{propiedad_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def archivar_propiedad(
+    propiedad_id: int,
+    service: ServiceDep,
+    autenticacion: AdminCsrfDep,
+    auditoria: AuditoriaDep,
+) -> None:
+    propiedad_anterior = service.obtener_por_id(propiedad_id)
+    estado_anterior = propiedad_anterior.estado
+    propiedad = service.archivar(propiedad_id)
+    _sesion, usuario = autenticacion
+    auditoria.registrar(
+        usuario=usuario,
+        accion="propiedad.archivada",
+        recurso="propiedad",
+        recurso_id=propiedad.id,
+        detalles={
+            "estado_anterior": estado_anterior,
+            "estado_nuevo": propiedad.estado,
+        },
+    )

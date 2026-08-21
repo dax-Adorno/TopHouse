@@ -136,6 +136,22 @@ class PropiedadService:
             self._validar_transicion_estado(propiedad.estado, cambios.estado)
         return self.repository.actualizar(propiedad, cambios)
 
+    def archivar(self, propiedad_id: int) -> Propiedad:
+        """Retira una propiedad sin destruir su historial ni relaciones."""
+
+        propiedad = self.obtener_por_id(propiedad_id)
+        self._validar_transicion_estado(
+            propiedad.estado,
+            EstadoPropiedad.NO_DISPONIBLE,
+        )
+        return self.repository.actualizar(
+            propiedad,
+            PropiedadAdminActualizar(
+                estado=EstadoPropiedad.NO_DISPONIBLE,
+                destacada=False,
+            ),
+        )
+
     def _generar_slug_unico(self, titulo: str) -> str:
         base = normalizar_slug(titulo)
         if not self.repository.existe_slug(base):
