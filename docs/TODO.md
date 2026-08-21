@@ -4,21 +4,21 @@ Actualizado: 21 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
-1. Definir la API pública de Propiedades.
-2. Listar únicamente propiedades publicadas.
-3. Exponer detalle por slug sin dirección ni coordenadas exactas.
-4. Agregar filtros públicos iniciales y paginación.
-5. Agregar tests que demuestren que los datos geográficos privados no se
-   filtran.
-6. Ejecutar todos los quality gates y crear un Pull Request.
+1. Diseñar usuarios, roles y sesiones administrativas.
+2. Crear migraciones para usuarios y auditoría.
+3. Implementar hash de contraseñas con Argon2.
+4. Proteger endpoints administrativos con autenticación y RBAC.
+5. Incorporar protección CSRF para operaciones autenticadas por cookie.
+6. Registrar acciones administrativas relevantes.
+7. Agregar pruebas de autenticación, autorización e IDOR.
+8. Ejecutar todos los quality gates y crear Pull Requests cohesivos.
 
 Los schemas ya fueron recuperados y adaptados a ubicación. El stash original se
 mantiene temporalmente como copia de seguridad y solo debe eliminarse después de
 que el PR de schemas esté integrado en `main`.
 
-## Después de la API pública
+## Después de autenticación y auditoría
 
-- Implementar autenticación segura, RBAC y audit log.
 - Diseñar e implementar imágenes con S3, Pillow, WebP y thumbnails.
 - Iniciar frontend público y panel administrativo.
 

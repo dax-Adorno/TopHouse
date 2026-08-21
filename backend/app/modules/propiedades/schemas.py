@@ -153,3 +153,10 @@ class PaginaPropiedadesAdmin(SchemaBase):
     total: int = Field(ge=0)
     offset: int = Field(ge=0)
     limit: int = Field(ge=1, le=100)
+
+
+class PaginaPropiedadesPublicas(SchemaBase):
+    items: list[PropiedadPublicaRespuesta]
+    total: int = Field(ge=0)
+    offset: int = Field(ge=0)
+    limit: int = Field(ge=1, le=100)
