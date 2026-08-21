@@ -19,6 +19,13 @@ class Settings(BaseSettings):
     session_duration_hours: int = 12
     session_cookie_secure: bool = True
 
+    s3_endpoint_url: str | None = None
+    s3_access_key_id: str | None = None
+    s3_secret_access_key: str | None = None
+    s3_bucket_name: str = "tophouse-properties"
+    s3_region: str = "auto"
+    s3_use_ssl: bool = True
+
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",
         env_file_encoding="utf-8",

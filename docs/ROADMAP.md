@@ -37,7 +37,7 @@ Estado: en ejecución.
 - [x] Modelo y límites de tamaño, dimensiones y cantidad por propiedad.
 - [x] Validación segura por contenido real con Pillow.
 - [x] Normalización, limpieza de metadata, WebP y thumbnails.
-- [ ] Integración con almacenamiento compatible con S3.
+- [x] Repository, Service e integración con almacenamiento compatible con S3.
 - [ ] Ordenamiento y selección de portada.
 
 ## Fase 4 - Frontend

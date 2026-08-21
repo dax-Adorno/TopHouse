@@ -107,6 +107,9 @@ documentación y en el Pull Request que introduzca el cambio.
 
 - Producción utiliza object storage compatible con S3; no archivos locales
   persistentes.
+- El acceso a objetos está detrás de una interfaz inyectable. El adaptador S3
+  usa claves aleatorias, `Content-Type` explícito y limpieza compensatoria si
+  falla la persistencia de metadatos.
 - Cada propiedad admite hasta 20 imágenes; cada entrada acepta como máximo 10
   MB, dimensiones entre 320 y 12000 píxeles y contenido JPEG, PNG o WebP.
 - PostgreSQL guarda metadatos y claves de objetos, no binarios. Garantiza orden
