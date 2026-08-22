@@ -1,4 +1,6 @@
 import type {
+  AdminProperty,
+  AdminPropertyCreate,
   AdminPropertyPage,
   PropertyPage,
   PublicProperty,
@@ -98,6 +100,14 @@ export const listAdminProperties = (signal?: AbortSignal) =>
   request<AdminPropertyPage>("/api/v1/propiedades?limit=100", {
     credentials: "include",
     signal,
+  });
+
+export const createAdminProperty = (property: AdminPropertyCreate) =>
+  request<AdminProperty>("/api/v1/propiedades", {
+    method: "POST",
+    body: property,
+    credentials: "include",
+    csrf: true,
   });
 
 export const logout = () =>
