@@ -169,3 +169,13 @@ Desde la raíz del proyecto:
 ```powershell
 py -3.13 -m venv backend\.venv
 ```
+
+### Cargar datos demo locales
+
+Con la base de datos levantada y migrada, desde `backend`:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.dev_seed
+```
+
+El seed es idempotente: crea o actualiza las propiedades demo sin duplicarlas.
