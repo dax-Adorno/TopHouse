@@ -43,7 +43,7 @@ def test_respuesta_publica_incluye_galeria_sin_metadatos_internos() -> None:
         tipo_propiedad="casa",
         precio=None,
         moneda=None,
-        localidad="Asunción",
+        localidad="Merlo",
         zona=None,
         dormitorios=None,
         banios=None,

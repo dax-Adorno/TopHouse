@@ -21,11 +21,11 @@ from app.modules.propiedades.slug import normalizar_slug, slug_con_sufijo
 def datos_creacion(**cambios: object) -> PropiedadCrear:
     datos: dict[str, object] = {
         "codigo": "TH-001",
-        "titulo": "Casa Ñandutí en Asunción",
+        "titulo": "Casa en Piedra Blanca",
         "descripcion": "Casa de prueba",
         "tipo_operacion": "venta",
         "tipo_propiedad": "casa",
-        "localidad": "Asunción",
+        "localidad": "Merlo",
     }
     datos.update(cambios)
     return PropiedadCrear.model_validate(datos)
@@ -36,12 +36,12 @@ def propiedad_existente(**cambios: object) -> Propiedad:
     datos: dict[str, object] = {
         "id": 1,
         "codigo": "TH-001",
-        "slug": "casa-nanduti-en-asuncion",
-        "titulo": "Casa Ñandutí en Asunción",
+        "slug": "casa-en-piedra-blanca",
+        "titulo": "Casa en Piedra Blanca",
         "descripcion": "Casa de prueba",
         "tipo_operacion": "venta",
         "tipo_propiedad": "casa",
-        "localidad": "Asunción",
+        "localidad": "Merlo",
         "estado": "borrador",
         "destacada": False,
         "creado_en": ahora,
@@ -64,7 +64,7 @@ def service(repository: MagicMock) -> PropiedadService:
 @pytest.mark.parametrize(
     ("texto", "esperado"),
     [
-        ("Casa Ñandutí en Asunción", "casa-nanduti-en-asuncion"),
+        ("Casa en Piedra Blanca", "casa-en-piedra-blanca"),
         ("  Departamento / Centro  ", "departamento-centro"),
         ("***", "propiedad"),
     ],
@@ -94,7 +94,7 @@ def test_service_crea_con_slug_normalizado(
     assert resultado is creada
     repository.crear.assert_called_once_with(
         datos,
-        slug="casa-nanduti-en-asuncion",
+        slug="casa-en-piedra-blanca",
     )
 
 
@@ -103,13 +103,11 @@ def test_service_agrega_sufijo_si_slug_existe(
     repository: MagicMock,
 ) -> None:
     repository.existe_slug.side_effect = [True, True, False]
-    repository.crear.return_value = propiedad_existente(
-        slug="casa-nanduti-en-asuncion-3"
-    )
+    repository.crear.return_value = propiedad_existente(slug="casa-en-piedra-blanca-3")
 
     service.crear(datos_creacion())
 
-    assert repository.crear.call_args.kwargs["slug"] == ("casa-nanduti-en-asuncion-3")
+    assert repository.crear.call_args.kwargs["slug"] == ("casa-en-piedra-blanca-3")
 
 
 def test_service_obtener_inexistente_lanza_error(

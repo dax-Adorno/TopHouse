@@ -54,7 +54,7 @@ def datos_propiedad() -> dict[str, object]:
         "tipo_propiedad": "casa",
         "precio": "100000.00",
         "moneda": "USD",
-        "localidad": "Asunción",
+        "localidad": "Merlo",
     }
 
 

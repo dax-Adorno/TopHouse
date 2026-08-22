@@ -18,7 +18,7 @@ def test_base_impide_dos_portadas_por_propiedad() -> None:
             descripcion="Registro temporal",
             tipo_operacion="venta",
             tipo_propiedad="casa",
-            localidad="Asunción",
+            localidad="Merlo",
         )
         session.add(propiedad)
         session.flush()
