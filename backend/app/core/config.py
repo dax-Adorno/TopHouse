@@ -18,6 +18,7 @@ class Settings(BaseSettings):
 
     session_duration_hours: int = 12
     session_cookie_secure: bool = True
+    cors_origins: str = "http://localhost:5173"
 
     s3_endpoint_url: str | None = None
     s3_access_key_id: str | None = None
@@ -43,6 +44,12 @@ class Settings(BaseSettings):
             port=self.postgres_port,
             database=self.postgres_db,
         )
+
+    @property
+    def cors_allowed_origins(self) -> list[str]:
+        return [
+            origin.strip() for origin in self.cors_origins.split(",") if origin.strip()
+        ]
 
 
 settings = Settings()

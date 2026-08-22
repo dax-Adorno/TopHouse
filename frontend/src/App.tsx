@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { SiteLayout } from "./components/SiteLayout";
+import { AdminPage } from "./pages/AdminPage";
 import { CatalogPage } from "./pages/CatalogPage";
 import { HomePage } from "./pages/HomePage";
 import { PropertyDetailPage } from "./pages/PropertyDetailPage";
@@ -13,6 +14,7 @@ export function App() {
           <Route index element={<HomePage />} />
           <Route path="propiedades" element={<CatalogPage />} />
           <Route path="propiedades/:slug" element={<PropertyDetailPage />} />
+          <Route path="admin" element={<AdminPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

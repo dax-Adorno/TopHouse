@@ -179,3 +179,11 @@ Con la base de datos levantada y migrada, desde `backend`:
 ```
 
 El seed es idempotente: crea o actualiza las propiedades demo sin duplicarlas.
+También crea un administrador local de desarrollo:
+
+```text
+Email: admin.demo@tophouse.com
+Contraseña: TopHouse-demo-2026
+```
+
+No ejecutar este seed con `APP_ENV=production`.
