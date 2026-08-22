@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { buildGeneralContactHref } from "../lib/contact";
 
 const valores = [
   [
@@ -32,7 +33,7 @@ export function HomePage() {
             </Link>
             <a
               className="button button-secondary"
-              href="mailto:contacto@tophouse.com"
+              href={buildGeneralContactHref()}
             >
               Hablar con un asesor
             </a>

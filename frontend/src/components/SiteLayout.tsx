@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { buildGeneralContactHref, contactActionLabel } from "../lib/contact";
 
 export function SiteLayout() {
   return (
@@ -13,8 +14,8 @@ export function SiteLayout() {
           <NavLink to="/propiedades">Propiedades</NavLink>
           <NavLink to="/admin">Admin</NavLink>
         </nav>
-        <a className="header-contact" href="mailto:contacto@tophouse.com">
-          Contactar
+        <a className="header-contact" href={buildGeneralContactHref()}>
+          {contactActionLabel()}
         </a>
       </header>
       <main>

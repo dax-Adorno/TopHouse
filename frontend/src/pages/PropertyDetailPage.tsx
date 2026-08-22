@@ -2,13 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import heroImage from "../assets/hero.png";
 import { getPublicProperty } from "../lib/api";
+import { buildPropertyContactHref, contactActionLabel } from "../lib/contact";
 import { formatArea, formatMoney, operationLabel } from "../lib/propertyFormat";
 import type { PropertyImage, PublicProperty } from "../types/property";
 
 type LoadState = "loading" | "success" | "error";
-
-const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER as
-  string | undefined;
 
 function getGallery(property: PublicProperty): PropertyImage[] {
   return property.imagenes.length > 0
@@ -24,16 +22,6 @@ function getGallery(property: PublicProperty): PropertyImage[] {
           es_portada: true,
         },
       ];
-}
-
-function buildContactHref(property: PublicProperty): string {
-  const message = `Hola, quiero consultar por ${property.titulo} (${window.location.href}).`;
-  if (!whatsappNumber) {
-    return `mailto:contacto@tophouse.com?subject=${encodeURIComponent(
-      `Consulta por ${property.titulo}`,
-    )}&body=${encodeURIComponent(message)}`;
-  }
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
 export function PropertyDetailPage() {
@@ -99,8 +87,11 @@ export function PropertyDetailPage() {
           <h1>{property.titulo}</h1>
           <p className="detail-price">{formatMoney(property)}</p>
         </div>
-        <a className="button button-primary" href={buildContactHref(property)}>
-          Consultar por WhatsApp
+        <a
+          className="button button-primary"
+          href={buildPropertyContactHref(property)}
+        >
+          {contactActionLabel()}
         </a>
       </div>
       <div className="detail-gallery">

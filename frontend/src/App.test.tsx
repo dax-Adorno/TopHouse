@@ -91,6 +91,7 @@ const updatedAdminProperty = {
 describe("TopHouse App", () => {
   beforeEach(() => {
     window.history.pushState({}, "", "/");
+    vi.unstubAllEnvs();
   });
 
   afterEach(() => {
@@ -154,6 +155,7 @@ describe("TopHouse App", () => {
 
   it("abre el detalle público desde una tarjeta del catálogo", async () => {
     const user = userEvent.setup();
+    vi.stubEnv("VITE_WHATSAPP_NUMBER", "+54 9 266 400-0000");
     const fetchMock = vi.fn((url: string) =>
       Promise.resolve({
         ok: true,
@@ -178,6 +180,22 @@ describe("TopHouse App", () => {
       await screen.findByRole("heading", { level: 1, name: /Casa luminosa/i }),
     ).toBeInTheDocument();
     expect(screen.getByText("Descripción")).toBeInTheDocument();
+    const contactLink = screen
+      .getAllByRole("link", {
+        name: "Contactar por WhatsApp",
+      })
+      .find((link) =>
+        link.getAttribute("href")?.includes("quiero%20consultar"),
+      );
+    expect(contactLink).toBeDefined();
+    expect(contactLink).toHaveAttribute(
+      "href",
+      expect.stringContaining("https://wa.me/5492664000000?text="),
+    );
+    expect(contactLink).toHaveAttribute(
+      "href",
+      expect.stringContaining("Casa%20luminosa%20en%20Merlo"),
+    );
     expect(fetchMock).toHaveBeenLastCalledWith(
       expect.stringContaining(
         "/api/v1/publico/propiedades/casa-luminosa-merlo",
