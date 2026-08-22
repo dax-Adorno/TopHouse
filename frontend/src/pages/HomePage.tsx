@@ -11,7 +11,7 @@ const valores = [
   ],
   [
     "Visión local",
-    "Conocemos los barrios, ritmos y oportunidades del mercado paraguayo.",
+    "Conocemos los barrios, ritmos y oportunidades de Merlo y San Luis.",
   ],
 ];
 
@@ -20,7 +20,7 @@ export function HomePage() {
     <>
       <section className="hero-section">
         <div className="hero-copy">
-          <p className="eyebrow">Inmobiliaria en Paraguay</p>
+          <p className="eyebrow">Inmobiliaria en Merlo, San Luis</p>
           <h1>Tu próximo lugar empieza con una buena elección.</h1>
           <p className="hero-lead">
             Descubrí propiedades para vivir, invertir o empezar una nueva etapa,
