@@ -1,5 +1,8 @@
+from dataclasses import dataclass
+from datetime import UTC, datetime
 from io import BytesIO
 from types import SimpleNamespace
+from typing import cast
 
 import pytest
 from PIL import Image
@@ -11,7 +14,27 @@ from app.modules.imagenes.exceptions import (
     LimiteImagenesError,
     OrdenImagenesInvalidoError,
 )
+from app.modules.imagenes.models import ImagenPropiedad
+from app.modules.imagenes.repository import ImagenRepository
+from app.modules.imagenes.schemas import ImagenMetadatosCrear
 from app.modules.imagenes.service import ImagenService
+from app.modules.propiedades.service import PropiedadService
+
+
+@dataclass
+class ImagenFalsa:
+    id: int
+    propiedad_id: int
+    clave_objeto: str = "propiedades/7/fachada.webp"
+    clave_thumbnail: str = "propiedades/7/fachada-thumb.webp"
+    nombre_original: str = "fachada.jpg"
+    mime_type: str = "image/jpeg"
+    tamanio_bytes: int = 1000
+    ancho: int = 800
+    alto: int = 600
+    orden: int = 0
+    es_portada: bool = False
+    creado_en: datetime = datetime.now(UTC)
 
 
 def imagen_jpeg() -> bytes:
@@ -24,8 +47,8 @@ def imagen_jpeg() -> bytes:
 class RepositoryFalso:
     def __init__(self, cantidad: int = 0) -> None:
         self.cantidad = cantidad
-        self.datos_creados = None
-        self.imagenes: list[object] = []
+        self.datos_creados: ImagenMetadatosCrear | None = None
+        self.imagenes: list[ImagenPropiedad] = []
 
     def contar(self, _propiedad_id: int) -> int:
         return self.cantidad
@@ -33,27 +56,38 @@ class RepositoryFalso:
     def siguiente_orden(self, _propiedad_id: int) -> int:
         return self.cantidad
 
-    def crear(self, propiedad_id: int, datos: object) -> object:
+    def crear(
+        self,
+        propiedad_id: int,
+        datos: ImagenMetadatosCrear,
+    ) -> ImagenPropiedad:
         self.datos_creados = datos
-        return SimpleNamespace(id=1, propiedad_id=propiedad_id, **datos.model_dump())
+        return cast(
+            ImagenPropiedad,
+            ImagenFalsa(id=1, propiedad_id=propiedad_id, **datos.model_dump()),
+        )
 
-    def listar(self, _propiedad_id: int) -> list[object]:
+    def listar(self, _propiedad_id: int) -> list[ImagenPropiedad]:
         return self.imagenes
 
-    def obtener(self, imagen_id: int) -> object | None:
+    def obtener(self, imagen_id: int) -> ImagenPropiedad | None:
         return next(
             (imagen for imagen in self.imagenes if imagen.id == imagen_id),
             None,
         )
 
-    def reordenar(self, imagenes: list[object]) -> None:
+    def reordenar(self, imagenes: list[ImagenPropiedad]) -> None:
         self.imagenes = imagenes
 
-    def establecer_portada(self, imagenes: list[object], portada: object) -> None:
+    def establecer_portada(
+        self,
+        imagenes: list[ImagenPropiedad],
+        portada: ImagenPropiedad,
+    ) -> None:
         for imagen in imagenes:
             imagen.es_portada = imagen is portada
 
-    def eliminar(self, imagen: object) -> None:
+    def eliminar(self, imagen: ImagenPropiedad) -> None:
         self.imagenes.remove(imagen)
 
 
@@ -85,7 +119,11 @@ def crear_service(
     repository: RepositoryFalso,
     almacenamiento: AlmacenamientoFalso,
 ) -> ImagenService:
-    return ImagenService(repository, PropiedadServiceFalso(), almacenamiento)
+    return ImagenService(
+        cast(ImagenRepository, repository),
+        cast(PropiedadService, PropiedadServiceFalso()),
+        almacenamiento,
+    )
 
 
 def test_agrega_webp_thumbnail_y_primera_portada() -> None:
@@ -139,7 +177,7 @@ def test_limpia_primer_objeto_si_falla_el_segundo() -> None:
 
 def test_rechaza_imagen_que_pertenece_a_otra_propiedad() -> None:
     repository = RepositoryFalso()
-    repository.imagenes = [SimpleNamespace(id=3, propiedad_id=99)]
+    repository.imagenes = [cast(ImagenPropiedad, ImagenFalsa(id=3, propiedad_id=99))]
     service = crear_service(repository, AlmacenamientoFalso())
 
     with pytest.raises(ImagenNoEncontradaError):
@@ -149,8 +187,8 @@ def test_rechaza_imagen_que_pertenece_a_otra_propiedad() -> None:
 def test_reordenar_exige_todas_las_imagenes_sin_ids_ajenos() -> None:
     repository = RepositoryFalso()
     repository.imagenes = [
-        SimpleNamespace(id=1, propiedad_id=7),
-        SimpleNamespace(id=2, propiedad_id=7),
+        cast(ImagenPropiedad, ImagenFalsa(id=1, propiedad_id=7)),
+        cast(ImagenPropiedad, ImagenFalsa(id=2, propiedad_id=7)),
     ]
     service = crear_service(repository, AlmacenamientoFalso())
 

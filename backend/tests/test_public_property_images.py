@@ -1,17 +1,20 @@
 from datetime import UTC, datetime
 from types import SimpleNamespace
+from typing import cast
 
+from app.modules.imagenes.models import ImagenPropiedad
 from app.modules.imagenes.schemas import ImagenApiRespuesta
+from app.modules.imagenes.service import ImagenService
 from app.modules.propiedades.models import Propiedad
 from app.modules.propiedades.public_api import _crear_respuesta_publica
 
 
 class ImagenServiceFalso:
-    def listar(self, propiedad_id: int) -> list[object]:
+    def listar(self, propiedad_id: int) -> list[ImagenPropiedad]:
         assert propiedad_id == 7
-        return [SimpleNamespace(id=3)]
+        return [cast(ImagenPropiedad, SimpleNamespace(id=3))]
 
-    def respuesta(self, _imagen: object) -> ImagenApiRespuesta:
+    def respuesta(self, _imagen: ImagenPropiedad) -> ImagenApiRespuesta:
         return ImagenApiRespuesta(
             id=3,
             propiedad_id=7,
@@ -52,7 +55,10 @@ def test_respuesta_publica_incluye_galeria_sin_metadatos_internos() -> None:
         actualizado_en=ahora,
     )
 
-    respuesta = _crear_respuesta_publica(propiedad, ImagenServiceFalso())
+    respuesta = _crear_respuesta_publica(
+        propiedad,
+        cast(ImagenService, ImagenServiceFalso()),
+    )
     imagen = respuesta.model_dump()["imagenes"][0]
 
     assert imagen["es_portada"] is True
