@@ -5,9 +5,11 @@ import {
   archiveAdminProperty,
   createAdminProperty,
   getCurrentUser,
+  listAdminPropertyImages,
   listAdminProperties,
   login,
   logout,
+  uploadAdminPropertyImage,
   updateAdminPropertyDetails,
   updateAdminProperty,
 } from "../lib/api";
@@ -16,6 +18,7 @@ import type {
   AdminProperty,
   AdminPropertyCreate,
   AdminPropertyDetailsUpdate,
+  AdminPropertyImage,
   AdminPropertyPage,
   AdminPropertyUpdate,
   PublicProperty,
@@ -26,6 +29,7 @@ type SubmitState = "idle" | "submitting" | "error";
 type PropertyState = "idle" | "loading" | "ready" | "error";
 type CreateState = "idle" | "submitting" | "success" | "error";
 type EditState = "idle" | "submitting" | "success" | "error";
+type ImageState = "idle" | "loading" | "ready" | "uploading" | "error";
 type RowUpdateState = "idle" | "submitting" | "error";
 type RowArchiveState = "idle" | "submitting" | "error";
 
@@ -60,6 +64,9 @@ export function AdminPage() {
   const [editState, setEditState] = useState<EditState>("idle");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState<AdminProperty | null>(
+    null,
+  );
+  const [imageProperty, setImageProperty] = useState<AdminProperty | null>(
     null,
   );
   const [propertyPage, setPropertyPage] = useState<AdminPropertyPage | null>(
@@ -116,6 +123,7 @@ export function AdminPage() {
     setEditState("idle");
     setShowCreateForm(false);
     setEditingProperty(null);
+    setImageProperty(null);
     setAuthState("anonymous");
   }
 
@@ -126,6 +134,7 @@ export function AdminPage() {
       setCreateState("success");
       setShowCreateForm(false);
       setEditingProperty(null);
+      setImageProperty(null);
       await loadProperties();
     } catch {
       setCreateState("error");
@@ -231,16 +240,19 @@ export function AdminPage() {
           }}
           editState={editState}
           editingProperty={editingProperty}
+          imageProperty={imageProperty}
           onCancelEdit={() => {
             setEditState("idle");
             setEditingProperty(null);
           }}
+          onCloseImages={() => setImageProperty(null)}
           onCreate={handleCreateProperty}
           onEdit={handleEditProperty}
           onOpenCreate={() => {
             setCreateState("idle");
             setEditState("idle");
             setEditingProperty(null);
+            setImageProperty(null);
             setShowCreateForm(true);
           }}
           onOpenEdit={(property) => {
@@ -248,6 +260,14 @@ export function AdminPage() {
             setEditState("idle");
             setShowCreateForm(false);
             setEditingProperty(property);
+            setImageProperty(null);
+          }}
+          onOpenImages={(property) => {
+            setCreateState("idle");
+            setEditState("idle");
+            setShowCreateForm(false);
+            setEditingProperty(null);
+            setImageProperty(property);
           }}
           onArchive={handleArchiveProperty}
           onRetry={() => void loadProperties()}
@@ -309,14 +329,17 @@ function AdminPropertyTable({
   createState,
   editState,
   editingProperty,
+  imageProperty,
   showCreateForm,
   onCancelEdit,
   onCancelCreate,
   onArchive,
+  onCloseImages,
   onCreate,
   onEdit,
   onOpenCreate,
   onOpenEdit,
+  onOpenImages,
   onRetry,
   onUpdate,
 }: {
@@ -325,10 +348,12 @@ function AdminPropertyTable({
   createState: CreateState;
   editState: EditState;
   editingProperty: AdminProperty | null;
+  imageProperty: AdminProperty | null;
   showCreateForm: boolean;
   onCancelEdit: () => void;
   onCancelCreate: () => void;
   onArchive: (propertyId: number) => Promise<void>;
+  onCloseImages: () => void;
   onCreate: (datos: AdminPropertyCreate) => Promise<void>;
   onEdit: (
     propertyId: number,
@@ -336,6 +361,7 @@ function AdminPropertyTable({
   ) => Promise<void>;
   onOpenCreate: () => void;
   onOpenEdit: (property: AdminProperty) => void;
+  onOpenImages: (property: AdminProperty) => void;
   onRetry: () => void;
   onUpdate: (propertyId: number, cambios: AdminPropertyUpdate) => Promise<void>;
 }) {
@@ -399,6 +425,13 @@ function AdminPropertyTable({
           onSubmit={onEdit}
         />
       ) : null}
+      {imageProperty !== null ? (
+        <AdminPropertyImagesPanel
+          key={imageProperty.id}
+          property={imageProperty}
+          onClose={onCloseImages}
+        />
+      ) : null}
       {createState === "success" && !showCreateForm ? (
         <p className="admin-success" role="status">
           Propiedad creada como borrador.
@@ -428,6 +461,7 @@ function AdminPropertyTable({
                 key={`${property.id}-${property.estado}-${property.destacada}`}
                 onArchive={onArchive}
                 onEdit={onOpenEdit}
+                onImages={onOpenImages}
                 property={property}
                 onUpdate={onUpdate}
               />
@@ -442,11 +476,13 @@ function AdminPropertyTable({
 function AdminPropertyRow({
   onArchive,
   onEdit,
+  onImages,
   property,
   onUpdate,
 }: {
   onArchive: (propertyId: number) => Promise<void>;
   onEdit: (property: AdminProperty) => void;
+  onImages: (property: AdminProperty) => void;
   property: AdminProperty;
   onUpdate: (propertyId: number, cambios: AdminPropertyUpdate) => Promise<void>;
 }) {
@@ -536,6 +572,13 @@ function AdminPropertyRow({
           </button>
           <button
             className="button button-secondary"
+            onClick={() => onImages(property)}
+            type="button"
+          >
+            Imágenes
+          </button>
+          <button
+            className="button button-secondary"
             disabled={!hasChanges || updateState === "submitting"}
             onClick={handleSave}
             type="button"
@@ -559,6 +602,118 @@ function AdminPropertyRow({
         </div>
       </td>
     </tr>
+  );
+}
+
+function AdminPropertyImagesPanel({
+  property,
+  onClose,
+}: {
+  property: AdminProperty;
+  onClose: () => void;
+}) {
+  const [images, setImages] = useState<AdminPropertyImage[]>([]);
+  const [state, setState] = useState<ImageState>("loading");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    listAdminPropertyImages(property.id, controller.signal)
+      .then((response) => {
+        setImages(response);
+        setState("ready");
+      })
+      .catch(() => setState("error"));
+    return () => controller.abort();
+  }, [property.id]);
+
+  async function handleUpload(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (selectedFile === null || selectedFile.size === 0) return;
+    setState("uploading");
+    try {
+      await uploadAdminPropertyImage(property.id, selectedFile);
+      setSelectedFile(null);
+      event.currentTarget.reset();
+      const response = await listAdminPropertyImages(property.id);
+      setImages(response);
+      setState("ready");
+    } catch {
+      setState("error");
+    }
+  }
+
+  return (
+    <section
+      className="admin-images-panel"
+      aria-labelledby="admin-images-title"
+    >
+      <div className="admin-form-title">
+        <h3 id="admin-images-title">Imágenes de {property.codigo}</h3>
+        <p>
+          Subí fotografías procesadas por el backend y revisá la galería actual.
+        </p>
+      </div>
+      <form className="admin-image-upload" onSubmit={handleUpload}>
+        <label>
+          Archivo
+          <input
+            accept="image/*"
+            name="archivo"
+            onChange={(event) =>
+              setSelectedFile(event.target.files?.[0] ?? null)
+            }
+            type="file"
+          />
+        </label>
+        <div className="admin-form-actions">
+          <button
+            className="button button-secondary"
+            onClick={onClose}
+            type="button"
+          >
+            Cerrar
+          </button>
+          <button
+            className="button button-primary"
+            disabled={state === "uploading"}
+            type="submit"
+          >
+            {state === "uploading" ? "Subiendo..." : "Subir imagen"}
+          </button>
+        </div>
+      </form>
+      {state === "loading" ? (
+        <p className="admin-image-state" role="status">
+          Cargando imágenes...
+        </p>
+      ) : null}
+      {state === "error" ? (
+        <p className="admin-image-state admin-table-error" role="alert">
+          No pudimos cargar o subir las imágenes.
+        </p>
+      ) : null}
+      {state === "ready" && images.length === 0 ? (
+        <p className="admin-image-state">
+          Esta propiedad todavía no tiene imágenes.
+        </p>
+      ) : null}
+      {state === "ready" && images.length > 0 ? (
+        <div className="admin-image-grid">
+          {images.map((image) => (
+            <article key={image.id}>
+              <img alt={image.nombre_original} src={image.url_thumbnail} />
+              <div>
+                <strong>
+                  {image.es_portada ? "Portada" : `Orden ${image.orden + 1}`}
+                </strong>
+                <span>{image.nombre_original}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : null}
+    </section>
   );
 }
 

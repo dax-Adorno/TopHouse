@@ -2,6 +2,7 @@ import type {
   AdminProperty,
   AdminPropertyCreate,
   AdminPropertyDetailsUpdate,
+  AdminPropertyImage,
   AdminPropertyPage,
   AdminPropertyUpdate,
   PropertyPage,
@@ -44,7 +45,9 @@ async function request<T>(
   }: RequestOptions = {},
 ): Promise<T> {
   const headers: Record<string, string> = { Accept: "application/json" };
-  if (body !== undefined) headers["Content-Type"] = "application/json";
+  const isFormData = body instanceof FormData;
+  if (body !== undefined && !isFormData)
+    headers["Content-Type"] = "application/json";
   if (csrf) {
     const csrfToken = readCookie("tophouse_csrf");
     if (csrfToken !== null) headers["X-CSRF-Token"] = csrfToken;
@@ -53,7 +56,8 @@ async function request<T>(
   const response = await fetch(`${API_URL}${path}`, {
     method,
     headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body:
+      body === undefined ? undefined : isFormData ? body : JSON.stringify(body),
     credentials,
     signal,
   });
@@ -103,6 +107,29 @@ export const listAdminProperties = (signal?: AbortSignal) =>
     credentials: "include",
     signal,
   });
+
+export const listAdminPropertyImages = (
+  propertyId: number,
+  signal?: AbortSignal,
+) =>
+  request<AdminPropertyImage[]>(`/api/v1/propiedades/${propertyId}/imagenes`, {
+    credentials: "include",
+    signal,
+  });
+
+export const uploadAdminPropertyImage = (propertyId: number, file: File) => {
+  const body = new FormData();
+  body.set("archivo", file);
+  return request<AdminPropertyImage>(
+    `/api/v1/propiedades/${propertyId}/imagenes`,
+    {
+      method: "POST",
+      body,
+      credentials: "include",
+      csrf: true,
+    },
+  );
+};
 
 export const createAdminProperty = (property: AdminPropertyCreate) =>
   request<AdminProperty>("/api/v1/propiedades", {

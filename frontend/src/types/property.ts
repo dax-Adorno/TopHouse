@@ -7,6 +7,13 @@ export type PropertyImage = {
   orden: number;
   es_portada: boolean;
 };
+export type AdminPropertyImage = PropertyImage & {
+  propiedad_id: number;
+  nombre_original: string;
+  mime_type: string;
+  tamanio_bytes: number;
+  creado_en: string;
+};
 export type PublicProperty = {
   id: number;
   codigo: string;
