@@ -106,4 +106,38 @@ describe("TopHouse App", () => {
       }),
     );
   });
+
+  it("abre el detalle público desde una tarjeta del catálogo", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn((url: string) =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve(
+            url.includes("/api/v1/publico/propiedades/casa-luminosa")
+              ? propertyPage.items[0]
+              : propertyPage,
+          ),
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    window.history.pushState({}, "", "/propiedades");
+
+    render(<App />);
+
+    await user.click(
+      await screen.findByRole("link", { name: /Casa luminosa en Asunción/i }),
+    );
+
+    expect(
+      await screen.findByRole("heading", { level: 1, name: /Casa luminosa/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Descripción")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      expect.stringContaining("/api/v1/publico/propiedades/casa-luminosa"),
+      expect.objectContaining({
+        headers: { Accept: "application/json" },
+      }),
+    );
+  });
 });

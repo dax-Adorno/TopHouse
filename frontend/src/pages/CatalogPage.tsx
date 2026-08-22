@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
+import { Link } from "react-router-dom";
 import heroImage from "../assets/hero.png";
 import { listPublicProperties } from "../lib/api";
+import { formatArea, formatMoney, operationLabel } from "../lib/propertyFormat";
 import type {
   PropertyPage,
   PublicProperty,
@@ -37,27 +39,6 @@ const initialFilters: DraftFilters = {
   dormitorios_min: "",
 };
 
-function formatMoney(property: PublicProperty): string {
-  if (property.precio === null) return "Consultar";
-  const value = Number(property.precio);
-  const currency = property.moneda ?? "PYG";
-  if (!Number.isFinite(value)) return `${currency} ${property.precio}`;
-  return new Intl.NumberFormat("es-PY", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
-function operationLabel(operation: PublicProperty["tipo_operacion"]): string {
-  const labels = {
-    venta: "Venta",
-    alquiler: "Alquiler",
-    temporario: "Temporario",
-  };
-  return labels[operation];
-}
-
 function buildFilters(
   filters: DraftFilters,
   offset: number,
@@ -73,7 +54,7 @@ function PropertyCard({ property }: { property: PublicProperty }) {
   const cover = property.imagenes.find((image) => image.es_portada);
   const image = cover ?? property.imagenes[0];
   return (
-    <article className="property-card">
+    <Link className="property-card" to={`/propiedades/${property.slug}`}>
       <div className="property-media">
         <img
           alt={property.titulo}
@@ -101,15 +82,11 @@ function PropertyCard({ property }: { property: PublicProperty }) {
           </div>
           <div>
             <dt>Sup.</dt>
-            <dd>
-              {property.superficie_total
-                ? `${Number(property.superficie_total).toLocaleString("es-PY")} m²`
-                : "-"}
-            </dd>
+            <dd>{formatArea(property.superficie_total)}</dd>
           </div>
         </dl>
       </div>
-    </article>
+    </Link>
   );
 }
 
