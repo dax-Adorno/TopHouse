@@ -25,7 +25,7 @@ export function SiteLayout() {
           <strong>TopHouse</strong>
           <p>Propiedades elegidas con criterio.</p>
         </div>
-        <p>Asunción, Paraguay</p>
+        <p>Merlo, San Luis</p>
       </footer>
     </div>
   );
