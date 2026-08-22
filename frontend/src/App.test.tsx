@@ -8,15 +8,15 @@ const propertyPage = {
     {
       id: 7,
       codigo: "TOP-7",
-      slug: "casa-luminosa",
-      titulo: "Casa luminosa en Asunción",
+      slug: "casa-luminosa-merlo",
+      titulo: "Casa luminosa en Merlo",
       descripcion: "Casa familiar con patio y ambientes integrados.",
       tipo_operacion: "venta",
       tipo_propiedad: "casa",
       precio: "250000",
       moneda: "USD",
-      localidad: "Asunción",
-      zona: "Las Lomas",
+      localidad: "Merlo",
+      zona: "Piedra Blanca",
       dormitorios: 3,
       banios: 2,
       superficie_cubierta: "180",
@@ -58,9 +58,9 @@ const adminPropertyPage = {
   items: [
     {
       ...propertyPage.items[0],
-      direccion: "Las Lomas",
-      latitud: "-25.275100",
-      longitud: "-57.568900",
+      direccion: "Piedra Blanca",
+      latitud: "-32.342900",
+      longitud: "-65.013900",
       mostrar_ubicacion_exacta: false,
     },
   ],
@@ -136,15 +136,15 @@ describe("TopHouse App", () => {
     render(<App />);
 
     expect(
-      await screen.findByText("Casa luminosa en Asunción"),
+      await screen.findByText("Casa luminosa en Merlo"),
     ).toBeInTheDocument();
     await user.selectOptions(screen.getByLabelText("Operación"), "venta");
-    await user.type(screen.getByLabelText("Localidad"), "Asunción");
+    await user.type(screen.getByLabelText("Localidad"), "Merlo");
     await user.click(screen.getByRole("button", { name: "Aplicar" }));
 
     expect(fetchMock).toHaveBeenLastCalledWith(
       expect.stringContaining(
-        "/api/v1/publico/propiedades?tipo_operacion=venta&localidad=Asunci%C3%B3n",
+        "/api/v1/publico/propiedades?tipo_operacion=venta&localidad=Merlo",
       ),
       expect.objectContaining({
         headers: { Accept: "application/json" },
@@ -159,7 +159,7 @@ describe("TopHouse App", () => {
         ok: true,
         json: () =>
           Promise.resolve(
-            url.includes("/api/v1/publico/propiedades/casa-luminosa")
+            url.includes("/api/v1/publico/propiedades/casa-luminosa-merlo")
               ? propertyPage.items[0]
               : propertyPage,
           ),
@@ -171,7 +171,7 @@ describe("TopHouse App", () => {
     render(<App />);
 
     await user.click(
-      await screen.findByRole("link", { name: /Casa luminosa en Asunción/i }),
+      await screen.findByRole("link", { name: /Casa luminosa en Merlo/i }),
     );
 
     expect(
@@ -179,7 +179,9 @@ describe("TopHouse App", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Descripción")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenLastCalledWith(
-      expect.stringContaining("/api/v1/publico/propiedades/casa-luminosa"),
+      expect.stringContaining(
+        "/api/v1/publico/propiedades/casa-luminosa-merlo",
+      ),
       expect.objectContaining({
         headers: { Accept: "application/json" },
       }),
@@ -245,7 +247,7 @@ describe("TopHouse App", () => {
       await screen.findByRole("heading", { name: "Panel de TopHouse" }),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText("Casa luminosa en Asunción"),
+      await screen.findByText("Casa luminosa en Merlo"),
     ).toBeInTheDocument();
     expect(screen.getByText("TOP-7")).toBeInTheDocument();
     expect(screen.getByText("Publicada")).toBeInTheDocument();

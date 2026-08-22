@@ -186,7 +186,7 @@ export function CatalogPage() {
             <label>
               Localidad
               <input
-                placeholder="Asunción"
+                placeholder="Merlo"
                 value={draftFilters.localidad}
                 onChange={(event) =>
                   setDraftFilters((filters) => ({

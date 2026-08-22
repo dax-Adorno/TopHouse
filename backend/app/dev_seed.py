@@ -44,8 +44,8 @@ class SeedResult:
 DEMO_PROPERTIES: tuple[DemoProperty, ...] = (
     {
         "codigo": "DEMO-TH-001",
-        "slug": "casa-luminosa-las-lomas",
-        "titulo": "Casa luminosa en Las Lomas",
+        "slug": "casa-luminosa-piedra-blanca",
+        "titulo": "Casa luminosa en Piedra Blanca",
         "descripcion": (
             "Casa familiar con ambientes amplios, galeria con parrilla y jardin "
             "privado. Ideal para quienes buscan una propiedad lista para mudarse."
@@ -54,11 +54,11 @@ DEMO_PROPERTIES: tuple[DemoProperty, ...] = (
         "tipo_propiedad": "casa",
         "precio": Decimal("245000.00"),
         "moneda": "USD",
-        "localidad": "Asuncion",
-        "zona": "Las Lomas",
-        "direccion": "Las Lomas",
-        "latitud": Decimal("-25.275100"),
-        "longitud": Decimal("-57.568900"),
+        "localidad": "Merlo",
+        "zona": "Piedra Blanca",
+        "direccion": "Piedra Blanca",
+        "latitud": Decimal("-32.342900"),
+        "longitud": Decimal("-65.013900"),
         "mostrar_ubicacion_exacta": False,
         "dormitorios": 3,
         "banios": 3,
@@ -69,21 +69,21 @@ DEMO_PROPERTIES: tuple[DemoProperty, ...] = (
     },
     {
         "codigo": "DEMO-TH-002",
-        "slug": "departamento-moderno-villa-morra",
-        "titulo": "Departamento moderno en Villa Morra",
+        "slug": "departamento-centrico-villa-de-merlo",
+        "titulo": "Departamento centrico en Villa de Merlo",
         "descripcion": (
             "Unidad con balcon, amenities y cochera. Una opcion practica para "
-            "vivir cerca de centros comerciales, servicios y restaurantes."
+            "vivir cerca de servicios, comercios y espacios gastronomicos."
         ),
         "tipo_operacion": "alquiler",
         "tipo_propiedad": "departamento",
         "precio": Decimal("950.00"),
         "moneda": "USD",
-        "localidad": "Asuncion",
-        "zona": "Villa Morra",
-        "direccion": "Villa Morra",
-        "latitud": Decimal("-25.296800"),
-        "longitud": Decimal("-57.581700"),
+        "localidad": "Villa de Merlo",
+        "zona": "Centro",
+        "direccion": "Centro",
+        "latitud": Decimal("-32.347200"),
+        "longitud": Decimal("-65.011700"),
         "mostrar_ubicacion_exacta": False,
         "dormitorios": 2,
         "banios": 2,
@@ -94,21 +94,21 @@ DEMO_PROPERTIES: tuple[DemoProperty, ...] = (
     },
     {
         "codigo": "DEMO-TH-003",
-        "slug": "duplex-con-patio-fernando-de-la-mora",
-        "titulo": "Duplex con patio en Fernando de la Mora",
+        "slug": "duplex-con-patio-carpinteria",
+        "titulo": "Duplex con patio en Carpinteria",
         "descripcion": (
             "Duplex de tres dormitorios con area social integrada, patio lateral "
-            "y buena conexion hacia avenidas principales."
+            "y buena conexion hacia la ruta provincial."
         ),
         "tipo_operacion": "venta",
         "tipo_propiedad": "duplex",
         "precio": Decimal("138000.00"),
         "moneda": "USD",
-        "localidad": "Fernando de la Mora",
-        "zona": "Zona Norte",
-        "direccion": "Fernando de la Mora",
-        "latitud": Decimal("-25.318300"),
-        "longitud": Decimal("-57.553200"),
+        "localidad": "Carpinteria",
+        "zona": "Centro",
+        "direccion": "Carpinteria",
+        "latitud": Decimal("-32.409100"),
+        "longitud": Decimal("-64.988600"),
         "mostrar_ubicacion_exacta": False,
         "dormitorios": 3,
         "banios": 2,
@@ -119,21 +119,21 @@ DEMO_PROPERTIES: tuple[DemoProperty, ...] = (
     },
     {
         "codigo": "DEMO-TH-004",
-        "slug": "monoambiente-amoblado-recoleta",
-        "titulo": "Monoambiente amoblado en Recoleta",
+        "slug": "cabana-temporaria-cerro-de-oro",
+        "titulo": "Cabana temporaria en Cerro de Oro",
         "descripcion": (
-            "Ambiente funcional completamente amoblado, pensado para alquiler "
-            "temporario o estadias cortas en una ubicacion centrica."
+            "Cabana equipada para estadias cortas, con entorno tranquilo y "
+            "acceso rapido a circuitos turisticos de la villa."
         ),
         "tipo_operacion": "temporario",
-        "tipo_propiedad": "departamento",
+        "tipo_propiedad": "cabana",
         "precio": Decimal("65.00"),
         "moneda": "USD",
-        "localidad": "Asuncion",
-        "zona": "Recoleta",
-        "direccion": "Recoleta",
-        "latitud": Decimal("-25.306900"),
-        "longitud": Decimal("-57.598100"),
+        "localidad": "Merlo",
+        "zona": "Cerro de Oro",
+        "direccion": "Cerro de Oro",
+        "latitud": Decimal("-32.369500"),
+        "longitud": Decimal("-65.020100"),
         "mostrar_ubicacion_exacta": False,
         "dormitorios": 1,
         "banios": 1,
@@ -144,8 +144,8 @@ DEMO_PROPERTIES: tuple[DemoProperty, ...] = (
     },
     {
         "codigo": "DEMO-TH-005",
-        "slug": "terreno-residencial-san-bernardino",
-        "titulo": "Terreno residencial en San Bernardino",
+        "slug": "terreno-residencial-cortaderas",
+        "titulo": "Terreno residencial en Cortaderas",
         "descripcion": (
             "Terreno nivelado en zona residencial, con frente amplio y entorno "
             "tranquilo para proyecto de vivienda o casa de descanso."
@@ -154,11 +154,11 @@ DEMO_PROPERTIES: tuple[DemoProperty, ...] = (
         "tipo_propiedad": "terreno",
         "precio": Decimal("82000.00"),
         "moneda": "USD",
-        "localidad": "San Bernardino",
+        "localidad": "Cortaderas",
         "zona": "Centro",
-        "direccion": "San Bernardino",
-        "latitud": Decimal("-25.313700"),
-        "longitud": Decimal("-57.293600"),
+        "direccion": "Cortaderas",
+        "latitud": Decimal("-32.507700"),
+        "longitud": Decimal("-64.988100"),
         "mostrar_ubicacion_exacta": False,
         "dormitorios": None,
         "banios": None,
@@ -169,21 +169,21 @@ DEMO_PROPERTIES: tuple[DemoProperty, ...] = (
     },
     {
         "codigo": "DEMO-TH-006",
-        "slug": "oficina-corporativa-mariscal-lopez",
-        "titulo": "Oficina corporativa sobre Mariscal Lopez",
+        "slug": "local-comercial-avenida-del-sol",
+        "titulo": "Local comercial sobre Avenida del Sol",
         "descripcion": (
-            "Planta flexible para equipo comercial o administrativo, con salas "
-            "privadas, recepcion y facil acceso a transporte."
+            "Planta flexible para comercio o atencion al publico, con buena "
+            "exposicion y circulacion durante todo el ano."
         ),
         "tipo_operacion": "alquiler",
-        "tipo_propiedad": "oficina",
+        "tipo_propiedad": "local",
         "precio": Decimal("1800.00"),
         "moneda": "USD",
-        "localidad": "Asuncion",
-        "zona": "Mariscal Lopez",
-        "direccion": "Mariscal Lopez",
-        "latitud": Decimal("-25.291400"),
-        "longitud": Decimal("-57.611800"),
+        "localidad": "Merlo",
+        "zona": "Avenida del Sol",
+        "direccion": "Avenida del Sol",
+        "latitud": Decimal("-32.344300"),
+        "longitud": Decimal("-65.012500"),
         "mostrar_ubicacion_exacta": False,
         "dormitorios": None,
         "banios": 2,
