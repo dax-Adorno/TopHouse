@@ -29,8 +29,28 @@ export type PublicProperty = {
   creado_en: string;
   actualizado_en: string;
 };
+export type AdminProperty = Omit<PublicProperty, "estado" | "imagenes"> & {
+  direccion: string | null;
+  latitud: string | null;
+  longitud: string | null;
+  mostrar_ubicacion_exacta: boolean;
+  estado:
+    | "borrador"
+    | "publicada"
+    | "pausada"
+    | "reservada"
+    | "alquilada"
+    | "vendida"
+    | "no_disponible";
+};
 export type PropertyPage = {
   items: PublicProperty[];
+  total: number;
+  offset: number;
+  limit: number;
+};
+export type AdminPropertyPage = {
+  items: AdminProperty[];
   total: number;
   offset: number;
   limit: number;

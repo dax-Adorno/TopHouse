@@ -1,6 +1,8 @@
-import type { PublicProperty } from "../types/property";
+import type { AdminProperty, PublicProperty } from "../types/property";
 
-export function formatMoney(property: PublicProperty): string {
+type PricedProperty = Pick<PublicProperty | AdminProperty, "moneda" | "precio">;
+
+export function formatMoney(property: PricedProperty): string {
   if (property.precio === null) return "Consultar";
   const value = Number(property.precio);
   const currency = property.moneda ?? "PYG";
@@ -20,7 +22,7 @@ export function formatArea(value: string | null): string {
 }
 
 export function operationLabel(
-  operation: PublicProperty["tipo_operacion"],
+  operation: PublicProperty["tipo_operacion"] | AdminProperty["tipo_operacion"],
 ): string {
   const labels = {
     venta: "Venta",

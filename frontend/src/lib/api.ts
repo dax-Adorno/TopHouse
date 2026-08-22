@@ -1,4 +1,5 @@
 import type {
+  AdminPropertyPage,
   PropertyPage,
   PublicProperty,
   PublicPropertyFilters,
@@ -89,6 +90,12 @@ export const login = (credentials: LoginCredentials) =>
 
 export const getCurrentUser = (signal?: AbortSignal) =>
   request<AdminUser>("/api/v1/auth/me", {
+    credentials: "include",
+    signal,
+  });
+
+export const listAdminProperties = (signal?: AbortSignal) =>
+  request<AdminPropertyPage>("/api/v1/propiedades?limit=100", {
     credentials: "include",
     signal,
   });

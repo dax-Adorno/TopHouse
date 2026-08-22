@@ -54,6 +54,21 @@ const adminUser = {
   actualizado_en: "2026-08-21T12:00:00Z",
 };
 
+const adminPropertyPage = {
+  items: [
+    {
+      ...propertyPage.items[0],
+      direccion: "Las Lomas",
+      latitud: "-25.275100",
+      longitud: "-57.568900",
+      mostrar_ubicacion_exacta: false,
+    },
+  ],
+  total: 1,
+  offset: 0,
+  limit: 100,
+};
+
 describe("TopHouse App", () => {
   beforeEach(() => {
     window.history.pushState({}, "", "/");
@@ -102,7 +117,7 @@ describe("TopHouse App", () => {
     render(<App />);
 
     expect(
-      await screen.findByRole("heading", { name: "Casa luminosa en Asunción" }),
+      await screen.findByText("Casa luminosa en Asunción"),
     ).toBeInTheDocument();
     await user.selectOptions(screen.getByLabelText("Operación"), "venta");
     await user.type(screen.getByLabelText("Localidad"), "Asunción");
@@ -164,6 +179,12 @@ describe("TopHouse App", () => {
           json: () => Promise.resolve(adminUser),
         });
       }
+      if (url.includes("/api/v1/propiedades?limit=100")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(adminPropertyPage),
+        });
+      }
       return Promise.reject(new Error(`Unexpected request: ${url}`));
     });
     vi.stubGlobal("fetch", fetchMock);
@@ -178,7 +199,18 @@ describe("TopHouse App", () => {
     expect(
       await screen.findByRole("heading", { name: "Panel de TopHouse" }),
     ).toBeInTheDocument();
+    expect(
+      await screen.findByText("Casa luminosa en Asunción"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("TOP-7")).toBeInTheDocument();
+    expect(screen.getByText("Publicada")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenLastCalledWith(
+      expect.stringContaining("/api/v1/propiedades?limit=100"),
+      expect.objectContaining({
+        credentials: "include",
+      }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("/api/v1/auth/login"),
       expect.objectContaining({
         body: JSON.stringify({
