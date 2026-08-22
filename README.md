@@ -99,6 +99,7 @@ feature / fix / chore / test branch
         CI validation
               ↓
         Merge to main
+```
 
 ### Branch conventions
 
@@ -160,7 +161,7 @@ Alembic upgrade head
 Integration tests
         ↓
 CI passed
-
+```
 
 ### Crear el entorno virtual
 
@@ -187,3 +188,16 @@ Contraseña: TopHouse-demo-2026
 ```
 
 No ejecutar este seed con `APP_ENV=production`.
+
+## Frontend local
+
+El frontend se ejecuta con pnpm. Desde `frontend`, copiá `frontend/.env.example`
+a `frontend/.env` si necesitás ajustar la API o el contacto comercial:
+
+```text
+VITE_API_URL=http://localhost:8000
+VITE_CONTACT_EMAIL=contacto@tophouse.com
+VITE_WHATSAPP_NUMBER=5492664000000
+```
+
+`VITE_WHATSAPP_NUMBER` debe cargarse en formato internacional, sólo números.
