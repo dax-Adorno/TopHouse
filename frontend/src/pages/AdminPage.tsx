@@ -8,12 +8,14 @@ import {
   listAdminProperties,
   login,
   logout,
+  updateAdminPropertyDetails,
   updateAdminProperty,
 } from "../lib/api";
 import type { AdminUser } from "../types/auth";
 import type {
   AdminProperty,
   AdminPropertyCreate,
+  AdminPropertyDetailsUpdate,
   AdminPropertyPage,
   AdminPropertyUpdate,
   PublicProperty,
@@ -23,6 +25,7 @@ type AuthState = "checking" | "anonymous" | "authenticated";
 type SubmitState = "idle" | "submitting" | "error";
 type PropertyState = "idle" | "loading" | "ready" | "error";
 type CreateState = "idle" | "submitting" | "success" | "error";
+type EditState = "idle" | "submitting" | "success" | "error";
 type RowUpdateState = "idle" | "submitting" | "error";
 type RowArchiveState = "idle" | "submitting" | "error";
 
@@ -54,7 +57,11 @@ export function AdminPage() {
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [propertyState, setPropertyState] = useState<PropertyState>("idle");
   const [createState, setCreateState] = useState<CreateState>("idle");
+  const [editState, setEditState] = useState<EditState>("idle");
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingProperty, setEditingProperty] = useState<AdminProperty | null>(
+    null,
+  );
   const [propertyPage, setPropertyPage] = useState<AdminPropertyPage | null>(
     null,
   );
@@ -106,7 +113,9 @@ export function AdminPage() {
     setPropertyPage(null);
     setPropertyState("idle");
     setCreateState("idle");
+    setEditState("idle");
     setShowCreateForm(false);
+    setEditingProperty(null);
     setAuthState("anonymous");
   }
 
@@ -116,9 +125,25 @@ export function AdminPage() {
       await createAdminProperty(datos);
       setCreateState("success");
       setShowCreateForm(false);
+      setEditingProperty(null);
       await loadProperties();
     } catch {
       setCreateState("error");
+    }
+  }
+
+  async function handleEditProperty(
+    propertyId: number,
+    cambios: AdminPropertyDetailsUpdate,
+  ) {
+    setEditState("submitting");
+    try {
+      await updateAdminPropertyDetails(propertyId, cambios);
+      setEditState("success");
+      setEditingProperty(null);
+      await loadProperties();
+    } catch {
+      setEditState("error");
     }
   }
 
@@ -204,10 +229,25 @@ export function AdminPage() {
             setCreateState("idle");
             setShowCreateForm(false);
           }}
+          editState={editState}
+          editingProperty={editingProperty}
+          onCancelEdit={() => {
+            setEditState("idle");
+            setEditingProperty(null);
+          }}
           onCreate={handleCreateProperty}
+          onEdit={handleEditProperty}
           onOpenCreate={() => {
             setCreateState("idle");
+            setEditState("idle");
+            setEditingProperty(null);
             setShowCreateForm(true);
+          }}
+          onOpenEdit={(property) => {
+            setCreateState("idle");
+            setEditState("idle");
+            setShowCreateForm(false);
+            setEditingProperty(property);
           }}
           onArchive={handleArchiveProperty}
           onRetry={() => void loadProperties()}
@@ -267,22 +307,35 @@ function AdminPropertyTable({
   page,
   state,
   createState,
+  editState,
+  editingProperty,
   showCreateForm,
+  onCancelEdit,
   onCancelCreate,
   onArchive,
   onCreate,
+  onEdit,
   onOpenCreate,
+  onOpenEdit,
   onRetry,
   onUpdate,
 }: {
   page: AdminPropertyPage | null;
   state: PropertyState;
   createState: CreateState;
+  editState: EditState;
+  editingProperty: AdminProperty | null;
   showCreateForm: boolean;
+  onCancelEdit: () => void;
   onCancelCreate: () => void;
   onArchive: (propertyId: number) => Promise<void>;
   onCreate: (datos: AdminPropertyCreate) => Promise<void>;
+  onEdit: (
+    propertyId: number,
+    cambios: AdminPropertyDetailsUpdate,
+  ) => Promise<void>;
   onOpenCreate: () => void;
+  onOpenEdit: (property: AdminProperty) => void;
   onRetry: () => void;
   onUpdate: (propertyId: number, cambios: AdminPropertyUpdate) => Promise<void>;
 }) {
@@ -338,9 +391,22 @@ function AdminPropertyTable({
           onSubmit={onCreate}
         />
       ) : null}
+      {editingProperty !== null ? (
+        <AdminPropertyDetailsForm
+          property={editingProperty}
+          state={editState}
+          onCancel={onCancelEdit}
+          onSubmit={onEdit}
+        />
+      ) : null}
       {createState === "success" && !showCreateForm ? (
         <p className="admin-success" role="status">
           Propiedad creada como borrador.
+        </p>
+      ) : null}
+      {editState === "success" && editingProperty === null ? (
+        <p className="admin-success" role="status">
+          Datos de propiedad actualizados.
         </p>
       ) : null}
       <div className="admin-table-wrap">
@@ -361,6 +427,7 @@ function AdminPropertyTable({
               <AdminPropertyRow
                 key={`${property.id}-${property.estado}-${property.destacada}`}
                 onArchive={onArchive}
+                onEdit={onOpenEdit}
                 property={property}
                 onUpdate={onUpdate}
               />
@@ -374,10 +441,12 @@ function AdminPropertyTable({
 
 function AdminPropertyRow({
   onArchive,
+  onEdit,
   property,
   onUpdate,
 }: {
   onArchive: (propertyId: number) => Promise<void>;
+  onEdit: (property: AdminProperty) => void;
   property: AdminProperty;
   onUpdate: (propertyId: number, cambios: AdminPropertyUpdate) => Promise<void>;
 }) {
@@ -460,6 +529,13 @@ function AdminPropertyRow({
         <div className="admin-row-actions">
           <button
             className="button button-secondary"
+            onClick={() => onEdit(property)}
+            type="button"
+          >
+            Editar datos
+          </button>
+          <button
+            className="button button-secondary"
             disabled={!hasChanges || updateState === "submitting"}
             onClick={handleSave}
             type="button"
@@ -483,6 +559,77 @@ function AdminPropertyRow({
         </div>
       </td>
     </tr>
+  );
+}
+
+function AdminPropertyDetailsForm({
+  property,
+  state,
+  onCancel,
+  onSubmit,
+}: {
+  property: AdminProperty;
+  state: EditState;
+  onCancel: () => void;
+  onSubmit: (
+    propertyId: number,
+    cambios: AdminPropertyDetailsUpdate,
+  ) => Promise<void>;
+}) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    await onSubmit(property.id, {
+      codigo: requiredText(form, "codigo"),
+      titulo: requiredText(form, "titulo"),
+      descripcion: requiredText(form, "descripcion"),
+      tipo_operacion: requiredText(
+        form,
+        "tipo_operacion",
+      ) as PublicProperty["tipo_operacion"],
+      tipo_propiedad: requiredText(form, "tipo_propiedad"),
+      ...optionalText(form, "precio"),
+      ...optionalText(form, "moneda"),
+      localidad: requiredText(form, "localidad"),
+      ...optionalText(form, "zona"),
+      ...optionalText(form, "direccion"),
+      ...optionalText(form, "dormitorios"),
+      ...optionalText(form, "banios"),
+      ...optionalText(form, "superficie_cubierta"),
+      ...optionalText(form, "superficie_total"),
+    });
+  }
+
+  return (
+    <form className="admin-create-form" onSubmit={handleSubmit}>
+      <div className="admin-form-title">
+        <h3>Editar {property.codigo}</h3>
+        <p>Actualizá los datos descriptivos sin cambiar estado ni destacada.</p>
+      </div>
+      <AdminPropertyFields property={property} />
+      {state === "error" ? (
+        <p className="admin-error" role="alert">
+          No pudimos actualizar la propiedad. Revisá los datos e intentá
+          nuevamente.
+        </p>
+      ) : null}
+      <div className="admin-form-actions">
+        <button
+          className="button button-secondary"
+          onClick={onCancel}
+          type="button"
+        >
+          Cancelar
+        </button>
+        <button
+          className="button button-primary"
+          disabled={state === "submitting"}
+          type="submit"
+        >
+          {state === "submitting" ? "Guardando..." : "Guardar datos"}
+        </button>
+      </div>
+    </form>
   );
 }
 
@@ -521,68 +668,7 @@ function AdminPropertyCreateForm({
 
   return (
     <form className="admin-create-form" onSubmit={handleSubmit}>
-      <div className="admin-form-grid">
-        <label>
-          Código
-          <input name="codigo" required />
-        </label>
-        <label>
-          Título
-          <input name="titulo" required />
-        </label>
-        <label className="admin-form-wide">
-          Descripción
-          <textarea name="descripcion" required rows={4} />
-        </label>
-        <label>
-          Operación
-          <select defaultValue="venta" name="tipo_operacion" required>
-            <option value="venta">Venta</option>
-            <option value="alquiler">Alquiler</option>
-            <option value="temporario">Temporario</option>
-          </select>
-        </label>
-        <label>
-          Tipo
-          <input defaultValue="casa" name="tipo_propiedad" required />
-        </label>
-        <label>
-          Precio
-          <input inputMode="decimal" name="precio" />
-        </label>
-        <label>
-          Moneda
-          <input defaultValue="USD" maxLength={3} name="moneda" />
-        </label>
-        <label>
-          Localidad
-          <input defaultValue="Merlo" name="localidad" required />
-        </label>
-        <label>
-          Zona
-          <input name="zona" />
-        </label>
-        <label className="admin-form-wide">
-          Dirección
-          <input name="direccion" />
-        </label>
-        <label>
-          Dormitorios
-          <input inputMode="numeric" name="dormitorios" />
-        </label>
-        <label>
-          Baños
-          <input inputMode="numeric" name="banios" />
-        </label>
-        <label>
-          Sup. cubierta
-          <input inputMode="decimal" name="superficie_cubierta" />
-        </label>
-        <label>
-          Sup. total
-          <input inputMode="decimal" name="superficie_total" />
-        </label>
-      </div>
+      <AdminPropertyFields />
       {state === "error" ? (
         <p className="admin-error" role="alert">
           No pudimos crear la propiedad. Revisá los datos e intentá nuevamente.
@@ -605,6 +691,114 @@ function AdminPropertyCreateForm({
         </button>
       </div>
     </form>
+  );
+}
+
+function AdminPropertyFields({ property }: { property?: AdminProperty }) {
+  return (
+    <div className="admin-form-grid">
+      <label>
+        Código
+        <input defaultValue={property?.codigo} name="codigo" required />
+      </label>
+      <label>
+        Título
+        <input defaultValue={property?.titulo} name="titulo" required />
+      </label>
+      <label className="admin-form-wide">
+        Descripción
+        <textarea
+          defaultValue={property?.descripcion}
+          name="descripcion"
+          required
+          rows={4}
+        />
+      </label>
+      <label>
+        Operación
+        <select
+          defaultValue={property?.tipo_operacion ?? "venta"}
+          name="tipo_operacion"
+          required
+        >
+          <option value="venta">Venta</option>
+          <option value="alquiler">Alquiler</option>
+          <option value="temporario">Temporario</option>
+        </select>
+      </label>
+      <label>
+        Tipo
+        <input
+          defaultValue={property?.tipo_propiedad ?? "casa"}
+          name="tipo_propiedad"
+          required
+        />
+      </label>
+      <label>
+        Precio
+        <input
+          defaultValue={property?.precio ?? ""}
+          inputMode="decimal"
+          name="precio"
+        />
+      </label>
+      <label>
+        Moneda
+        <input
+          defaultValue={property?.moneda ?? "USD"}
+          maxLength={3}
+          name="moneda"
+        />
+      </label>
+      <label>
+        Localidad
+        <input
+          defaultValue={property?.localidad ?? "Merlo"}
+          name="localidad"
+          required
+        />
+      </label>
+      <label>
+        Zona
+        <input defaultValue={property?.zona ?? ""} name="zona" />
+      </label>
+      <label className="admin-form-wide">
+        Dirección
+        <input defaultValue={property?.direccion ?? ""} name="direccion" />
+      </label>
+      <label>
+        Dormitorios
+        <input
+          defaultValue={property?.dormitorios ?? ""}
+          inputMode="numeric"
+          name="dormitorios"
+        />
+      </label>
+      <label>
+        Baños
+        <input
+          defaultValue={property?.banios ?? ""}
+          inputMode="numeric"
+          name="banios"
+        />
+      </label>
+      <label>
+        Sup. cubierta
+        <input
+          defaultValue={property?.superficie_cubierta ?? ""}
+          inputMode="decimal"
+          name="superficie_cubierta"
+        />
+      </label>
+      <label>
+        Sup. total
+        <input
+          defaultValue={property?.superficie_total ?? ""}
+          inputMode="decimal"
+          name="superficie_total"
+        />
+      </label>
+    </div>
   );
 }
 

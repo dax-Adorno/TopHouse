@@ -1,6 +1,7 @@
 import type {
   AdminProperty,
   AdminPropertyCreate,
+  AdminPropertyDetailsUpdate,
   AdminPropertyPage,
   AdminPropertyUpdate,
   PropertyPage,
@@ -107,6 +108,17 @@ export const createAdminProperty = (property: AdminPropertyCreate) =>
   request<AdminProperty>("/api/v1/propiedades", {
     method: "POST",
     body: property,
+    credentials: "include",
+    csrf: true,
+  });
+
+export const updateAdminPropertyDetails = (
+  propertyId: number,
+  changes: AdminPropertyDetailsUpdate,
+) =>
+  request<AdminProperty>(`/api/v1/propiedades/${propertyId}`, {
+    method: "PATCH",
+    body: changes,
     credentials: "include",
     csrf: true,
   });

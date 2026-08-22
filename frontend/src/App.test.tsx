@@ -88,6 +88,12 @@ const updatedAdminProperty = {
   destacada: false,
 };
 
+const editedAdminProperty = {
+  ...adminPropertyPage.items[0],
+  titulo: "Casa luminosa actualizada",
+  zona: "Rincón del Este",
+};
+
 describe("TopHouse App", () => {
   beforeEach(() => {
     window.history.pushState({}, "", "/");
@@ -256,6 +262,15 @@ describe("TopHouse App", () => {
       }
       if (
         url.includes("/api/v1/propiedades/7") &&
+        options?.method === "PATCH"
+      ) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(editedAdminProperty),
+        });
+      }
+      if (
+        url.includes("/api/v1/propiedades/7") &&
         options?.method === "DELETE"
       ) {
         return Promise.resolve({ ok: true, status: 204 });
@@ -291,6 +306,28 @@ describe("TopHouse App", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("TOP-7")).toBeInTheDocument();
     expect(screen.getByText("Publicada")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Editar datos" }));
+    await user.clear(screen.getByLabelText("Título"));
+    await user.type(
+      screen.getByLabelText("Título"),
+      "Casa luminosa actualizada",
+    );
+    await user.clear(screen.getByLabelText("Zona"));
+    await user.type(screen.getByLabelText("Zona"), "Rincón del Este");
+    await user.click(screen.getByRole("button", { name: "Guardar datos" }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/propiedades/7"),
+      expect.objectContaining({
+        body: expect.stringContaining("Casa luminosa actualizada"),
+        credentials: "include",
+        headers: expect.objectContaining({
+          "X-CSRF-Token": "csrf-prueba",
+        }),
+        method: "PATCH",
+      }),
+    );
 
     await user.selectOptions(
       screen.getByLabelText("Estado de TOP-7"),
