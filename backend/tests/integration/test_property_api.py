@@ -76,9 +76,9 @@ def datos_propiedad() -> dict[str, object]:
         "tipo_propiedad": "casa",
         "precio": "175000.00",
         "moneda": "USD",
-        "localidad": "Asunción",
-        "latitud": "-25.300000",
-        "longitud": "-57.630000",
+        "localidad": "Merlo",
+        "latitud": "-32.342900",
+        "longitud": "-65.013900",
     }
 
 

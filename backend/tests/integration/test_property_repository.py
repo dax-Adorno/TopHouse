@@ -44,9 +44,9 @@ def datos_propiedad(*, sufijo: str | None = None) -> PropiedadCrear:
             "tipo_propiedad": "casa",
             "precio": "125000.00",
             "moneda": "USD",
-            "localidad": "Asunción",
-            "latitud": "-25.300000",
-            "longitud": "-57.630000",
+            "localidad": "Merlo",
+            "latitud": "-32.342900",
+            "longitud": "-65.013900",
         }
     )
 

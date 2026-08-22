@@ -24,7 +24,7 @@ def datos_propiedad(**cambios: object) -> dict[str, object]:
         "tipo_propiedad": "casa",
         "precio": "150000.00",
         "moneda": "USD",
-        "localidad": "Asunción",
+        "localidad": "Merlo",
     }
     datos.update(cambios)
     return datos
@@ -77,7 +77,7 @@ def test_propiedad_crear_rechaza_campos_controlados_por_backend(campo: str) -> N
     ],
 )
 def test_propiedad_crear_rechaza_valores_invalidos(campo: str, valor: object) -> None:
-    datos = datos_propiedad(latitud=-25.30, longitud=-57.63)
+    datos = datos_propiedad(latitud=-32.34, longitud=-65.01)
     datos[campo] = valor
 
     with pytest.raises(ValidationError):
@@ -86,7 +86,7 @@ def test_propiedad_crear_rechaza_valores_invalidos(campo: str, valor: object) ->
 
 def test_propiedad_crear_requiere_coordenadas_completas() -> None:
     with pytest.raises(ValidationError, match="deben enviarse juntas"):
-        PropiedadCrear.model_validate(datos_propiedad(latitud=-25.30))
+        PropiedadCrear.model_validate(datos_propiedad(latitud=-32.34))
 
 
 def test_propiedad_actualizar_acepta_patch_parcial() -> None:
@@ -140,22 +140,22 @@ def test_respuesta_admin_incluye_ubicacion_exacta() -> None:
     respuesta = PropiedadAdminRespuesta.model_validate(
         datos_respuesta(
             direccion="Av. Principal 123",
-            latitud=-25.30,
-            longitud=-57.63,
+            latitud=-32.34,
+            longitud=-65.01,
             mostrar_ubicacion_exacta=False,
         )
     )
 
     assert respuesta.direccion == "Av. Principal 123"
-    assert respuesta.latitud == Decimal("-25.3")
+    assert respuesta.latitud == Decimal("-32.34")
 
 
 def test_respuesta_publica_excluye_datos_de_ubicacion_exacta() -> None:
     respuesta = PropiedadPublicaRespuesta.model_validate(
         datos_respuesta(
             direccion="Av. Principal 123",
-            latitud=-25.30,
-            longitud=-57.63,
+            latitud=-32.34,
+            longitud=-65.01,
             mostrar_ubicacion_exacta=True,
         )
     )

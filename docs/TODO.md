@@ -8,7 +8,7 @@ La API administrativa ya exige autenticación y CSRF. El RBAC reserva los
 cambios de estado y destacado al rol `administrador`, y las mutaciones de
 propiedades generan registros de auditoría.
 
-1. Completar pruebas específicas contra IDOR en recursos administrativos.
+1. Mantener pruebas específicas contra IDOR en recursos administrativos.
 2. Definir la estrategia de CDN/cache para producción.
 3. Implementar catálogo, tarjetas y estados de carga/error.
 4. Conectar filtros y paginación con la API pública.

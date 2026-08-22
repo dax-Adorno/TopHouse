@@ -184,6 +184,19 @@ def test_rechaza_imagen_que_pertenece_a_otra_propiedad() -> None:
         service.establecer_portada(7, 3)
 
 
+def test_eliminar_rechaza_imagen_ajena_sin_tocar_almacenamiento() -> None:
+    repository = RepositoryFalso()
+    repository.imagenes = [cast(ImagenPropiedad, ImagenFalsa(id=3, propiedad_id=99))]
+    almacenamiento = AlmacenamientoFalso()
+    service = crear_service(repository, almacenamiento)
+
+    with pytest.raises(ImagenNoEncontradaError):
+        service.eliminar(7, 3)
+
+    assert almacenamiento.eliminadas == []
+    assert len(repository.imagenes) == 1
+
+
 def test_reordenar_exige_todas_las_imagenes_sin_ids_ajenos() -> None:
     repository = RepositoryFalso()
     repository.imagenes = [
