@@ -180,6 +180,16 @@ describe("TopHouse App", () => {
       await screen.findByRole("heading", { level: 1, name: /Casa luminosa/i }),
     ).toBeInTheDocument();
     expect(screen.getByText("Descripción")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", {
+        name: "Ver Piedra Blanca, Merlo, San Luis en el mapa",
+      }),
+    ).toHaveAttribute(
+      "href",
+      expect.stringContaining(
+        "query=Piedra%20Blanca%2C%20Merlo%2C%20San%20Luis%2C%20Argentina",
+      ),
+    );
     const contactLink = screen
       .getAllByRole("link", {
         name: "Contactar por WhatsApp",

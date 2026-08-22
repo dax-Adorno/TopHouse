@@ -3,6 +3,10 @@ import { Link, useParams } from "react-router-dom";
 import heroImage from "../assets/hero.png";
 import { getPublicProperty } from "../lib/api";
 import { buildPropertyContactHref, contactActionLabel } from "../lib/contact";
+import {
+  approximateLocationLabel,
+  buildApproximateMapHref,
+} from "../lib/location";
 import { formatArea, formatMoney, operationLabel } from "../lib/propertyFormat";
 import type { PropertyImage, PublicProperty } from "../types/property";
 
@@ -152,11 +156,21 @@ export function PropertyDetailPage() {
         </aside>
       </div>
       <div className="detail-location">
-        <h2>Ubicación aproximada</h2>
-        <p>
-          La ubicación pública muestra zona y localidad. La dirección exacta se
-          comparte durante la consulta comercial.
-        </p>
+        <div>
+          <h2>Ubicación aproximada</h2>
+          <p>
+            La ubicación pública muestra zona y localidad. La dirección exacta
+            se comparte durante la consulta comercial.
+          </p>
+        </div>
+        <a
+          className="button button-secondary"
+          href={buildApproximateMapHref(property)}
+          rel="noreferrer"
+          target="_blank"
+        >
+          Ver {approximateLocationLabel(property)} en el mapa
+        </a>
       </div>
     </section>
   );
