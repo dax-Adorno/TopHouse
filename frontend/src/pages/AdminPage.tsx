@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { formatMoney, operationLabel } from "../lib/propertyFormat";
 import {
+  archiveAdminProperty,
   createAdminProperty,
   getCurrentUser,
   listAdminProperties,
@@ -23,6 +24,7 @@ type SubmitState = "idle" | "submitting" | "error";
 type PropertyState = "idle" | "loading" | "ready" | "error";
 type CreateState = "idle" | "submitting" | "success" | "error";
 type RowUpdateState = "idle" | "submitting" | "error";
+type RowArchiveState = "idle" | "submitting" | "error";
 
 const statusLabels: Record<AdminProperty["estado"], string> = {
   borrador: "Borrador",
@@ -128,6 +130,11 @@ export function AdminPage() {
     await loadProperties();
   }
 
+  async function handleArchiveProperty(propertyId: number) {
+    await archiveAdminProperty(propertyId);
+    await loadProperties();
+  }
+
   if (authState === "checking") {
     return (
       <section className="admin-shell admin-state">
@@ -202,6 +209,7 @@ export function AdminPage() {
             setCreateState("idle");
             setShowCreateForm(true);
           }}
+          onArchive={handleArchiveProperty}
           onRetry={() => void loadProperties()}
           onUpdate={handleUpdateProperty}
         />
@@ -261,6 +269,7 @@ function AdminPropertyTable({
   createState,
   showCreateForm,
   onCancelCreate,
+  onArchive,
   onCreate,
   onOpenCreate,
   onRetry,
@@ -271,6 +280,7 @@ function AdminPropertyTable({
   createState: CreateState;
   showCreateForm: boolean;
   onCancelCreate: () => void;
+  onArchive: (propertyId: number) => Promise<void>;
   onCreate: (datos: AdminPropertyCreate) => Promise<void>;
   onOpenCreate: () => void;
   onRetry: () => void;
@@ -350,6 +360,7 @@ function AdminPropertyTable({
             {page.items.map((property) => (
               <AdminPropertyRow
                 key={`${property.id}-${property.estado}-${property.destacada}`}
+                onArchive={onArchive}
                 property={property}
                 onUpdate={onUpdate}
               />
@@ -362,14 +373,17 @@ function AdminPropertyTable({
 }
 
 function AdminPropertyRow({
+  onArchive,
   property,
   onUpdate,
 }: {
+  onArchive: (propertyId: number) => Promise<void>;
   property: AdminProperty;
   onUpdate: (propertyId: number, cambios: AdminPropertyUpdate) => Promise<void>;
 }) {
   const [estado, setEstado] = useState(property.estado);
   const [destacada, setDestacada] = useState(property.destacada);
+  const [archiveState, setArchiveState] = useState<RowArchiveState>("idle");
   const [updateState, setUpdateState] = useState<RowUpdateState>("idle");
   const stateOptions = [property.estado, ...statusTransitions[property.estado]];
   const hasChanges =
@@ -383,6 +397,21 @@ function AdminPropertyRow({
       setUpdateState("idle");
     } catch {
       setUpdateState("error");
+    }
+  }
+
+  async function handleArchive() {
+    const confirmed = window.confirm(
+      `Archivar ${property.codigo} y quitarla del catálogo público?`,
+    );
+    if (!confirmed) return;
+
+    setArchiveState("submitting");
+    try {
+      await onArchive(property.id);
+      setArchiveState("idle");
+    } catch {
+      setArchiveState("error");
     }
   }
 
@@ -437,8 +466,19 @@ function AdminPropertyRow({
           >
             {updateState === "submitting" ? "Guardando..." : "Guardar"}
           </button>
+          <button
+            className="button button-danger"
+            disabled={archiveState === "submitting"}
+            onClick={handleArchive}
+            type="button"
+          >
+            {archiveState === "submitting" ? "Archivando..." : "Archivar"}
+          </button>
           {updateState === "error" ? (
             <span role="alert">No se pudo guardar.</span>
+          ) : null}
+          {archiveState === "error" ? (
+            <span role="alert">No se pudo archivar.</span>
           ) : null}
         </div>
       </td>
