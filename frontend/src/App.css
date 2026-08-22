@@ -560,8 +560,16 @@ main {
 .detail-location {
   margin-top: 54px;
   padding: 32px;
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  align-items: center;
   border: 1px solid var(--line);
   background: white;
+}
+.detail-location .button {
+  flex: 0 0 auto;
+  border: 1px solid var(--line-dark);
 }
 .admin-shell {
   min-height: 66vh;
@@ -1028,6 +1036,10 @@ main {
   }
   .detail-hero .button {
     width: 100%;
+  }
+  .detail-location {
+    align-items: stretch;
+    flex-direction: column;
   }
   .detail-thumbs {
     grid-template-columns: repeat(4, 1fr);
