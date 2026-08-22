@@ -47,7 +47,7 @@ Estado: completada.
 Estado: en ejecución.
 
 - [x] Aplicación React + TypeScript + Vite.
-- [ ] Home, catálogo, filtros y detalle público.
+- [x] Home, catálogo, filtros y detalle público.
 - [x] Galería, mapa y contacto por WhatsApp.
 - [ ] Panel administrativo.
 - [x] Vitest y React Testing Library.
