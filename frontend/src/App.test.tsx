@@ -69,6 +69,19 @@ const adminPropertyPage = {
   limit: 100,
 };
 
+const createdAdminProperty = {
+  ...adminPropertyPage.items[0],
+  id: 8,
+  codigo: "TOP-8",
+  slug: "casa-en-merlo",
+  titulo: "Casa en Merlo",
+  descripcion: "Casa nueva con patio.",
+  localidad: "Merlo",
+  zona: "Centro",
+  estado: "borrador",
+  destacada: false,
+};
+
 describe("TopHouse App", () => {
   beforeEach(() => {
     window.history.pushState({}, "", "/");
@@ -167,9 +180,10 @@ describe("TopHouse App", () => {
     );
   });
 
-  it("permite iniciar sesión administrativa", async () => {
+  it("permite iniciar sesión administrativa y crear un borrador", async () => {
     const user = userEvent.setup();
-    const fetchMock = vi.fn((url: string) => {
+    document.cookie = "tophouse_csrf=csrf-prueba";
+    const fetchMock = vi.fn((url: string, options?: RequestInit) => {
       if (url.includes("/api/v1/auth/me")) {
         return Promise.resolve({ ok: false, status: 401 });
       }
@@ -177,6 +191,12 @@ describe("TopHouse App", () => {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(adminUser),
+        });
+      }
+      if (url.includes("/api/v1/propiedades") && options?.method === "POST") {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(createdAdminProperty),
         });
       }
       if (url.includes("/api/v1/propiedades?limit=100")) {
@@ -204,6 +224,19 @@ describe("TopHouse App", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("TOP-7")).toBeInTheDocument();
     expect(screen.getByText("Publicada")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Nueva propiedad" }));
+    await user.type(screen.getByLabelText("Código"), "TOP-8");
+    await user.type(screen.getByLabelText("Título"), "Casa en Merlo");
+    await user.type(
+      screen.getByLabelText("Descripción"),
+      "Casa nueva con patio.",
+    );
+    await user.click(screen.getByRole("button", { name: "Guardar borrador" }));
+
+    expect(
+      await screen.findByText("Propiedad creada como borrador."),
+    ).toBeInTheDocument();
     expect(fetchMock).toHaveBeenLastCalledWith(
       expect.stringContaining("/api/v1/propiedades?limit=100"),
       expect.objectContaining({
@@ -218,6 +251,25 @@ describe("TopHouse App", () => {
           contrasena: "clave-segura",
         }),
         credentials: "include",
+        method: "POST",
+      }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/propiedades"),
+      expect.objectContaining({
+        body: JSON.stringify({
+          codigo: "TOP-8",
+          titulo: "Casa en Merlo",
+          descripcion: "Casa nueva con patio.",
+          tipo_operacion: "venta",
+          tipo_propiedad: "casa",
+          moneda: "USD",
+          localidad: "Merlo",
+        }),
+        credentials: "include",
+        headers: expect.objectContaining({
+          "X-CSRF-Token": "csrf-prueba",
+        }),
         method: "POST",
       }),
     );

@@ -1,13 +1,25 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { formatMoney, operationLabel } from "../lib/propertyFormat";
-import { getCurrentUser, listAdminProperties, login, logout } from "../lib/api";
+import {
+  createAdminProperty,
+  getCurrentUser,
+  listAdminProperties,
+  login,
+  logout,
+} from "../lib/api";
 import type { AdminUser } from "../types/auth";
-import type { AdminProperty, AdminPropertyPage } from "../types/property";
+import type {
+  AdminProperty,
+  AdminPropertyCreate,
+  AdminPropertyPage,
+  PublicProperty,
+} from "../types/property";
 
 type AuthState = "checking" | "anonymous" | "authenticated";
 type SubmitState = "idle" | "submitting" | "error";
 type PropertyState = "idle" | "loading" | "ready" | "error";
+type CreateState = "idle" | "submitting" | "success" | "error";
 
 const statusLabels: Record<AdminProperty["estado"], string> = {
   borrador: "Borrador",
@@ -23,6 +35,8 @@ export function AdminPage() {
   const [authState, setAuthState] = useState<AuthState>("checking");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [propertyState, setPropertyState] = useState<PropertyState>("idle");
+  const [createState, setCreateState] = useState<CreateState>("idle");
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [propertyPage, setPropertyPage] = useState<AdminPropertyPage | null>(
     null,
   );
@@ -73,7 +87,21 @@ export function AdminPage() {
     setUser(null);
     setPropertyPage(null);
     setPropertyState("idle");
+    setCreateState("idle");
+    setShowCreateForm(false);
     setAuthState("anonymous");
+  }
+
+  async function handleCreateProperty(datos: AdminPropertyCreate) {
+    setCreateState("submitting");
+    try {
+      await createAdminProperty(datos);
+      setCreateState("success");
+      setShowCreateForm(false);
+      await loadProperties();
+    } catch {
+      setCreateState("error");
+    }
   }
 
   if (authState === "checking") {
@@ -139,6 +167,17 @@ export function AdminPage() {
         <AdminPropertyTable
           page={propertyPage}
           state={propertyState}
+          createState={createState}
+          showCreateForm={showCreateForm}
+          onCancelCreate={() => {
+            setCreateState("idle");
+            setShowCreateForm(false);
+          }}
+          onCreate={handleCreateProperty}
+          onOpenCreate={() => {
+            setCreateState("idle");
+            setShowCreateForm(true);
+          }}
           onRetry={() => void loadProperties()}
         />
       </section>
@@ -194,10 +233,20 @@ export function AdminPage() {
 function AdminPropertyTable({
   page,
   state,
+  createState,
+  showCreateForm,
+  onCancelCreate,
+  onCreate,
+  onOpenCreate,
   onRetry,
 }: {
   page: AdminPropertyPage | null;
   state: PropertyState;
+  createState: CreateState;
+  showCreateForm: boolean;
+  onCancelCreate: () => void;
+  onCreate: (datos: AdminPropertyCreate) => Promise<void>;
+  onOpenCreate: () => void;
   onRetry: () => void;
 }) {
   if (state === "loading") {
@@ -237,10 +286,26 @@ function AdminPropertyTable({
           <p className="eyebrow">Inventario</p>
           <h2 id="admin-properties-title">Propiedades</h2>
         </div>
-        <button className="button button-primary" type="button">
+        <button
+          className="button button-primary"
+          onClick={onOpenCreate}
+          type="button"
+        >
           Nueva propiedad
         </button>
       </div>
+      {showCreateForm ? (
+        <AdminPropertyCreateForm
+          state={createState}
+          onCancel={onCancelCreate}
+          onSubmit={onCreate}
+        />
+      ) : null}
+      {createState === "success" && !showCreateForm ? (
+        <p className="admin-success" role="status">
+          Propiedad creada como borrador.
+        </p>
+      ) : null}
       <div className="admin-table-wrap">
         <table className="admin-table">
           <thead>
@@ -281,4 +346,138 @@ function AdminPropertyTable({
       </div>
     </section>
   );
+}
+
+function AdminPropertyCreateForm({
+  state,
+  onCancel,
+  onSubmit,
+}: {
+  state: CreateState;
+  onCancel: () => void;
+  onSubmit: (datos: AdminPropertyCreate) => Promise<void>;
+}) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    await onSubmit({
+      codigo: requiredText(form, "codigo"),
+      titulo: requiredText(form, "titulo"),
+      descripcion: requiredText(form, "descripcion"),
+      tipo_operacion: requiredText(
+        form,
+        "tipo_operacion",
+      ) as PublicProperty["tipo_operacion"],
+      tipo_propiedad: requiredText(form, "tipo_propiedad"),
+      ...optionalText(form, "precio"),
+      ...optionalText(form, "moneda"),
+      localidad: requiredText(form, "localidad"),
+      ...optionalText(form, "zona"),
+      ...optionalText(form, "direccion"),
+      ...optionalText(form, "dormitorios"),
+      ...optionalText(form, "banios"),
+      ...optionalText(form, "superficie_cubierta"),
+      ...optionalText(form, "superficie_total"),
+    });
+  }
+
+  return (
+    <form className="admin-create-form" onSubmit={handleSubmit}>
+      <div className="admin-form-grid">
+        <label>
+          Código
+          <input name="codigo" required />
+        </label>
+        <label>
+          Título
+          <input name="titulo" required />
+        </label>
+        <label className="admin-form-wide">
+          Descripción
+          <textarea name="descripcion" required rows={4} />
+        </label>
+        <label>
+          Operación
+          <select defaultValue="venta" name="tipo_operacion" required>
+            <option value="venta">Venta</option>
+            <option value="alquiler">Alquiler</option>
+            <option value="temporario">Temporario</option>
+          </select>
+        </label>
+        <label>
+          Tipo
+          <input defaultValue="casa" name="tipo_propiedad" required />
+        </label>
+        <label>
+          Precio
+          <input inputMode="decimal" name="precio" />
+        </label>
+        <label>
+          Moneda
+          <input defaultValue="USD" maxLength={3} name="moneda" />
+        </label>
+        <label>
+          Localidad
+          <input defaultValue="Merlo" name="localidad" required />
+        </label>
+        <label>
+          Zona
+          <input name="zona" />
+        </label>
+        <label className="admin-form-wide">
+          Dirección
+          <input name="direccion" />
+        </label>
+        <label>
+          Dormitorios
+          <input inputMode="numeric" name="dormitorios" />
+        </label>
+        <label>
+          Baños
+          <input inputMode="numeric" name="banios" />
+        </label>
+        <label>
+          Sup. cubierta
+          <input inputMode="decimal" name="superficie_cubierta" />
+        </label>
+        <label>
+          Sup. total
+          <input inputMode="decimal" name="superficie_total" />
+        </label>
+      </div>
+      {state === "error" ? (
+        <p className="admin-error" role="alert">
+          No pudimos crear la propiedad. Revisá los datos e intentá nuevamente.
+        </p>
+      ) : null}
+      <div className="admin-form-actions">
+        <button
+          className="button button-secondary"
+          onClick={onCancel}
+          type="button"
+        >
+          Cancelar
+        </button>
+        <button
+          className="button button-primary"
+          disabled={state === "submitting"}
+          type="submit"
+        >
+          {state === "submitting" ? "Guardando..." : "Guardar borrador"}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function requiredText(form: FormData, name: string): string {
+  return String(form.get(name) ?? "").trim();
+}
+
+function optionalText(
+  form: FormData,
+  name: keyof AdminPropertyCreate,
+): Partial<AdminPropertyCreate> {
+  const value = String(form.get(name) ?? "").trim();
+  return value === "" ? {} : { [name]: value };
 }

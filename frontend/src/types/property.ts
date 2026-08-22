@@ -43,6 +43,22 @@ export type AdminProperty = Omit<PublicProperty, "estado" | "imagenes"> & {
     | "vendida"
     | "no_disponible";
 };
+export type AdminPropertyCreate = {
+  codigo: string;
+  titulo: string;
+  descripcion: string;
+  tipo_operacion: PublicProperty["tipo_operacion"];
+  tipo_propiedad: string;
+  precio?: string;
+  moneda?: string;
+  localidad: string;
+  zona?: string;
+  direccion?: string;
+  dormitorios?: string;
+  banios?: string;
+  superficie_cubierta?: string;
+  superficie_total?: string;
+};
 export type PropertyPage = {
   items: PublicProperty[];
   total: number;
