@@ -6,6 +6,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, select
 
+from app.core.config import settings
 from app.core.database import SessionLocal
 from app.main import app
 from app.modules.usuarios.models import SesionUsuario, Usuario
@@ -15,6 +16,11 @@ from app.modules.usuarios.service import UsuarioService
 
 client = TestClient(app, base_url="https://testserver")
 CONTRASENA = "contrasena-segura-pruebas"
+
+
+@pytest.fixture(autouse=True)
+def cookies_seguras_en_tests(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(settings, "session_cookie_secure", True)
 
 
 @pytest.fixture
