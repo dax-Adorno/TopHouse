@@ -189,6 +189,10 @@ describe("TopHouse App", () => {
   it("permite iniciar sesión administrativa y crear un borrador", async () => {
     const user = userEvent.setup();
     document.cookie = "tophouse_csrf=csrf-prueba";
+    vi.stubGlobal(
+      "confirm",
+      vi.fn(() => true),
+    );
     const fetchMock = vi.fn((url: string, options?: RequestInit) => {
       if (url.includes("/api/v1/auth/me")) {
         return Promise.resolve({ ok: false, status: 401 });
@@ -207,6 +211,12 @@ describe("TopHouse App", () => {
           ok: true,
           json: () => Promise.resolve(updatedAdminProperty),
         });
+      }
+      if (
+        url.includes("/api/v1/propiedades/7") &&
+        options?.method === "DELETE"
+      ) {
+        return Promise.resolve({ ok: true, status: 204 });
       }
       if (url.includes("/api/v1/propiedades") && options?.method === "POST") {
         return Promise.resolve({
@@ -256,6 +266,22 @@ describe("TopHouse App", () => {
           "X-CSRF-Token": "csrf-prueba",
         }),
         method: "PATCH",
+      }),
+    );
+
+    await user.click(screen.getByRole("button", { name: "Archivar" }));
+
+    expect(window.confirm).toHaveBeenCalledWith(
+      "Archivar TOP-7 y quitarla del catálogo público?",
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/propiedades/7"),
+      expect.objectContaining({
+        credentials: "include",
+        headers: expect.objectContaining({
+          "X-CSRF-Token": "csrf-prueba",
+        }),
+        method: "DELETE",
       }),
     );
 

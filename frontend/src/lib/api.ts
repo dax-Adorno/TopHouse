@@ -15,7 +15,7 @@ const API_URL = (
 
 type RequestOptions = {
   signal?: AbortSignal;
-  method?: "GET" | "POST" | "PATCH";
+  method?: "DELETE" | "GET" | "POST" | "PATCH";
   body?: unknown;
   credentials?: RequestCredentials;
   csrf?: boolean;
@@ -118,6 +118,13 @@ export const updateAdminProperty = (
   request<AdminProperty>(`/api/v1/propiedades/${propertyId}/admin`, {
     method: "PATCH",
     body: changes,
+    credentials: "include",
+    csrf: true,
+  });
+
+export const archiveAdminProperty = (propertyId: number) =>
+  request<void>(`/api/v1/propiedades/${propertyId}`, {
+    method: "DELETE",
     credentials: "include",
     csrf: true,
   });

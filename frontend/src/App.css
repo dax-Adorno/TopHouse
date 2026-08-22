@@ -884,6 +884,11 @@ main {
   border: 1px solid var(--line-dark);
   cursor: pointer;
 }
+.admin-row-actions .button-danger {
+  border-color: color-mix(in srgb, var(--coral), transparent 35%);
+  background: #fff7f4;
+  color: var(--coral);
+}
 .admin-row-actions .button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
