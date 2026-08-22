@@ -805,7 +805,7 @@ main {
 }
 .admin-table {
   width: 100%;
-  min-width: 860px;
+  min-width: 1060px;
   border-collapse: collapse;
 }
 .admin-table th,
@@ -839,6 +839,59 @@ main {
 .admin-table td span {
   color: var(--muted);
   font-size: 0.82rem;
+}
+.admin-row-control {
+  display: grid;
+  gap: 6px;
+}
+.admin-row-control > span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.admin-row-control select {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.admin-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  font-weight: 800;
+}
+.admin-checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--olive);
+}
+.admin-row-actions {
+  display: grid;
+  gap: 8px;
+  min-width: 130px;
+}
+.admin-row-actions .button {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--line-dark);
+  cursor: pointer;
+}
+.admin-row-actions .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.admin-row-actions span {
+  color: var(--coral);
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 .admin-status {
   width: fit-content;

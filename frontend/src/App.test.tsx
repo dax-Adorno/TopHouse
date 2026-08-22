@@ -82,6 +82,12 @@ const createdAdminProperty = {
   destacada: false,
 };
 
+const updatedAdminProperty = {
+  ...adminPropertyPage.items[0],
+  estado: "pausada",
+  destacada: false,
+};
+
 describe("TopHouse App", () => {
   beforeEach(() => {
     window.history.pushState({}, "", "/");
@@ -193,6 +199,15 @@ describe("TopHouse App", () => {
           json: () => Promise.resolve(adminUser),
         });
       }
+      if (
+        url.includes("/api/v1/propiedades/7/admin") &&
+        options?.method === "PATCH"
+      ) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(updatedAdminProperty),
+        });
+      }
       if (url.includes("/api/v1/propiedades") && options?.method === "POST") {
         return Promise.resolve({
           ok: true,
@@ -224,6 +239,25 @@ describe("TopHouse App", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("TOP-7")).toBeInTheDocument();
     expect(screen.getByText("Publicada")).toBeInTheDocument();
+
+    await user.selectOptions(
+      screen.getByLabelText("Estado de TOP-7"),
+      "pausada",
+    );
+    await user.click(screen.getByLabelText("Destacada TOP-7"));
+    await user.click(screen.getByRole("button", { name: "Guardar" }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/propiedades/7/admin"),
+      expect.objectContaining({
+        body: JSON.stringify({ estado: "pausada", destacada: false }),
+        credentials: "include",
+        headers: expect.objectContaining({
+          "X-CSRF-Token": "csrf-prueba",
+        }),
+        method: "PATCH",
+      }),
+    );
 
     await user.click(screen.getByRole("button", { name: "Nueva propiedad" }));
     await user.type(screen.getByLabelText("Código"), "TOP-8");

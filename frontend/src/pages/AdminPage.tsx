@@ -7,12 +7,14 @@ import {
   listAdminProperties,
   login,
   logout,
+  updateAdminProperty,
 } from "../lib/api";
 import type { AdminUser } from "../types/auth";
 import type {
   AdminProperty,
   AdminPropertyCreate,
   AdminPropertyPage,
+  AdminPropertyUpdate,
   PublicProperty,
 } from "../types/property";
 
@@ -20,6 +22,7 @@ type AuthState = "checking" | "anonymous" | "authenticated";
 type SubmitState = "idle" | "submitting" | "error";
 type PropertyState = "idle" | "loading" | "ready" | "error";
 type CreateState = "idle" | "submitting" | "success" | "error";
+type RowUpdateState = "idle" | "submitting" | "error";
 
 const statusLabels: Record<AdminProperty["estado"], string> = {
   borrador: "Borrador",
@@ -29,6 +32,19 @@ const statusLabels: Record<AdminProperty["estado"], string> = {
   alquilada: "Alquilada",
   vendida: "Vendida",
   no_disponible: "No disponible",
+};
+
+const statusTransitions: Record<
+  AdminProperty["estado"],
+  AdminProperty["estado"][]
+> = {
+  borrador: ["publicada", "no_disponible"],
+  publicada: ["pausada", "reservada", "alquilada", "vendida", "no_disponible"],
+  pausada: ["publicada", "no_disponible"],
+  reservada: ["publicada", "alquilada", "vendida", "no_disponible"],
+  alquilada: ["publicada", "no_disponible"],
+  vendida: ["no_disponible"],
+  no_disponible: ["borrador"],
 };
 
 export function AdminPage() {
@@ -102,6 +118,14 @@ export function AdminPage() {
     } catch {
       setCreateState("error");
     }
+  }
+
+  async function handleUpdateProperty(
+    propertyId: number,
+    cambios: AdminPropertyUpdate,
+  ) {
+    await updateAdminProperty(propertyId, cambios);
+    await loadProperties();
   }
 
   if (authState === "checking") {
@@ -179,6 +203,7 @@ export function AdminPage() {
             setShowCreateForm(true);
           }}
           onRetry={() => void loadProperties()}
+          onUpdate={handleUpdateProperty}
         />
       </section>
     );
@@ -239,6 +264,7 @@ function AdminPropertyTable({
   onCreate,
   onOpenCreate,
   onRetry,
+  onUpdate,
 }: {
   page: AdminPropertyPage | null;
   state: PropertyState;
@@ -248,6 +274,7 @@ function AdminPropertyTable({
   onCreate: (datos: AdminPropertyCreate) => Promise<void>;
   onOpenCreate: () => void;
   onRetry: () => void;
+  onUpdate: (propertyId: number, cambios: AdminPropertyUpdate) => Promise<void>;
 }) {
   if (state === "loading") {
     return (
@@ -316,35 +343,106 @@ function AdminPropertyTable({
               <th>Precio</th>
               <th>Estado</th>
               <th>Destacada</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {page.items.map((property) => (
-              <tr key={property.id}>
-                <td>{property.codigo}</td>
-                <td>
-                  <strong>{property.titulo}</strong>
-                  <span>
-                    {property.localidad}
-                    {property.zona ? `, ${property.zona}` : ""}
-                  </span>
-                </td>
-                <td>{operationLabel(property.tipo_operacion)}</td>
-                <td>{formatMoney(property)}</td>
-                <td>
-                  <span
-                    className={`admin-status admin-status-${property.estado}`}
-                  >
-                    {statusLabels[property.estado]}
-                  </span>
-                </td>
-                <td>{property.destacada ? "Sí" : "No"}</td>
-              </tr>
+              <AdminPropertyRow
+                key={`${property.id}-${property.estado}-${property.destacada}`}
+                property={property}
+                onUpdate={onUpdate}
+              />
             ))}
           </tbody>
         </table>
       </div>
     </section>
+  );
+}
+
+function AdminPropertyRow({
+  property,
+  onUpdate,
+}: {
+  property: AdminProperty;
+  onUpdate: (propertyId: number, cambios: AdminPropertyUpdate) => Promise<void>;
+}) {
+  const [estado, setEstado] = useState(property.estado);
+  const [destacada, setDestacada] = useState(property.destacada);
+  const [updateState, setUpdateState] = useState<RowUpdateState>("idle");
+  const stateOptions = [property.estado, ...statusTransitions[property.estado]];
+  const hasChanges =
+    estado !== property.estado || destacada !== property.destacada;
+
+  async function handleSave() {
+    if (!hasChanges) return;
+    setUpdateState("submitting");
+    try {
+      await onUpdate(property.id, { estado, destacada });
+      setUpdateState("idle");
+    } catch {
+      setUpdateState("error");
+    }
+  }
+
+  return (
+    <tr>
+      <td>{property.codigo}</td>
+      <td>
+        <strong>{property.titulo}</strong>
+        <span>
+          {property.localidad}
+          {property.zona ? `, ${property.zona}` : ""}
+        </span>
+      </td>
+      <td>{operationLabel(property.tipo_operacion)}</td>
+      <td>{formatMoney(property)}</td>
+      <td>
+        <label className="admin-row-control">
+          <span>Estado</span>
+          <select
+            aria-label={`Estado de ${property.codigo}`}
+            onChange={(event) =>
+              setEstado(event.target.value as AdminProperty["estado"])
+            }
+            value={estado}
+          >
+            {stateOptions.map((option) => (
+              <option key={option} value={option}>
+                {statusLabels[option]}
+              </option>
+            ))}
+          </select>
+        </label>
+      </td>
+      <td>
+        <label className="admin-checkbox">
+          <input
+            aria-label={`Destacada ${property.codigo}`}
+            checked={destacada}
+            onChange={(event) => setDestacada(event.target.checked)}
+            type="checkbox"
+          />
+          <span>{destacada ? "Sí" : "No"}</span>
+        </label>
+      </td>
+      <td>
+        <div className="admin-row-actions">
+          <button
+            className="button button-secondary"
+            disabled={!hasChanges || updateState === "submitting"}
+            onClick={handleSave}
+            type="button"
+          >
+            {updateState === "submitting" ? "Guardando..." : "Guardar"}
+          </button>
+          {updateState === "error" ? (
+            <span role="alert">No se pudo guardar.</span>
+          ) : null}
+        </div>
+      </td>
+    </tr>
   );
 }
 
