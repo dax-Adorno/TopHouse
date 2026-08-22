@@ -5,8 +5,11 @@ from typing import TypedDict
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.database import SessionLocal
 from app.modules.propiedades.models import Propiedad
+from app.modules.usuarios.models import Usuario
+from app.modules.usuarios.passwords import hashear_contrasena
 
 
 class DemoProperty(TypedDict):
@@ -194,6 +197,9 @@ DEMO_PROPERTIES: tuple[DemoProperty, ...] = (
 DEMO_PROPERTY_CODES = tuple(
     property_data["codigo"] for property_data in DEMO_PROPERTIES
 )
+DEMO_ADMIN_EMAIL = "admin.demo@tophouse.com"
+DEMO_ADMIN_PASSWORD = "TopHouse-demo-2026"
+LEGACY_DEMO_ADMIN_EMAILS = ("admin@tophouse.local",)
 
 
 def seed_demo_properties(session: Session) -> SeedResult:
@@ -216,12 +222,54 @@ def seed_demo_properties(session: Session) -> SeedResult:
     return SeedResult(created=created, updated=updated)
 
 
+def seed_demo_admin(session: Session) -> SeedResult:
+    for legacy_email in LEGACY_DEMO_ADMIN_EMAILS:
+        legacy_user = session.scalar(
+            select(Usuario).where(Usuario.email == legacy_email)
+        )
+        if legacy_user is not None:
+            session.delete(legacy_user)
+
+    usuario = session.scalar(select(Usuario).where(Usuario.email == DEMO_ADMIN_EMAIL))
+    password_hash = hashear_contrasena(DEMO_ADMIN_PASSWORD)
+
+    if usuario is None:
+        session.add(
+            Usuario(
+                email=DEMO_ADMIN_EMAIL,
+                nombre="Administrador Demo",
+                password_hash=password_hash,
+                rol="administrador",
+                activo=True,
+            )
+        )
+        return SeedResult(created=1, updated=0)
+
+    usuario.nombre = "Administrador Demo"
+    usuario.password_hash = password_hash
+    usuario.rol = "administrador"
+    usuario.activo = True
+    return SeedResult(created=0, updated=1)
+
+
 def main() -> None:
+    if settings.app_env == "production":
+        raise RuntimeError("El seed demo no debe ejecutarse en produccion")
+
     with SessionLocal() as session:
-        result = seed_demo_properties(session)
+        properties_result = seed_demo_properties(session)
+        admin_result = seed_demo_admin(session)
         session.commit()
 
-    print(f"Demo properties ready: {result.created} created, {result.updated} updated.")
+    print(
+        "Demo properties ready: "
+        f"{properties_result.created} created, {properties_result.updated} updated."
+    )
+    print(
+        "Demo admin ready: "
+        f"{admin_result.created} created, {admin_result.updated} updated."
+    )
+    print(f"Demo admin credentials: {DEMO_ADMIN_EMAIL} / {DEMO_ADMIN_PASSWORD}")
 
 
 if __name__ == "__main__":

@@ -43,6 +43,17 @@ const propertyPage = {
   limit: 9,
 };
 
+const adminUser = {
+  id: 1,
+  email: "admin@tophouse.com",
+  nombre: "Admin TopHouse",
+  rol: "administrador",
+  activo: true,
+  ultimo_acceso_en: null,
+  creado_en: "2026-08-21T12:00:00Z",
+  actualizado_en: "2026-08-21T12:00:00Z",
+};
+
 describe("TopHouse App", () => {
   beforeEach(() => {
     window.history.pushState({}, "", "/");
@@ -137,6 +148,45 @@ describe("TopHouse App", () => {
       expect.stringContaining("/api/v1/publico/propiedades/casa-luminosa"),
       expect.objectContaining({
         headers: { Accept: "application/json" },
+      }),
+    );
+  });
+
+  it("permite iniciar sesión administrativa", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn((url: string) => {
+      if (url.includes("/api/v1/auth/me")) {
+        return Promise.resolve({ ok: false, status: 401 });
+      }
+      if (url.includes("/api/v1/auth/login")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(adminUser),
+        });
+      }
+      return Promise.reject(new Error(`Unexpected request: ${url}`));
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    window.history.pushState({}, "", "/admin");
+
+    render(<App />);
+
+    await user.type(await screen.findByLabelText("Email"), adminUser.email);
+    await user.type(screen.getByLabelText("Contraseña"), "clave-segura");
+    await user.click(screen.getByRole("button", { name: "Ingresar" }));
+
+    expect(
+      await screen.findByRole("heading", { name: "Panel de TopHouse" }),
+    ).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      expect.stringContaining("/api/v1/auth/login"),
+      expect.objectContaining({
+        body: JSON.stringify({
+          email: adminUser.email,
+          contrasena: "clave-segura",
+        }),
+        credentials: "include",
+        method: "POST",
       }),
     );
   });

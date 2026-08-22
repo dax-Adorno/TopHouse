@@ -11,6 +11,7 @@ export function SiteLayout() {
         <nav aria-label="Navegación principal">
           <NavLink to="/">Inicio</NavLink>
           <NavLink to="/propiedades">Propiedades</NavLink>
+          <NavLink to="/admin">Admin</NavLink>
         </nav>
         <a className="header-contact" href="mailto:contacto@tophouse.com">
           Contactar
