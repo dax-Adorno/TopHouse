@@ -35,3 +35,14 @@ export type PropertyPage = {
   offset: number;
   limit: number;
 };
+export type PublicPropertyFilters = {
+  offset?: number;
+  limit?: number;
+  tipo_operacion?: PublicProperty["tipo_operacion"] | "";
+  tipo_propiedad?: string;
+  localidad?: string;
+  precio_min?: string;
+  precio_max?: string;
+  dormitorios_min?: string;
+  destacada?: boolean;
+};
