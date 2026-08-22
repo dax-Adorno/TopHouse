@@ -2,6 +2,7 @@ import type {
   AdminProperty,
   AdminPropertyCreate,
   AdminPropertyPage,
+  AdminPropertyUpdate,
   PropertyPage,
   PublicProperty,
   PublicPropertyFilters,
@@ -14,7 +15,7 @@ const API_URL = (
 
 type RequestOptions = {
   signal?: AbortSignal;
-  method?: "GET" | "POST";
+  method?: "GET" | "POST" | "PATCH";
   body?: unknown;
   credentials?: RequestCredentials;
   csrf?: boolean;
@@ -106,6 +107,17 @@ export const createAdminProperty = (property: AdminPropertyCreate) =>
   request<AdminProperty>("/api/v1/propiedades", {
     method: "POST",
     body: property,
+    credentials: "include",
+    csrf: true,
+  });
+
+export const updateAdminProperty = (
+  propertyId: number,
+  changes: AdminPropertyUpdate,
+) =>
+  request<AdminProperty>(`/api/v1/propiedades/${propertyId}/admin`, {
+    method: "PATCH",
+    body: changes,
     credentials: "include",
     csrf: true,
   });

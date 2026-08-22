@@ -59,6 +59,10 @@ export type AdminPropertyCreate = {
   superficie_cubierta?: string;
   superficie_total?: string;
 };
+export type AdminPropertyUpdate = {
+  estado?: AdminProperty["estado"];
+  destacada?: boolean;
+};
 export type PropertyPage = {
   items: PublicProperty[];
   total: number;
