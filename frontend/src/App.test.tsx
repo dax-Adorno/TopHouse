@@ -101,19 +101,31 @@ describe("TopHouse App", () => {
 
   it("muestra la portada y navega al catálogo", async () => {
     const user = userEvent.setup();
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(propertyPage),
-        }),
-      ),
+    const fetchMock = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(propertyPage),
+      }),
     );
+    vi.stubGlobal("fetch", fetchMock);
 
     render(<App />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Tu próximo lugar",
+    );
+    expect(
+      await screen.findByRole("heading", {
+        level: 3,
+        name: "Casa luminosa en Merlo",
+      }),
+    ).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining(
+        "/api/v1/publico/propiedades?destacada=true&limit=3&offset=0",
+      ),
+      expect.objectContaining({
+        headers: { Accept: "application/json" },
+      }),
     );
     await user.click(
       screen.getByRole("link", { name: "Explorar propiedades" }),

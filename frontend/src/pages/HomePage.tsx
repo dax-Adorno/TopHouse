@@ -1,5 +1,10 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import heroImage from "../assets/hero.png";
+import { listPublicProperties } from "../lib/api";
 import { buildGeneralContactHref } from "../lib/contact";
+import { formatMoney, operationLabel } from "../lib/propertyFormat";
+import type { PublicProperty } from "../types/property";
 
 const valores = [
   [
@@ -17,6 +22,29 @@ const valores = [
 ];
 
 export function HomePage() {
+  const [featured, setFeatured] = useState<PublicProperty[]>([]);
+  const [featuredState, setFeaturedState] = useState<
+    "loading" | "success" | "error"
+  >("loading");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    listPublicProperties(
+      { destacada: true, limit: 3, offset: 0 },
+      controller.signal,
+    )
+      .then((response) => {
+        setFeatured(response.items);
+        setFeaturedState("success");
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
+        setFeaturedState("error");
+      });
+    return () => controller.abort();
+  }, []);
+
   return (
     <>
       <section className="hero-section">
@@ -53,6 +81,62 @@ export function HomePage() {
             Espacios con intención
           </p>
         </div>
+      </section>
+      <section className="featured-section" aria-labelledby="featured-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Propiedades destacadas</p>
+            <h2 id="featured-title">Oportunidades elegidas en la zona.</h2>
+          </div>
+          <Link className="button button-secondary" to="/propiedades">
+            Ver catálogo
+          </Link>
+        </div>
+        {featuredState === "loading" ? (
+          <div className="featured-state" role="status">
+            Cargando propiedades destacadas...
+          </div>
+        ) : null}
+        {featuredState === "error" ? (
+          <div className="featured-state featured-state-error" role="alert">
+            No pudimos cargar las destacadas en este momento.
+          </div>
+        ) : null}
+        {featuredState === "success" && featured.length === 0 ? (
+          <div className="featured-state">
+            Todavía no hay propiedades destacadas publicadas.
+          </div>
+        ) : null}
+        {featuredState === "success" && featured.length > 0 ? (
+          <div className="featured-grid">
+            {featured.map((property) => {
+              const cover =
+                property.imagenes.find((image) => image.es_portada) ??
+                property.imagenes[0];
+              return (
+                <Link
+                  className="featured-card"
+                  key={property.id}
+                  to={`/propiedades/${property.slug}`}
+                >
+                  <img
+                    alt={property.titulo}
+                    src={cover?.url_thumbnail ?? cover?.url ?? heroImage}
+                  />
+                  <span>{operationLabel(property.tipo_operacion)}</span>
+                  <div>
+                    <p>
+                      {property.localidad}
+                      {property.zona ? `, ${property.zona}` : ""}
+                    </p>
+                    <h3>{property.titulo}</h3>
+                    <strong>{formatMoney(property)}</strong>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        ) : null}
       </section>
       <section className="values-section" aria-labelledby="values-title">
         <div>

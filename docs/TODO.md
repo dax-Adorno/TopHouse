@@ -10,9 +10,9 @@ propiedades generan registros de auditoría.
 
 1. Mantener pruebas específicas contra IDOR en recursos administrativos.
 2. Definir la estrategia de CDN/cache para producción.
-3. Implementar catálogo, tarjetas y estados de carga/error.
-4. Conectar filtros y paginación con la API pública.
-5. Implementar detalle, galería, mapa y contacto por WhatsApp.
+3. Consolidar pruebas E2E del frontend público y panel administrativo.
+4. Definir la estrategia de CDN/cache para imágenes en producción.
+5. Preparar hardening de seguridad y configuración de despliegue.
 
 ## Después de autenticación y auditoría
 
