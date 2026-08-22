@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App";
@@ -93,6 +93,23 @@ const editedAdminProperty = {
   titulo: "Casa luminosa actualizada",
   zona: "Rincón del Este",
 };
+
+const adminImages = [
+  {
+    id: 11,
+    propiedad_id: 7,
+    nombre_original: "fachada.jpg",
+    mime_type: "image/jpeg",
+    tamanio_bytes: 120000,
+    ancho: 1200,
+    alto: 800,
+    orden: 0,
+    es_portada: true,
+    creado_en: "2026-08-21T12:00:00Z",
+    url: "https://storage.example/fachada.webp",
+    url_thumbnail: "https://storage.example/fachada-thumb.webp",
+  },
+];
 
 describe("TopHouse App", () => {
   beforeEach(() => {
@@ -252,6 +269,21 @@ describe("TopHouse App", () => {
         });
       }
       if (
+        url.includes("/api/v1/propiedades/7/imagenes") &&
+        options?.method === "POST"
+      ) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(adminImages[0]),
+        });
+      }
+      if (url.includes("/api/v1/propiedades/7/imagenes")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(adminImages),
+        });
+      }
+      if (
         url.includes("/api/v1/propiedades/7/admin") &&
         options?.method === "PATCH"
       ) {
@@ -326,6 +358,45 @@ describe("TopHouse App", () => {
           "X-CSRF-Token": "csrf-prueba",
         }),
         method: "PATCH",
+      }),
+    );
+
+    await user.click(screen.getByRole("button", { name: "Imágenes" }));
+
+    expect(await screen.findByText("fachada.jpg")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/propiedades/7/imagenes"),
+      expect.objectContaining({
+        credentials: "include",
+      }),
+    );
+
+    const file = new File(["contenido"], "living.jpg", { type: "image/jpeg" });
+    const fileInput = screen.getByLabelText("Archivo") as HTMLInputElement;
+    await user.upload(fileInput, file);
+    expect(fileInput.files?.[0]).toBe(file);
+    await user.click(screen.getByRole("button", { name: "Subir imagen" }));
+
+    let uploadCall:
+      | [input: string | URL | Request, init?: RequestInit | undefined]
+      | undefined;
+    await waitFor(() => {
+      uploadCall = fetchMock.mock.calls.find(
+        ([url, options]) =>
+          String(url).includes("/api/v1/propiedades/7/imagenes") &&
+          (options as RequestInit | undefined)?.method === "POST",
+      );
+      expect(uploadCall).toBeDefined();
+    });
+    expect(uploadCall).toBeDefined();
+    expect(uploadCall?.[1]).toEqual(
+      expect.objectContaining({
+        body: expect.any(FormData),
+        credentials: "include",
+        headers: expect.objectContaining({
+          "X-CSRF-Token": "csrf-prueba",
+        }),
+        method: "POST",
       }),
     );
 
