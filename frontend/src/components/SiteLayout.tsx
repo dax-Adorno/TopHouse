@@ -4,6 +4,9 @@ import { buildGeneralContactHref, contactActionLabel } from "../lib/contact";
 export function SiteLayout() {
   return (
     <div className="site-shell">
+      <a className="skip-link" href="#main-content">
+        Saltar al contenido
+      </a>
       <header className="site-header">
         <Link className="brand" to="/" aria-label="TopHouse, inicio">
           <span className="brand-mark">TH</span>
@@ -18,7 +21,7 @@ export function SiteLayout() {
           {contactActionLabel()}
         </a>
       </header>
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Outlet />
       </main>
       <footer className="site-footer">
