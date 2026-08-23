@@ -888,6 +888,9 @@ function AdminPropertyDetailsForm({
       localidad: requiredText(form, "localidad"),
       ...optionalText(form, "zona"),
       ...optionalText(form, "direccion"),
+      ...optionalText(form, "latitud"),
+      ...optionalText(form, "longitud"),
+      mostrar_ubicacion_exacta: form.get("mostrar_ubicacion_exacta") === "on",
       ...optionalText(form, "dormitorios"),
       ...optionalText(form, "banios"),
       ...optionalText(form, "superficie_cubierta"),
@@ -954,6 +957,9 @@ function AdminPropertyCreateForm({
       localidad: requiredText(form, "localidad"),
       ...optionalText(form, "zona"),
       ...optionalText(form, "direccion"),
+      ...optionalText(form, "latitud"),
+      ...optionalText(form, "longitud"),
+      mostrar_ubicacion_exacta: form.get("mostrar_ubicacion_exacta") === "on",
       ...optionalText(form, "dormitorios"),
       ...optionalText(form, "banios"),
       ...optionalText(form, "superficie_cubierta"),
@@ -1060,6 +1066,32 @@ function AdminPropertyFields({ property }: { property?: AdminProperty }) {
       <label className="admin-form-wide">
         Dirección
         <input defaultValue={property?.direccion ?? ""} name="direccion" />
+      </label>
+      <label>
+        Latitud
+        <input
+          defaultValue={property?.latitud ?? ""}
+          inputMode="decimal"
+          name="latitud"
+          placeholder="-32.342900"
+        />
+      </label>
+      <label>
+        Longitud
+        <input
+          defaultValue={property?.longitud ?? ""}
+          inputMode="decimal"
+          name="longitud"
+          placeholder="-65.013900"
+        />
+      </label>
+      <label className="admin-checkbox admin-form-wide">
+        <input
+          defaultChecked={property?.mostrar_ubicacion_exacta ?? false}
+          name="mostrar_ubicacion_exacta"
+          type="checkbox"
+        />
+        <span>Mostrar ubicación exacta públicamente</span>
       </label>
       <label>
         Dormitorios
