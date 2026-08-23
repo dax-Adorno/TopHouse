@@ -1,6 +1,6 @@
 # Roadmap de TopHouse
 
-Actualizado: 21 de agosto de 2026.
+Actualizado: 23 de agosto de 2026.
 
 ## Fase 1 - Base de ingeniería
 
@@ -15,7 +15,7 @@ Estado: completada.
 
 ## Fase 2 - Backend inmobiliario
 
-Estado: en ejecución.
+Estado: completada para MVP.
 
 - [x] Modelo `Propiedad` y dominio en español.
 - [x] Dirección, coordenadas, privacidad y constraints geográficos (PR #5).
@@ -44,14 +44,14 @@ Estado: completada.
 
 ## Fase 4 - Frontend
 
-Estado: en ejecución.
+Estado: completada para MVP.
 
 - [x] Aplicación React + TypeScript + Vite.
 - [x] Home, catálogo, filtros y detalle público.
 - [x] Galería, mapa y contacto por WhatsApp.
-- [ ] Panel administrativo.
+- [x] Panel administrativo.
 - [x] Vitest y React Testing Library.
-- [ ] Playwright E2E.
+- [x] Playwright E2E.
 
 ## Fase 5 - Producción
 
