@@ -35,6 +35,7 @@ type EditState = "idle" | "submitting" | "success" | "error";
 type ImageState = "idle" | "loading" | "ready" | "uploading" | "error";
 type RowUpdateState = "idle" | "submitting" | "error";
 type RowArchiveState = "idle" | "submitting" | "error";
+type CoordinateError = "incomplete" | "invalid_latitude" | "invalid_longitude";
 
 const statusLabels: Record<AdminProperty["estado"], string> = {
   borrador: "Borrador",
@@ -871,17 +872,18 @@ function AdminPropertyDetailsForm({
     cambios: AdminPropertyDetailsUpdate,
   ) => Promise<void>;
 }) {
-  const [coordinateError, setCoordinateError] = useState(false);
+  const [coordinateError, setCoordinateError] =
+    useState<CoordinateError | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const coordinates = optionalCoordinatePair(form);
-    if (coordinates === null) {
-      setCoordinateError(true);
+    if ("error" in coordinates) {
+      setCoordinateError(coordinates.error);
       return;
     }
-    setCoordinateError(false);
+    setCoordinateError(null);
     await onSubmit(property.id, {
       codigo: requiredText(form, "codigo"),
       titulo: requiredText(form, "titulo"),
@@ -912,9 +914,9 @@ function AdminPropertyDetailsForm({
         <p>Actualizá los datos descriptivos sin cambiar estado ni destacada.</p>
       </div>
       <AdminPropertyFields property={property} />
-      {coordinateError ? (
+      {coordinateError !== null ? (
         <p className="admin-error" role="alert">
-          Ingresá latitud y longitud juntas.
+          {coordinateErrorMessage(coordinateError)}
         </p>
       ) : null}
       {state === "error" ? (
@@ -952,17 +954,18 @@ function AdminPropertyCreateForm({
   onCancel: () => void;
   onSubmit: (datos: AdminPropertyCreate) => Promise<void>;
 }) {
-  const [coordinateError, setCoordinateError] = useState(false);
+  const [coordinateError, setCoordinateError] =
+    useState<CoordinateError | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const coordinates = optionalCoordinatePair(form);
-    if (coordinates === null) {
-      setCoordinateError(true);
+    if ("error" in coordinates) {
+      setCoordinateError(coordinates.error);
       return;
     }
-    setCoordinateError(false);
+    setCoordinateError(null);
     await onSubmit({
       codigo: requiredText(form, "codigo"),
       titulo: requiredText(form, "titulo"),
@@ -989,9 +992,9 @@ function AdminPropertyCreateForm({
   return (
     <form className="admin-create-form" onSubmit={handleSubmit}>
       <AdminPropertyFields />
-      {coordinateError ? (
+      {coordinateError !== null ? (
         <p className="admin-error" role="alert">
-          Ingresá latitud y longitud juntas.
+          {coordinateErrorMessage(coordinateError)}
         </p>
       ) : null}
       {state === "error" ? (
@@ -1167,9 +1170,36 @@ function optionalText(
 
 function optionalCoordinatePair(
   form: FormData,
-): Pick<AdminPropertyCreate, "latitud" | "longitud"> | null {
+):
+  | Pick<AdminPropertyCreate, "latitud" | "longitud">
+  | { error: CoordinateError } {
   const latitud = String(form.get("latitud") ?? "").trim();
   const longitud = String(form.get("longitud") ?? "").trim();
-  if ((latitud === "") !== (longitud === "")) return null;
-  return latitud === "" ? {} : { latitud, longitud };
+  if ((latitud === "") !== (longitud === "")) return { error: "incomplete" };
+  if (latitud === "") return {};
+
+  const parsedLatitude = Number(latitud);
+  if (
+    !Number.isFinite(parsedLatitude) ||
+    parsedLatitude < -90 ||
+    parsedLatitude > 90
+  )
+    return { error: "invalid_latitude" };
+
+  const parsedLongitude = Number(longitud);
+  if (
+    !Number.isFinite(parsedLongitude) ||
+    parsedLongitude < -180 ||
+    parsedLongitude > 180
+  )
+    return { error: "invalid_longitude" };
+
+  return { latitud, longitud };
+}
+
+function coordinateErrorMessage(error: CoordinateError): string {
+  if (error === "incomplete") return "Ingresá latitud y longitud juntas.";
+  if (error === "invalid_latitude")
+    return "La latitud debe estar entre -90 y 90.";
+  return "La longitud debe estar entre -180 y 180.";
 }
