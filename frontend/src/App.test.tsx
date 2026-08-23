@@ -109,6 +109,20 @@ const adminImages = [
     url: "https://storage.example/fachada.webp",
     url_thumbnail: "https://storage.example/fachada-thumb.webp",
   },
+  {
+    id: 12,
+    propiedad_id: 7,
+    nombre_original: "living.jpg",
+    mime_type: "image/jpeg",
+    tamanio_bytes: 98000,
+    ancho: 1200,
+    alto: 800,
+    orden: 1,
+    es_portada: false,
+    creado_en: "2026-08-21T12:30:00Z",
+    url: "https://storage.example/living.webp",
+    url_thumbnail: "https://storage.example/living-thumb.webp",
+  },
 ];
 
 describe("TopHouse App", () => {
@@ -277,6 +291,21 @@ describe("TopHouse App", () => {
           json: () => Promise.resolve(adminImages[0]),
         });
       }
+      if (
+        url.includes("/api/v1/propiedades/7/imagenes/12/portada") &&
+        options?.method === "PUT"
+      ) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ ...adminImages[1], es_portada: true }),
+        });
+      }
+      if (
+        url.includes("/api/v1/propiedades/7/imagenes/11") &&
+        options?.method === "DELETE"
+      ) {
+        return Promise.resolve({ ok: true, status: 204 });
+      }
       if (url.includes("/api/v1/propiedades/7/imagenes")) {
         return Promise.resolve({
           ok: true,
@@ -364,6 +393,7 @@ describe("TopHouse App", () => {
     await user.click(screen.getByRole("button", { name: "Imágenes" }));
 
     expect(await screen.findByText("fachada.jpg")).toBeInTheDocument();
+    expect(screen.getByText("living.jpg")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("/api/v1/propiedades/7/imagenes"),
       expect.objectContaining({
@@ -397,6 +427,35 @@ describe("TopHouse App", () => {
           "X-CSRF-Token": "csrf-prueba",
         }),
         method: "POST",
+      }),
+    );
+
+    await user.click(screen.getByRole("button", { name: "Usar como portada" }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/propiedades/7/imagenes/12/portada"),
+      expect.objectContaining({
+        credentials: "include",
+        headers: expect.objectContaining({
+          "X-CSRF-Token": "csrf-prueba",
+        }),
+        method: "PUT",
+      }),
+    );
+
+    await user.click(screen.getAllByRole("button", { name: "Eliminar" })[0]);
+
+    expect(window.confirm).toHaveBeenCalledWith(
+      "Eliminar fachada.jpg de TOP-7?",
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/propiedades/7/imagenes/11"),
+      expect.objectContaining({
+        credentials: "include",
+        headers: expect.objectContaining({
+          "X-CSRF-Token": "csrf-prueba",
+        }),
+        method: "DELETE",
       }),
     );
 
