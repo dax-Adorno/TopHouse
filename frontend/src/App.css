@@ -3,6 +3,23 @@
   display: flex;
   flex-direction: column;
 }
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 12px;
+  left: 12px;
+  transform: translateY(-160%);
+  padding: 10px 14px;
+  background: var(--ink);
+  color: white;
+  font-size: 0.84rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 140ms ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
 .site-header {
   height: 76px;
   padding: 0 clamp(24px, 6vw, 96px);

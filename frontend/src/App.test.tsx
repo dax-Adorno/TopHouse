@@ -154,6 +154,13 @@ describe("TopHouse App", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     render(<App />);
+    expect(
+      screen.getByRole("link", { name: "Saltar al contenido" }),
+    ).toHaveAttribute("href", "#main-content");
+    expect(document.querySelector("main")).toHaveAttribute(
+      "id",
+      "main-content",
+    );
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Tu próximo lugar",
     );
