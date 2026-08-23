@@ -17,7 +17,7 @@ const API_URL = (
 
 type RequestOptions = {
   signal?: AbortSignal;
-  method?: "DELETE" | "GET" | "POST" | "PATCH";
+  method?: "DELETE" | "GET" | "POST" | "PATCH" | "PUT";
   body?: unknown;
   credentials?: RequestCredentials;
   csrf?: boolean;
@@ -130,6 +130,26 @@ export const uploadAdminPropertyImage = (propertyId: number, file: File) => {
     },
   );
 };
+
+export const setAdminPropertyImageCover = (
+  propertyId: number,
+  imageId: number,
+) =>
+  request<AdminPropertyImage>(
+    `/api/v1/propiedades/${propertyId}/imagenes/${imageId}/portada`,
+    {
+      method: "PUT",
+      credentials: "include",
+      csrf: true,
+    },
+  );
+
+export const deleteAdminPropertyImage = (propertyId: number, imageId: number) =>
+  request<void>(`/api/v1/propiedades/${propertyId}/imagenes/${imageId}`, {
+    method: "DELETE",
+    credentials: "include",
+    csrf: true,
+  });
 
 export const createAdminProperty = (property: AdminPropertyCreate) =>
   request<AdminProperty>("/api/v1/propiedades", {

@@ -4,11 +4,13 @@ import { formatMoney, operationLabel } from "../lib/propertyFormat";
 import {
   archiveAdminProperty,
   createAdminProperty,
+  deleteAdminPropertyImage,
   getCurrentUser,
   listAdminPropertyImages,
   listAdminProperties,
   login,
   logout,
+  setAdminPropertyImageCover,
   uploadAdminPropertyImage,
   updateAdminPropertyDetails,
   updateAdminProperty,
@@ -615,6 +617,7 @@ function AdminPropertyImagesPanel({
   const [images, setImages] = useState<AdminPropertyImage[]>([]);
   const [state, setState] = useState<ImageState>("loading");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [activeImageId, setActiveImageId] = useState<number | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -630,16 +633,53 @@ function AdminPropertyImagesPanel({
   async function handleUpload(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (selectedFile === null || selectedFile.size === 0) return;
+    const form = event.currentTarget;
     setState("uploading");
     try {
       await uploadAdminPropertyImage(property.id, selectedFile);
       setSelectedFile(null);
-      event.currentTarget.reset();
+      form.reset();
       const response = await listAdminPropertyImages(property.id);
       setImages(response);
       setState("ready");
     } catch {
       setState("error");
+    }
+  }
+
+  async function refreshImages() {
+    const response = await listAdminPropertyImages(property.id);
+    setImages(response);
+    setState("ready");
+  }
+
+  async function handleSetCover(imageId: number) {
+    setActiveImageId(imageId);
+    try {
+      await setAdminPropertyImageCover(property.id, imageId);
+      await refreshImages();
+    } catch {
+      setState("error");
+    } finally {
+      setActiveImageId(null);
+    }
+  }
+
+  async function handleDelete(image: AdminPropertyImage) {
+    if (
+      !window.confirm(
+        `Eliminar ${image.nombre_original} de ${property.codigo}?`,
+      )
+    )
+      return;
+    setActiveImageId(image.id);
+    try {
+      await deleteAdminPropertyImage(property.id, image.id);
+      await refreshImages();
+    } catch {
+      setState("error");
+    } finally {
+      setActiveImageId(null);
     }
   }
 
@@ -708,6 +748,28 @@ function AdminPropertyImagesPanel({
                   {image.es_portada ? "Portada" : `Orden ${image.orden + 1}`}
                 </strong>
                 <span>{image.nombre_original}</span>
+                <div className="admin-image-actions">
+                  {!image.es_portada ? (
+                    <button
+                      className="button button-secondary"
+                      disabled={activeImageId !== null}
+                      onClick={() => void handleSetCover(image.id)}
+                      type="button"
+                    >
+                      {activeImageId === image.id
+                        ? "Actualizando..."
+                        : "Usar como portada"}
+                    </button>
+                  ) : null}
+                  <button
+                    className="button button-danger"
+                    disabled={activeImageId !== null}
+                    onClick={() => void handleDelete(image)}
+                    type="button"
+                  >
+                    {activeImageId === image.id ? "Eliminando..." : "Eliminar"}
+                  </button>
+                </div>
               </div>
             </article>
           ))}

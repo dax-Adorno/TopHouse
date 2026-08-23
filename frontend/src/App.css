@@ -969,7 +969,7 @@ main {
   display: block;
   object-fit: cover;
 }
-.admin-image-grid div {
+.admin-image-grid article > div {
   padding: 12px;
 }
 .admin-image-grid strong,
@@ -985,6 +985,17 @@ main {
   color: var(--muted);
   font-size: 0.78rem;
   overflow-wrap: anywhere;
+}
+.admin-image-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+.admin-image-actions .button {
+  width: 100%;
+  min-height: 38px;
+  padding: 9px 10px;
+  font-size: 0.72rem;
 }
 .admin-success {
   margin: 0 0 18px;
