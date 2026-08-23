@@ -301,6 +301,15 @@ describe("TopHouse App", () => {
         });
       }
       if (
+        url.includes("/api/v1/propiedades/7/imagenes/orden") &&
+        options?.method === "PUT"
+      ) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([adminImages[1], adminImages[0]]),
+        });
+      }
+      if (
         url.includes("/api/v1/propiedades/7/imagenes/11") &&
         options?.method === "DELETE"
       ) {
@@ -427,6 +436,20 @@ describe("TopHouse App", () => {
           "X-CSRF-Token": "csrf-prueba",
         }),
         method: "POST",
+      }),
+    );
+
+    await user.click(screen.getAllByRole("button", { name: "Bajar" })[0]);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/propiedades/7/imagenes/orden"),
+      expect.objectContaining({
+        body: JSON.stringify({ imagen_ids: [12, 11] }),
+        credentials: "include",
+        headers: expect.objectContaining({
+          "X-CSRF-Token": "csrf-prueba",
+        }),
+        method: "PUT",
       }),
     );
 

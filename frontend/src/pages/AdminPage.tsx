@@ -10,6 +10,7 @@ import {
   listAdminProperties,
   login,
   logout,
+  reorderAdminPropertyImages,
   setAdminPropertyImageCover,
   uploadAdminPropertyImage,
   updateAdminPropertyDetails,
@@ -683,6 +684,32 @@ function AdminPropertyImagesPanel({
     }
   }
 
+  async function handleMove(imageId: number, direction: -1 | 1) {
+    const currentIndex = images.findIndex((image) => image.id === imageId);
+    const nextIndex = currentIndex + direction;
+    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= images.length) return;
+
+    const nextImages = [...images];
+    [nextImages[currentIndex], nextImages[nextIndex]] = [
+      nextImages[nextIndex],
+      nextImages[currentIndex],
+    ];
+
+    setActiveImageId(imageId);
+    try {
+      const response = await reorderAdminPropertyImages(
+        property.id,
+        nextImages.map((image) => image.id),
+      );
+      setImages(response);
+      setState("ready");
+    } catch {
+      setState("error");
+    } finally {
+      setActiveImageId(null);
+    }
+  }
+
   return (
     <section
       className="admin-images-panel"
@@ -740,7 +767,7 @@ function AdminPropertyImagesPanel({
       ) : null}
       {state === "ready" && images.length > 0 ? (
         <div className="admin-image-grid">
-          {images.map((image) => (
+          {images.map((image, index) => (
             <article key={image.id}>
               <img alt={image.nombre_original} src={image.url_thumbnail} />
               <div>
@@ -749,6 +776,26 @@ function AdminPropertyImagesPanel({
                 </strong>
                 <span>{image.nombre_original}</span>
                 <div className="admin-image-actions">
+                  <div className="admin-image-order-actions">
+                    <button
+                      className="button button-secondary"
+                      disabled={activeImageId !== null || index === 0}
+                      onClick={() => void handleMove(image.id, -1)}
+                      type="button"
+                    >
+                      Subir
+                    </button>
+                    <button
+                      className="button button-secondary"
+                      disabled={
+                        activeImageId !== null || index === images.length - 1
+                      }
+                      onClick={() => void handleMove(image.id, 1)}
+                      type="button"
+                    >
+                      Bajar
+                    </button>
+                  </div>
                   {!image.es_portada ? (
                     <button
                       className="button button-secondary"
