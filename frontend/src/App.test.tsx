@@ -204,6 +204,18 @@ describe("TopHouse App", () => {
       "step",
       "1",
     );
+    await user.type(screen.getByLabelText("Precio mín."), "300000");
+    await user.type(screen.getByLabelText("Precio máx."), "200000");
+    const callsBeforeInvalidRange = fetchMock.mock.calls.length;
+    await user.click(screen.getByRole("button", { name: "Aplicar" }));
+    expect(
+      await screen.findByText(
+        "El precio mínimo no puede superar al precio máximo.",
+      ),
+    ).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(callsBeforeInvalidRange);
+    await user.clear(screen.getByLabelText("Precio mín."));
+    await user.clear(screen.getByLabelText("Precio máx."));
     await user.selectOptions(screen.getByLabelText("Operación"), "venta");
     await user.type(screen.getByLabelText("Localidad"), "Merlo");
     await user.click(screen.getByRole("button", { name: "Aplicar" }));

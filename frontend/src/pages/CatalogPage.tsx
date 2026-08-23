@@ -96,6 +96,7 @@ export function CatalogPage() {
   const [page, setPage] = useState(initialPage);
   const [offset, setOffset] = useState(0);
   const [state, setState] = useState<LoadState>("loading");
+  const [filterError, setFilterError] = useState<string | null>(null);
 
   const currentPage = Math.floor(page.offset / page.limit) + 1;
   const totalPages = Math.max(1, Math.ceil(page.total / page.limit));
@@ -122,6 +123,11 @@ export function CatalogPage() {
 
   function submitFilters(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isValidPriceRange(draftFilters)) {
+      setFilterError("El precio mínimo no puede superar al precio máximo.");
+      return;
+    }
+    setFilterError(null);
     setState("loading");
     setOffset(0);
     setAppliedFilters(draftFilters);
@@ -129,6 +135,7 @@ export function CatalogPage() {
 
   function resetFilters() {
     setState("loading");
+    setFilterError(null);
     setDraftFilters(initialFilters);
     setAppliedFilters(initialFilters);
     setOffset(0);
@@ -246,6 +253,11 @@ export function CatalogPage() {
                 }
               />
             </label>
+            {filterError !== null ? (
+              <p className="filter-error" role="alert">
+                {filterError}
+              </p>
+            ) : null}
             <div className="filter-actions">
               <button className="button button-primary" type="submit">
                 Aplicar
@@ -318,4 +330,9 @@ export function CatalogPage() {
       </div>
     </section>
   );
+}
+
+function isValidPriceRange(filters: DraftFilters): boolean {
+  if (filters.precio_min === "" || filters.precio_max === "") return true;
+  return Number(filters.precio_min) <= Number(filters.precio_max);
 }
