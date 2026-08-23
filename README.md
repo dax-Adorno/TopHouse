@@ -201,3 +201,23 @@ VITE_WHATSAPP_NUMBER=5492664000000
 ```
 
 `VITE_WHATSAPP_NUMBER` debe cargarse en formato internacional, sólo números.
+
+### Comandos de calidad frontend
+
+Desde `frontend`:
+
+```powershell
+pnpm run format:check
+pnpm run typecheck
+pnpm run lint
+pnpm run test
+pnpm run build
+pnpm run test:e2e
+```
+
+La primera vez que se ejecuten pruebas E2E localmente puede ser necesario
+instalar el navegador de Playwright:
+
+```powershell
+pnpm exec playwright install chromium
+```
