@@ -835,6 +835,29 @@ main {
 .admin-section-heading .button {
   border: 0;
 }
+.admin-inventory-search {
+  max-width: 420px;
+  display: grid;
+  gap: 8px;
+  margin: 0 0 18px;
+  color: var(--ink);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.admin-inventory-search input {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0 12px;
+  background: white;
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
 .admin-create-form {
   margin-bottom: 22px;
   padding: 22px;

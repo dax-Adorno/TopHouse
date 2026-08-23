@@ -384,6 +384,16 @@ describe("TopHouse App", () => {
     expect(screen.getByText("TOP-7")).toBeInTheDocument();
     expect(screen.getByText("Publicada")).toBeInTheDocument();
 
+    await user.type(screen.getByLabelText("Buscar en inventario"), "centro");
+    expect(
+      await screen.findByText(
+        "No hay propiedades que coincidan con esa búsqueda.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("TOP-7")).not.toBeInTheDocument();
+    await user.clear(screen.getByLabelText("Buscar en inventario"));
+    expect(await screen.findByText("TOP-7")).toBeInTheDocument();
+
     await user.click(screen.getByRole("button", { name: "Editar datos" }));
     await user.clear(screen.getByLabelText("Título"));
     await user.type(

@@ -369,6 +369,8 @@ function AdminPropertyTable({
   onRetry: () => void;
   onUpdate: (propertyId: number, cambios: AdminPropertyUpdate) => Promise<void>;
 }) {
+  const [inventoryQuery, setInventoryQuery] = useState("");
+
   if (state === "loading") {
     return (
       <div className="admin-table-state">
@@ -427,6 +429,10 @@ function AdminPropertyTable({
     );
   }
 
+  const filteredItems = page.items.filter((property) =>
+    matchesInventoryQuery(property, inventoryQuery),
+  );
+
   return (
     <section
       className="admin-properties"
@@ -445,6 +451,15 @@ function AdminPropertyTable({
           Nueva propiedad
         </button>
       </div>
+      <label className="admin-inventory-search">
+        Buscar en inventario
+        <input
+          onChange={(event) => setInventoryQuery(event.target.value)}
+          placeholder="Código, título o zona"
+          type="search"
+          value={inventoryQuery}
+        />
+      </label>
       {showCreateForm ? (
         <AdminPropertyCreateForm
           state={createState}
@@ -477,33 +492,39 @@ function AdminPropertyTable({
           Datos de propiedad actualizados.
         </p>
       ) : null}
-      <div className="admin-table-wrap">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Propiedad</th>
-              <th>Operación</th>
-              <th>Precio</th>
-              <th>Estado</th>
-              <th>Destacada</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {page.items.map((property) => (
-              <AdminPropertyRow
-                key={`${property.id}-${property.estado}-${property.destacada}`}
-                onArchive={onArchive}
-                onEdit={onOpenEdit}
-                onImages={onOpenImages}
-                property={property}
-                onUpdate={onUpdate}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {filteredItems.length === 0 ? (
+        <div className="admin-table-state">
+          <p>No hay propiedades que coincidan con esa búsqueda.</p>
+        </div>
+      ) : (
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Propiedad</th>
+                <th>Operación</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Destacada</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredItems.map((property) => (
+                <AdminPropertyRow
+                  key={`${property.id}-${property.estado}-${property.destacada}`}
+                  onArchive={onArchive}
+                  onEdit={onOpenEdit}
+                  onImages={onOpenImages}
+                  property={property}
+                  onUpdate={onUpdate}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </section>
   );
 }
@@ -1216,4 +1237,28 @@ function coordinateErrorMessage(error: CoordinateError): string {
   if (error === "invalid_latitude")
     return "La latitud debe estar entre -90 y 90.";
   return "La longitud debe estar entre -180 y 180.";
+}
+
+function matchesInventoryQuery(
+  property: AdminProperty,
+  rawQuery: string,
+): boolean {
+  const query = normalizeSearchText(rawQuery);
+  if (query === "") return true;
+  return [
+    property.codigo,
+    property.titulo,
+    property.localidad,
+    property.zona ?? "",
+  ]
+    .map(normalizeSearchText)
+    .some((value) => value.includes(query));
+}
+
+function normalizeSearchText(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .trim();
 }
