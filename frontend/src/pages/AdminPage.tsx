@@ -1067,7 +1067,10 @@ function AdminPropertyFields({ property }: { property?: AdminProperty }) {
         <input
           defaultValue={property?.precio ?? ""}
           inputMode="decimal"
+          min="0"
           name="precio"
+          step="0.01"
+          type="number"
         />
       </label>
       <label>
@@ -1124,7 +1127,10 @@ function AdminPropertyFields({ property }: { property?: AdminProperty }) {
         <input
           defaultValue={property?.dormitorios ?? ""}
           inputMode="numeric"
+          min="0"
           name="dormitorios"
+          step="1"
+          type="number"
         />
       </label>
       <label>
@@ -1132,7 +1138,10 @@ function AdminPropertyFields({ property }: { property?: AdminProperty }) {
         <input
           defaultValue={property?.banios ?? ""}
           inputMode="numeric"
+          min="0"
           name="banios"
+          step="1"
+          type="number"
         />
       </label>
       <label>
@@ -1140,7 +1149,10 @@ function AdminPropertyFields({ property }: { property?: AdminProperty }) {
         <input
           defaultValue={property?.superficie_cubierta ?? ""}
           inputMode="decimal"
+          min="0"
           name="superficie_cubierta"
+          step="0.01"
+          type="number"
         />
       </label>
       <label>
@@ -1148,7 +1160,10 @@ function AdminPropertyFields({ property }: { property?: AdminProperty }) {
         <input
           defaultValue={property?.superficie_total ?? ""}
           inputMode="decimal"
+          min="0"
           name="superficie_total"
+          step="0.01"
+          type="number"
         />
       </label>
     </div>

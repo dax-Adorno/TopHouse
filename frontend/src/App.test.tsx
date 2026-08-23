@@ -525,6 +525,12 @@ describe("TopHouse App", () => {
     );
 
     await user.click(screen.getByRole("button", { name: "Nueva propiedad" }));
+    expect(screen.getByLabelText("Precio")).toHaveAttribute("min", "0");
+    expect(screen.getByLabelText("Dormitorios")).toHaveAttribute("step", "1");
+    expect(screen.getByLabelText("Sup. total")).toHaveAttribute(
+      "type",
+      "number",
+    );
     await user.type(screen.getByLabelText("Código"), "TOP-8");
     await user.type(screen.getByLabelText("Título"), "Casa en Merlo");
     await user.type(
