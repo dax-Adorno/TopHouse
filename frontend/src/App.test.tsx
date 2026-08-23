@@ -614,6 +614,7 @@ describe("TopHouse App", () => {
       screen.getByLabelText("Descripción"),
       "Primera propiedad del inventario.",
     );
+    await user.selectOptions(screen.getByLabelText("Moneda"), "ARS");
     await user.type(screen.getByLabelText("Latitud"), "-32.342900");
     await user.click(screen.getByRole("button", { name: "Guardar borrador" }));
 
@@ -659,7 +660,7 @@ describe("TopHouse App", () => {
           descripcion: "Primera propiedad del inventario.",
           tipo_operacion: "venta",
           tipo_propiedad: "casa",
-          moneda: "USD",
+          moneda: "ARS",
           localidad: "Merlo",
           latitud: "-32.342900",
           longitud: "-65.013900",

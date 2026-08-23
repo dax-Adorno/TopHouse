@@ -1072,11 +1072,10 @@ function AdminPropertyFields({ property }: { property?: AdminProperty }) {
       </label>
       <label>
         Moneda
-        <input
-          defaultValue={property?.moneda ?? "USD"}
-          maxLength={3}
-          name="moneda"
-        />
+        <select defaultValue={property?.moneda ?? "USD"} name="moneda">
+          <option value="USD">USD</option>
+          <option value="ARS">ARS</option>
+        </select>
       </label>
       <label>
         Localidad
