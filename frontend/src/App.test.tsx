@@ -628,6 +628,25 @@ describe("TopHouse App", () => {
       ),
     ).toBe(false);
 
+    await user.clear(screen.getByLabelText("Latitud"));
+    await user.type(screen.getByLabelText("Latitud"), "120");
+    await user.type(screen.getByLabelText("Longitud"), "-65.013900");
+    await user.click(screen.getByRole("button", { name: "Guardar borrador" }));
+
+    expect(
+      await screen.findByText("La latitud debe estar entre -90 y 90."),
+    ).toBeInTheDocument();
+    expect(
+      fetchMock.mock.calls.some(
+        ([url, options]) =>
+          String(url).includes("/api/v1/propiedades") &&
+          (options as RequestInit | undefined)?.method === "POST",
+      ),
+    ).toBe(false);
+
+    await user.clear(screen.getByLabelText("Latitud"));
+    await user.clear(screen.getByLabelText("Longitud"));
+    await user.type(screen.getByLabelText("Latitud"), "-32.342900");
     await user.type(screen.getByLabelText("Longitud"), "-65.013900");
     await user.click(screen.getByRole("button", { name: "Guardar borrador" }));
 
