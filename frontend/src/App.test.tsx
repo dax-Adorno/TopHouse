@@ -69,6 +69,13 @@ const adminPropertyPage = {
   limit: 100,
 };
 
+const emptyAdminPropertyPage = {
+  items: [],
+  total: 0,
+  offset: 0,
+  limit: 100,
+};
+
 const createdAdminProperty = {
   ...adminPropertyPage.items[0],
   id: 8,
@@ -565,5 +572,70 @@ describe("TopHouse App", () => {
         method: "POST",
       }),
     );
+  });
+
+  it("permite crear la primera propiedad desde el inventario vacío", async () => {
+    const user = userEvent.setup();
+    document.cookie = "tophouse_csrf=csrf-prueba";
+    const fetchMock = vi.fn((url: string, options?: RequestInit) => {
+      if (url.includes("/api/v1/auth/me")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(adminUser),
+        });
+      }
+      if (url.includes("/api/v1/propiedades?limit=100")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(emptyAdminPropertyPage),
+        });
+      }
+      if (url.includes("/api/v1/propiedades") && options?.method === "POST") {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(createdAdminProperty),
+        });
+      }
+      return Promise.reject(new Error(`Unexpected request: ${url}`));
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    window.history.pushState({}, "", "/admin");
+
+    render(<App />);
+
+    expect(
+      await screen.findByText("No hay propiedades cargadas."),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Nueva propiedad" }));
+    await user.type(screen.getByLabelText("Código"), "TOP-1");
+    await user.type(screen.getByLabelText("Título"), "Casa inicial en Merlo");
+    await user.type(
+      screen.getByLabelText("Descripción"),
+      "Primera propiedad del inventario.",
+    );
+    await user.click(screen.getByRole("button", { name: "Guardar borrador" }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/propiedades"),
+      expect.objectContaining({
+        body: JSON.stringify({
+          codigo: "TOP-1",
+          titulo: "Casa inicial en Merlo",
+          descripcion: "Primera propiedad del inventario.",
+          tipo_operacion: "venta",
+          tipo_propiedad: "casa",
+          moneda: "USD",
+          localidad: "Merlo",
+        }),
+        credentials: "include",
+        headers: expect.objectContaining({
+          "X-CSRF-Token": "csrf-prueba",
+        }),
+        method: "POST",
+      }),
+    );
+    expect(
+      await screen.findByText("Propiedad creada como borrador."),
+    ).toBeInTheDocument();
   });
 });

@@ -389,9 +389,40 @@ function AdminPropertyTable({
 
   if (page === null || page.items.length === 0) {
     return (
-      <div className="admin-table-state">
-        <p>No hay propiedades cargadas.</p>
-      </div>
+      <section
+        className="admin-properties"
+        aria-labelledby="admin-properties-title"
+      >
+        <div className="admin-section-heading">
+          <div>
+            <p className="eyebrow">Inventario</p>
+            <h2 id="admin-properties-title">Propiedades</h2>
+          </div>
+          <button
+            className="button button-primary"
+            onClick={onOpenCreate}
+            type="button"
+          >
+            Nueva propiedad
+          </button>
+        </div>
+        {showCreateForm ? (
+          <AdminPropertyCreateForm
+            state={createState}
+            onCancel={onCancelCreate}
+            onSubmit={onCreate}
+          />
+        ) : (
+          <div className="admin-table-state">
+            <p>No hay propiedades cargadas.</p>
+          </div>
+        )}
+        {createState === "success" && !showCreateForm ? (
+          <p className="admin-success" role="status">
+            Propiedad creada como borrador.
+          </p>
+        ) : null}
+      </section>
     );
   }
 
