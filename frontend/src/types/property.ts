@@ -61,6 +61,9 @@ export type AdminPropertyCreate = {
   localidad: string;
   zona?: string;
   direccion?: string;
+  latitud?: string;
+  longitud?: string;
+  mostrar_ubicacion_exacta?: boolean;
   dormitorios?: string;
   banios?: string;
   superficie_cubierta?: string;

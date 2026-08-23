@@ -564,6 +564,7 @@ describe("TopHouse App", () => {
           tipo_propiedad: "casa",
           moneda: "USD",
           localidad: "Merlo",
+          mostrar_ubicacion_exacta: false,
         }),
         credentials: "include",
         headers: expect.objectContaining({
@@ -626,6 +627,7 @@ describe("TopHouse App", () => {
           tipo_propiedad: "casa",
           moneda: "USD",
           localidad: "Merlo",
+          mostrar_ubicacion_exacta: false,
         }),
         credentials: "include",
         headers: expect.objectContaining({
