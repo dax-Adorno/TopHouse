@@ -151,6 +151,20 @@ export const deleteAdminPropertyImage = (propertyId: number, imageId: number) =>
     csrf: true,
   });
 
+export const reorderAdminPropertyImages = (
+  propertyId: number,
+  imageIds: number[],
+) =>
+  request<AdminPropertyImage[]>(
+    `/api/v1/propiedades/${propertyId}/imagenes/orden`,
+    {
+      method: "PUT",
+      body: { imagen_ids: imageIds },
+      credentials: "include",
+      csrf: true,
+    },
+  );
+
 export const createAdminProperty = (property: AdminPropertyCreate) =>
   request<AdminProperty>("/api/v1/propiedades", {
     method: "POST",
