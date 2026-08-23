@@ -871,9 +871,17 @@ function AdminPropertyDetailsForm({
     cambios: AdminPropertyDetailsUpdate,
   ) => Promise<void>;
 }) {
+  const [coordinateError, setCoordinateError] = useState(false);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const coordinates = optionalCoordinatePair(form);
+    if (coordinates === null) {
+      setCoordinateError(true);
+      return;
+    }
+    setCoordinateError(false);
     await onSubmit(property.id, {
       codigo: requiredText(form, "codigo"),
       titulo: requiredText(form, "titulo"),
@@ -888,8 +896,7 @@ function AdminPropertyDetailsForm({
       localidad: requiredText(form, "localidad"),
       ...optionalText(form, "zona"),
       ...optionalText(form, "direccion"),
-      ...optionalText(form, "latitud"),
-      ...optionalText(form, "longitud"),
+      ...coordinates,
       mostrar_ubicacion_exacta: form.get("mostrar_ubicacion_exacta") === "on",
       ...optionalText(form, "dormitorios"),
       ...optionalText(form, "banios"),
@@ -905,6 +912,11 @@ function AdminPropertyDetailsForm({
         <p>Actualizá los datos descriptivos sin cambiar estado ni destacada.</p>
       </div>
       <AdminPropertyFields property={property} />
+      {coordinateError ? (
+        <p className="admin-error" role="alert">
+          Ingresá latitud y longitud juntas.
+        </p>
+      ) : null}
       {state === "error" ? (
         <p className="admin-error" role="alert">
           No pudimos actualizar la propiedad. Revisá los datos e intentá
@@ -940,9 +952,17 @@ function AdminPropertyCreateForm({
   onCancel: () => void;
   onSubmit: (datos: AdminPropertyCreate) => Promise<void>;
 }) {
+  const [coordinateError, setCoordinateError] = useState(false);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const coordinates = optionalCoordinatePair(form);
+    if (coordinates === null) {
+      setCoordinateError(true);
+      return;
+    }
+    setCoordinateError(false);
     await onSubmit({
       codigo: requiredText(form, "codigo"),
       titulo: requiredText(form, "titulo"),
@@ -957,8 +977,7 @@ function AdminPropertyCreateForm({
       localidad: requiredText(form, "localidad"),
       ...optionalText(form, "zona"),
       ...optionalText(form, "direccion"),
-      ...optionalText(form, "latitud"),
-      ...optionalText(form, "longitud"),
+      ...coordinates,
       mostrar_ubicacion_exacta: form.get("mostrar_ubicacion_exacta") === "on",
       ...optionalText(form, "dormitorios"),
       ...optionalText(form, "banios"),
@@ -970,6 +989,11 @@ function AdminPropertyCreateForm({
   return (
     <form className="admin-create-form" onSubmit={handleSubmit}>
       <AdminPropertyFields />
+      {coordinateError ? (
+        <p className="admin-error" role="alert">
+          Ingresá latitud y longitud juntas.
+        </p>
+      ) : null}
       {state === "error" ? (
         <p className="admin-error" role="alert">
           No pudimos crear la propiedad. Revisá los datos e intentá nuevamente.
@@ -1139,4 +1163,13 @@ function optionalText(
 ): Partial<AdminPropertyCreate> {
   const value = String(form.get(name) ?? "").trim();
   return value === "" ? {} : { [name]: value };
+}
+
+function optionalCoordinatePair(
+  form: FormData,
+): Pick<AdminPropertyCreate, "latitud" | "longitud"> | null {
+  const latitud = String(form.get("latitud") ?? "").trim();
+  const longitud = String(form.get("longitud") ?? "").trim();
+  if ((latitud === "") !== (longitud === "")) return null;
+  return latitud === "" ? {} : { latitud, longitud };
 }

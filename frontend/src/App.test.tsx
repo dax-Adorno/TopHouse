@@ -614,6 +614,21 @@ describe("TopHouse App", () => {
       screen.getByLabelText("Descripción"),
       "Primera propiedad del inventario.",
     );
+    await user.type(screen.getByLabelText("Latitud"), "-32.342900");
+    await user.click(screen.getByRole("button", { name: "Guardar borrador" }));
+
+    expect(
+      await screen.findByText("Ingresá latitud y longitud juntas."),
+    ).toBeInTheDocument();
+    expect(
+      fetchMock.mock.calls.some(
+        ([url, options]) =>
+          String(url).includes("/api/v1/propiedades") &&
+          (options as RequestInit | undefined)?.method === "POST",
+      ),
+    ).toBe(false);
+
+    await user.type(screen.getByLabelText("Longitud"), "-65.013900");
     await user.click(screen.getByRole("button", { name: "Guardar borrador" }));
 
     expect(fetchMock).toHaveBeenCalledWith(
@@ -627,6 +642,8 @@ describe("TopHouse App", () => {
           tipo_propiedad: "casa",
           moneda: "USD",
           localidad: "Merlo",
+          latitud: "-32.342900",
+          longitud: "-65.013900",
           mostrar_ubicacion_exacta: false,
         }),
         credentials: "include",
