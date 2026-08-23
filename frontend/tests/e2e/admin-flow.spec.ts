@@ -56,6 +56,12 @@ const createdAdminProperty = {
   destacada: false,
 };
 
+const updatedAdminProperty = {
+  ...adminProperty,
+  estado: "pausada",
+  destacada: false,
+};
+
 const adminImages = [
   {
     id: 11,
@@ -108,6 +114,9 @@ test.beforeEach(async ({ page }) => {
       return;
     }
     await route.fulfill({ json: createdAdminProperty });
+  });
+  await page.route("**/api/v1/propiedades/7/admin", async (route) => {
+    await route.fulfill({ json: updatedAdminProperty });
   });
   await page.route("**/api/v1/propiedades/7/imagenes", async (route) => {
     await route.fulfill({ json: adminImages });
@@ -209,4 +218,32 @@ test("creates a draft property from admin inventory", async ({ page }) => {
   });
 
   await expect(page.getByText("Propiedad creada como borrador.")).toBeVisible();
+});
+
+test("updates admin property status and featured flag", async ({ page }) => {
+  await page.goto("/admin");
+
+  await page.getByLabel("Email").fill(adminUser.email);
+  await page.getByLabel("Contraseña").fill("clave-segura");
+  await page.getByRole("button", { name: "Ingresar" }).click();
+
+  await expect(
+    page.getByRole("heading", { name: "Panel de TopHouse" }),
+  ).toBeVisible();
+
+  await page.getByLabel("Estado de TOP-7").selectOption("pausada");
+  await page.getByLabel("Destacada TOP-7").uncheck();
+
+  const updateRequest = page.waitForRequest(
+    (request) =>
+      request.method() === "PATCH" &&
+      request.url().endsWith("/api/v1/propiedades/7/admin"),
+  );
+  await page.getByRole("button", { name: "Guardar" }).click();
+  const request = await updateRequest;
+
+  expect(request.postDataJSON()).toEqual({
+    estado: "pausada",
+    destacada: false,
+  });
 });
