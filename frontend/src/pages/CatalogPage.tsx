@@ -201,6 +201,9 @@ export function CatalogPage() {
                 Precio mín.
                 <input
                   inputMode="numeric"
+                  min="0"
+                  step="1"
+                  type="number"
                   value={draftFilters.precio_min}
                   onChange={(event) =>
                     setDraftFilters((filters) => ({
@@ -214,6 +217,9 @@ export function CatalogPage() {
                 Precio máx.
                 <input
                   inputMode="numeric"
+                  min="0"
+                  step="1"
+                  type="number"
                   value={draftFilters.precio_max}
                   onChange={(event) =>
                     setDraftFilters((filters) => ({
@@ -228,6 +234,9 @@ export function CatalogPage() {
               Dormitorios desde
               <input
                 inputMode="numeric"
+                min="0"
+                step="1"
+                type="number"
                 value={draftFilters.dormitorios_min}
                 onChange={(event) =>
                   setDraftFilters((filters) => ({

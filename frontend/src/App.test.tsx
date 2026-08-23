@@ -195,6 +195,15 @@ describe("TopHouse App", () => {
     expect(
       await screen.findByText("Casa luminosa en Merlo"),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText("Precio mín.")).toHaveAttribute("min", "0");
+    expect(screen.getByLabelText("Precio máx.")).toHaveAttribute(
+      "type",
+      "number",
+    );
+    expect(screen.getByLabelText("Dormitorios desde")).toHaveAttribute(
+      "step",
+      "1",
+    );
     await user.selectOptions(screen.getByLabelText("Operación"), "venta");
     await user.type(screen.getByLabelText("Localidad"), "Merlo");
     await user.click(screen.getByRole("button", { name: "Aplicar" }));
