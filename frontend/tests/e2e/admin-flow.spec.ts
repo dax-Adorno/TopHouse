@@ -44,6 +44,18 @@ const adminPropertyPage = {
   limit: 100,
 };
 
+const createdAdminProperty = {
+  ...adminProperty,
+  id: 8,
+  codigo: "TOP-8",
+  slug: "casa-en-merlo",
+  titulo: "Casa en Merlo",
+  descripcion: "Casa nueva con patio.",
+  zona: "Centro",
+  estado: "borrador",
+  destacada: false,
+};
+
 const adminImages = [
   {
     id: 11,
@@ -89,6 +101,13 @@ test.beforeEach(async ({ page }) => {
   });
   await page.route("**/api/v1/propiedades?limit=100", async (route) => {
     await route.fulfill({ json: adminPropertyPage });
+  });
+  await page.route("**/api/v1/propiedades", async (route) => {
+    if (route.request().method() !== "POST") {
+      await route.fallback();
+      return;
+    }
+    await route.fulfill({ json: createdAdminProperty });
   });
   await page.route("**/api/v1/propiedades/7/imagenes", async (route) => {
     await route.fulfill({ json: adminImages });
@@ -155,4 +174,39 @@ test("opens admin images panel and updates cover image", async ({ page }) => {
   );
   await page.getByRole("button", { name: "Usar como portada" }).click();
   await coverRequest;
+});
+
+test("creates a draft property from admin inventory", async ({ page }) => {
+  await page.goto("/admin");
+
+  await page.getByLabel("Email").fill(adminUser.email);
+  await page.getByLabel("Contraseña").fill("clave-segura");
+  await page.getByRole("button", { name: "Ingresar" }).click();
+
+  await expect(
+    page.getByRole("heading", { name: "Panel de TopHouse" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Nueva propiedad" }).click();
+
+  await page.getByLabel("Código").fill("TOP-8");
+  await page.getByLabel("Título").fill("Casa en Merlo");
+  await page.getByLabel("Descripción").fill("Casa nueva con patio.");
+  await page.getByLabel("Zona").fill("Centro");
+
+  const createRequest = page.waitForRequest(
+    (request) =>
+      request.method() === "POST" &&
+      request.url().endsWith("/api/v1/propiedades"),
+  );
+  await page.getByRole("button", { name: "Guardar borrador" }).click();
+  const request = await createRequest;
+  expect(request.postDataJSON()).toMatchObject({
+    codigo: "TOP-8",
+    titulo: "Casa en Merlo",
+    localidad: "Merlo",
+    zona: "Centro",
+    mostrar_ubicacion_exacta: false,
+  });
+
+  await expect(page.getByText("Propiedad creada como borrador.")).toBeVisible();
 });
