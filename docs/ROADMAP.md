@@ -57,7 +57,7 @@ Estado: completada para MVP.
 
 - [x] Verificación responsive en mobile, tablet y escritorio.
 - [x] Estrategia de caché y CDN para imágenes.
-- [ ] Hardening de seguridad.
+- [x] Hardening inicial de configuración HTTP y cabeceras.
 - [ ] Logging y observabilidad.
 - [ ] Backups y procedimiento de recuperación de PostgreSQL.
 - [ ] Contenedores y configuración de producción.

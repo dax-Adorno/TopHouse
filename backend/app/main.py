@@ -1,7 +1,9 @@
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from app.core.config import settings
+from app.core.security import SecurityHeadersMiddleware
 from app.modules.imagenes.api import router as imagenes_router
 from app.modules.imagenes.handlers import registrar_manejadores_imagenes
 from app.modules.propiedades.api import router as propiedades_router
@@ -13,15 +15,21 @@ app = FastAPI(
     title="TopHouse API",
     description="API para la plataforma inmobiliaria TopHouse.",
     version="0.1.0",
+    debug=settings.debug,
+    docs_url=None if settings.is_production else "/docs",
+    redoc_url=None if settings.is_production else "/redoc",
+    openapi_url=None if settings.is_production else "/openapi.json",
 )
 
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.trusted_hosts)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"],
+    allow_headers=["Accept", "Content-Type", "X-CSRF-Token"],
 )
+app.add_middleware(SecurityHeadersMiddleware, production=settings.is_production)
 
 app.include_router(propiedades_router)
 app.include_router(propiedades_publicas_router)
