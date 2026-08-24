@@ -1,7 +1,12 @@
+import { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { buildGeneralContactHref, contactActionLabel } from "../lib/contact";
 
 export function SiteLayout() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
     <div className="site-shell">
       <a className="skip-link" href="#main-content">
@@ -12,10 +17,37 @@ export function SiteLayout() {
           <span className="brand-mark">TH</span>
           <span>TopHouse</span>
         </Link>
-        <nav aria-label="Navegación principal">
-          <NavLink to="/">Inicio</NavLink>
-          <NavLink to="/propiedades">Propiedades</NavLink>
-          <NavLink to="/admin">Admin</NavLink>
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-expanded={isMenuOpen}
+          aria-controls="primary-navigation"
+          onClick={() => setIsMenuOpen((current) => !current)}
+        >
+          <span aria-hidden="true" />
+          <span className="sr-only">Menú principal</span>
+        </button>
+        <nav
+          id="primary-navigation"
+          aria-label="Navegación principal"
+          data-open={isMenuOpen}
+        >
+          <NavLink to="/" onClick={closeMenu}>
+            Inicio
+          </NavLink>
+          <NavLink to="/propiedades" onClick={closeMenu}>
+            Propiedades
+          </NavLink>
+          <NavLink to="/admin" onClick={closeMenu}>
+            Admin
+          </NavLink>
+          <a
+            className="mobile-contact"
+            href={buildGeneralContactHref()}
+            onClick={closeMenu}
+          >
+            {contactActionLabel()}
+          </a>
         </nav>
         <a className="header-contact" href={buildGeneralContactHref()}>
           {contactActionLabel()}
