@@ -88,13 +88,92 @@ main {
   flex: 1;
 }
 .hero-section {
+  position: relative;
   min-height: 670px;
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
   padding: clamp(56px, 8vw, 112px) clamp(24px, 7vw, 112px);
   gap: clamp(40px, 8vw, 120px);
   align-items: center;
+  overflow: hidden;
   background: var(--cream);
+}
+.hero-section > :not(.hero-star-burst) {
+  position: relative;
+  z-index: 1;
+}
+.hero-star-burst {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(90deg, transparent 0%, black 28%, black 100%);
+}
+.hero-star-burst::before {
+  content: "";
+  position: absolute;
+  width: 62vw;
+  height: 62vw;
+  top: 48%;
+  left: 70%;
+  border: 1px solid rgb(85 102 74 / 14%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(216 95 72 / 12%) 0 4%,
+    transparent 24%,
+    rgb(85 102 74 / 7%) 46%,
+    transparent 68%
+  );
+  transform: translate(-50%, -50%);
+}
+.hero-star-burst-core {
+  position: absolute;
+  width: 86px;
+  height: 86px;
+  top: 48%;
+  left: 70%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(216 95 72 / 28%), transparent 68%);
+  transform: translate(-50%, -50%);
+  filter: blur(4px);
+}
+.hero-star-burst > span {
+  --burst-color: rgb(85 102 74 / 32%);
+  position: absolute;
+  width: clamp(28px, 4vw, 76px);
+  height: var(--burst-size);
+  top: 48%;
+  left: 70%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--burst-color));
+  transform-origin: left center;
+  animation: hero-burst-travel var(--burst-duration) linear infinite;
+  animation-delay: var(--burst-delay);
+}
+.hero-star-burst > span:nth-child(3n) {
+  --burst-color: rgb(216 95 72 / 36%);
+}
+.hero-star-burst > span:nth-child(5n) {
+  --burst-color: rgb(184 192 165 / 58%);
+}
+@keyframes hero-burst-travel {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--burst-angle)) translateX(20px) scaleX(0.18);
+  }
+  16% {
+    opacity: 0.75;
+  }
+  72% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--burst-angle)) translateX(var(--burst-distance))
+      scaleX(1.15);
+  }
 }
 .eyebrow {
   margin: 0 0 18px;
@@ -108,9 +187,13 @@ main {
 .page-intro h1 {
   max-width: 760px;
   margin: 0;
-  font: 600 clamp(3rem, 6vw, 6.4rem)/0.95 var(--display);
-  letter-spacing: -0.055em;
+  font: 500 clamp(3rem, 6vw, 6.2rem)/0.94 var(--display);
+  letter-spacing: -0.045em;
   color: var(--ink);
+  text-wrap: balance;
+}
+.hero-copy h1 {
+  text-shadow: 0 1px 0 rgb(255 255 255 / 42%);
 }
 .hero-lead {
   max-width: 620px;
@@ -1549,6 +1632,11 @@ main {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .hero-star-burst > span {
+    animation: none;
+    opacity: 0.18;
+    transform: rotate(var(--burst-angle)) translateX(34vmax) scaleX(0.65);
+  }
   .featured-card,
   .featured-card img,
   .featured-card::before {

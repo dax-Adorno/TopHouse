@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FeaturedCarousel } from "../components/FeaturedCarousel";
+import { HeroStarBurst } from "../components/HeroStarBurst";
 import { listPublicProperties } from "../lib/api";
 import { buildGeneralContactHref } from "../lib/contact";
 import type { PublicProperty } from "../types/property";
@@ -47,6 +48,7 @@ export function HomePage() {
   return (
     <>
       <section className="hero-section">
+        <HeroStarBurst />
         <div className="hero-copy">
           <p className="eyebrow">Inmobiliaria en Merlo, San Luis</p>
           <h1>Tu próximo lugar empieza con una buena elección.</h1>
