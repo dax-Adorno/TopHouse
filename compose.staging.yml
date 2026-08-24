@@ -1,0 +1,102 @@
+x-backend-environment: &backend-environment
+  APP_ENV: ${APP_ENV:-production}
+  DEBUG: "false"
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_HOST: database
+  POSTGRES_PORT: "5432"
+  SESSION_DURATION_HOURS: ${SESSION_DURATION_HOURS:-12}
+  SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-true}
+  CORS_ORIGINS: ${STAGING_BASE_URL}
+  ALLOWED_HOSTS: ${STAGING_HOST}
+  S3_ENDPOINT_URL: http://storage:9000
+  S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID}
+  S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY}
+  S3_BUCKET_NAME: ${S3_BUCKET_NAME:-tophouse-staging}
+  S3_REGION: us-east-1
+  S3_USE_SSL: "false"
+  S3_PUBLIC_BASE_URL: ${STAGING_BASE_URL}/media
+
+services:
+  database:
+    image: postgres:17.11-alpine3.24
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - staging_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  storage:
+    image: quay.io/minio/minio:RELEASE.2025-07-23T15-54-02Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY}
+    volumes:
+      - staging_object_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  storage-init:
+    build:
+      context: ./backend
+    restart: "no"
+    environment: *backend-environment
+    command: ["python", "-m", "app.storage_init"]
+    depends_on:
+      storage:
+        condition: service_healthy
+
+  migrate:
+    build:
+      context: ./backend
+    restart: "no"
+    environment: *backend-environment
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      database:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment: *backend-environment
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      storage-init:
+        condition: service_completed_successfully
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ""
+        VITE_CONTACT_EMAIL: ${CONTACT_EMAIL}
+        VITE_WHATSAPP_NUMBER: ${WHATSAPP_NUMBER}
+    restart: unless-stopped
+    environment:
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-tophouse-staging}
+      STAGING_HOST: ${STAGING_HOST}
+    ports:
+      - "${STAGING_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  staging_postgres_data:
+  staging_object_data:
