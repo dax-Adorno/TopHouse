@@ -1,4 +1,5 @@
 from typing import Any, Protocol
+from urllib.parse import quote
 
 import boto3  # type: ignore[import-untyped]
 
@@ -23,9 +24,11 @@ class AlmacenamientoS3:
         secret_access_key: str | None,
         region: str,
         use_ssl: bool,
+        public_base_url: str | None = None,
         cliente: Any | None = None,
     ) -> None:
         self.bucket = bucket
+        self.public_base_url = public_base_url.rstrip("/") if public_base_url else None
         self._cliente = cliente
         self._configuracion = {
             "endpoint_url": endpoint_url or None,
@@ -64,6 +67,8 @@ class AlmacenamientoS3:
             ) from error
 
     def obtener_url(self, clave: str, *, expiracion_segundos: int = 3600) -> str:
+        if self.public_base_url:
+            return f"{self.public_base_url}/{quote(clave, safe='/')}"
         try:
             return str(
                 self.cliente.generate_presigned_url(

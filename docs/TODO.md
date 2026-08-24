@@ -1,6 +1,6 @@
 # Próximos pasos de TopHouse
 
-Actualizado: 23 de agosto de 2026.
+Actualizado: 24 de agosto de 2026.
 
 ## Siguiente bloque recomendado
 
@@ -8,11 +8,8 @@ La API administrativa ya exige autenticación y CSRF. El RBAC reserva los
 cambios de estado y destacado al rol `administrador`, y las mutaciones de
 propiedades generan registros de auditoría.
 
-1. Verificar responsive visual en mobile, tablet y escritorio.
-2. Definir la estrategia de CDN/cache para producción.
-3. Definir la estrategia de CDN/cache para imágenes en producción.
-4. Preparar hardening de seguridad y configuración de despliegue.
-5. Documentar backups, recuperación y rollback operativo.
+1. Preparar hardening de seguridad y configuración de despliegue.
+2. Documentar backups, recuperación y rollback operativo.
 
 ## Después de autenticación y auditoría
 

@@ -19,6 +19,7 @@ def obtener_imagen_service(session: SessionDep) -> ImagenService:
         secret_access_key=settings.s3_secret_access_key,
         region=settings.s3_region,
         use_ssl=settings.s3_use_ssl,
+        public_base_url=settings.s3_public_base_url,
     )
     return ImagenService(
         ImagenRepository(session),

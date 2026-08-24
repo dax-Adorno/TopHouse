@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     s3_bucket_name: str = "tophouse-properties"
     s3_region: str = "auto"
     s3_use_ssl: bool = True
+    s3_public_base_url: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",

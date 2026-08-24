@@ -1,6 +1,6 @@
 # Roadmap de TopHouse
 
-Actualizado: 23 de agosto de 2026.
+Actualizado: 24 de agosto de 2026.
 
 ## Fase 1 - Base de ingeniería
 
@@ -55,6 +55,8 @@ Estado: completada para MVP.
 
 ## Fase 5 - Producción
 
+- [x] Verificación responsive en mobile, tablet y escritorio.
+- [x] Estrategia de caché y CDN para imágenes.
 - [ ] Hardening de seguridad.
 - [ ] Logging y observabilidad.
 - [ ] Backups y procedimiento de recuperación de PostgreSQL.
