@@ -61,6 +61,7 @@ blob-report/
 media/
 uploads/
 staticfiles/
+frontend/public/assets/logo.png
 
 # ============================================================
 # LOGS

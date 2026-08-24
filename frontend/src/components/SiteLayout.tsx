@@ -61,7 +61,18 @@ export function SiteLayout() {
           <strong>TopHouse</strong>
           <p>Propiedades elegidas con criterio.</p>
         </div>
-        <p>Merlo, San Luis</p>
+        <div className="footer-meta">
+          <p>Merlo, San Luis</p>
+          <p className="footer-credit">
+            <img
+              src="/assets/logo.webp"
+              alt="Logo de Dax"
+              width="56"
+              height="56"
+            />
+            <span>Sitio elaborado por Dax</span>
+          </p>
+        </div>
       </footer>
     </div>
   );

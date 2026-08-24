@@ -34,8 +34,24 @@ const property = {
 };
 
 const propertyPage = {
-  items: [property],
-  total: 1,
+  items: [
+    property,
+    {
+      ...property,
+      id: 8,
+      codigo: "TOP-8",
+      slug: "departamento-centro-merlo",
+      titulo: "Departamento en el centro de Merlo",
+    },
+    {
+      ...property,
+      id: 9,
+      codigo: "TOP-9",
+      slug: "terreno-rincon-del-este",
+      titulo: "Terreno en Rincón del Este",
+    },
+  ],
+  total: 3,
   offset: 0,
   limit: 9,
 };
@@ -82,4 +98,20 @@ test("navigates public property discovery flow", async ({ page }) => {
       name: "Ver Piedra Blanca, Merlo, San Luis en el mapa",
     }),
   ).toBeVisible();
+});
+
+test("navigates featured carousel and shows Dax credit", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(
+    page.getByRole("heading", { name: "Casa luminosa en Merlo" }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Siguiente propiedad destacada" })
+    .click();
+
+  await expect(
+    page.getByRole("heading", { name: "Departamento en el centro de Merlo" }),
+  ).toBeVisible();
+  await expect(page.getByText("Sitio elaborado por Dax")).toBeVisible();
 });

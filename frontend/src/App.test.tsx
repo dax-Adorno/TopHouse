@@ -164,6 +164,11 @@ describe("TopHouse App", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Tu próximo lugar",
     );
+    expect(screen.getByText("Sitio elaborado por Dax")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Logo de Dax" })).toHaveAttribute(
+      "src",
+      "/assets/logo.webp",
+    );
     expect(
       await screen.findByRole("heading", {
         level: 3,
