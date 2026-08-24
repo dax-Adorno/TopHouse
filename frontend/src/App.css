@@ -21,12 +21,28 @@
   transform: translateY(0);
 }
 .site-header {
+  position: relative;
   height: 76px;
   padding: 0 clamp(24px, 6vw, 96px);
   display: flex;
   align-items: center;
   gap: 42px;
   border-bottom: 1px solid var(--line);
+}
+.menu-toggle,
+.mobile-contact {
+  display: none;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .brand {
   display: flex;
@@ -1215,11 +1231,81 @@ main {
   font-size: 0.82rem;
 }
 @media (max-width: 800px) {
+  .site-header {
+    height: 68px;
+    padding: 0 20px;
+    gap: 16px;
+  }
   .site-header nav {
+    position: absolute;
+    z-index: 20;
+    top: 100%;
+    right: 16px;
+    left: 16px;
     display: none;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 8px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    box-shadow: 0 16px 36px rgb(29 37 29 / 14%);
+  }
+  .site-header nav[data-open="true"] {
+    display: flex;
+  }
+  .site-header nav a {
+    padding: 13px 14px;
+    font-size: 1rem;
+  }
+  .site-header nav a.active {
+    background: var(--cream);
+  }
+  .menu-toggle {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    margin-left: auto;
+    border: 1px solid var(--line-dark);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .menu-toggle span[aria-hidden="true"],
+  .menu-toggle span[aria-hidden="true"]::before,
+  .menu-toggle span[aria-hidden="true"]::after {
+    width: 18px;
+    height: 2px;
+    display: block;
+    background: currentColor;
+    content: "";
+  }
+  .menu-toggle span[aria-hidden="true"]::before {
+    transform: translateY(-6px);
+  }
+  .menu-toggle span[aria-hidden="true"]::after {
+    transform: translateY(4px);
+  }
+  .menu-toggle[aria-expanded="true"] span[aria-hidden="true"] {
+    background: transparent;
+  }
+  .menu-toggle[aria-expanded="true"] span[aria-hidden="true"]::before {
+    transform: translateY(0) rotate(45deg);
+  }
+  .menu-toggle[aria-expanded="true"] span[aria-hidden="true"]::after {
+    transform: translateY(-2px) rotate(-45deg);
+  }
+  .site-header nav .mobile-contact {
+    display: block;
+    margin-top: 4px;
+    border-top: 1px solid var(--line);
+    color: var(--ink);
+    font-weight: 700;
   }
   .header-contact {
-    margin-left: auto;
+    display: none;
   }
   .hero-section,
   .values-section {
