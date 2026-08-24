@@ -1,0 +1,55 @@
+name: Container CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+      - "frontend/**"
+      - "compose.staging.yml"
+      - ".env.staging.example"
+      - ".github/workflows/container-ci.yml"
+
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+      - "frontend/**"
+      - "compose.staging.yml"
+      - ".env.staging.example"
+      - ".github/workflows/container-ci.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-containers:
+    name: Validate staging containers
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Validate Compose configuration
+        run: >-
+          docker compose
+          --env-file .env.staging.example
+          -f compose.staging.yml
+          config --quiet
+
+      - name: Build backend image
+        run: docker build --tag tophouse-backend:ci ./backend
+
+      - name: Build frontend image
+        run: >-
+          docker build
+          --build-arg VITE_API_URL=
+          --build-arg VITE_CONTACT_EMAIL=contacto@tophouse.com
+          --build-arg VITE_WHATSAPP_NUMBER=5492664000000
+          --tag tophouse-frontend:ci
+          ./frontend

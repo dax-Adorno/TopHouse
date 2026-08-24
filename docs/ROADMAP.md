@@ -60,7 +60,8 @@ Estado: completada para MVP.
 - [x] Hardening inicial de configuración HTTP y cabeceras.
 - [ ] Logging y observabilidad.
 - [ ] Backups y procedimiento de recuperación de PostgreSQL.
-- [ ] Contenedores y configuración de producción.
+- [x] Contenedores y configuración inicial de staging.
+- [ ] Configuración final de producción.
 - [ ] HTTPS y despliegue.
 - [ ] SEO y verificación responsive.
 
