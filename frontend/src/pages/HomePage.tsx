@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import heroImage from "../assets/hero.png";
+import { FeaturedCarousel } from "../components/FeaturedCarousel";
 import { listPublicProperties } from "../lib/api";
 import { buildGeneralContactHref } from "../lib/contact";
-import { formatMoney, operationLabel } from "../lib/propertyFormat";
 import type { PublicProperty } from "../types/property";
 
 const valores = [
@@ -108,34 +107,7 @@ export function HomePage() {
           </div>
         ) : null}
         {featuredState === "success" && featured.length > 0 ? (
-          <div className="featured-grid">
-            {featured.map((property) => {
-              const cover =
-                property.imagenes.find((image) => image.es_portada) ??
-                property.imagenes[0];
-              return (
-                <Link
-                  className="featured-card"
-                  key={property.id}
-                  to={`/propiedades/${property.slug}`}
-                >
-                  <img
-                    alt={property.titulo}
-                    src={cover?.url_thumbnail ?? cover?.url ?? heroImage}
-                  />
-                  <span>{operationLabel(property.tipo_operacion)}</span>
-                  <div>
-                    <p>
-                      {property.localidad}
-                      {property.zona ? `, ${property.zona}` : ""}
-                    </p>
-                    <h3>{property.titulo}</h3>
-                    <strong>{formatMoney(property)}</strong>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+          <FeaturedCarousel properties={featured} />
         ) : null}
       </section>
       <section className="values-section" aria-labelledby="values-title">
