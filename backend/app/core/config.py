@@ -1,5 +1,7 @@
 from pathlib import Path
+from typing import Self
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -19,6 +21,7 @@ class Settings(BaseSettings):
     session_duration_hours: int = 12
     session_cookie_secure: bool = True
     cors_origins: str = "http://localhost:5173"
+    allowed_hosts: str = "localhost,127.0.0.1,testserver"
 
     s3_endpoint_url: str | None = None
     s3_access_key_id: str | None = None
@@ -51,6 +54,30 @@ class Settings(BaseSettings):
         return [
             origin.strip() for origin in self.cors_origins.split(",") if origin.strip()
         ]
+
+    @property
+    def trusted_hosts(self) -> list[str]:
+        return [host.strip() for host in self.allowed_hosts.split(",") if host.strip()]
+
+    @property
+    def is_production(self) -> bool:
+        return self.app_env.lower() == "production"
+
+    @model_validator(mode="after")
+    def validar_produccion(self) -> Self:
+        if not self.is_production:
+            return self
+        if self.debug:
+            raise ValueError("DEBUG debe estar desactivado en producción")
+        if not self.session_cookie_secure:
+            raise ValueError("SESSION_COOKIE_SECURE debe estar activo en producción")
+        if not self.cors_allowed_origins or any(
+            not origin.startswith("https://") for origin in self.cors_allowed_origins
+        ):
+            raise ValueError("CORS_ORIGINS debe contener únicamente orígenes HTTPS")
+        if not self.trusted_hosts or "*" in self.trusted_hosts:
+            raise ValueError("ALLOWED_HOSTS debe enumerar hosts de producción")
+        return self
 
 
 settings = Settings()

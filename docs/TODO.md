@@ -8,7 +8,7 @@ La API administrativa ya exige autenticación y CSRF. El RBAC reserva los
 cambios de estado y destacado al rol `administrador`, y las mutaciones de
 propiedades generan registros de auditoría.
 
-1. Preparar hardening de seguridad y configuración de despliegue.
+1. Preparar contenedores y configuración de despliegue.
 2. Documentar backups, recuperación y rollback operativo.
 
 ## Después de autenticación y auditoría
