@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FeaturedCarousel } from "../components/FeaturedCarousel";
-import { HeroPixelRain, HeroStarBurst } from "../components/HeroStarBurst";
-import { ScrollBrandMark } from "../components/ScrollBrandMark";
+import { HeroStarBurst } from "../components/HeroStarBurst";
 import { listPublicProperties } from "../lib/api";
 import { buildGeneralContactHref } from "../lib/contact";
 import type { PublicProperty } from "../types/property";
@@ -69,23 +68,15 @@ export function HomePage() {
             </a>
           </div>
         </div>
-        <div className="hero-visual" aria-label="Arquitectura contemporánea">
-          <HeroPixelRain />
+        <div className="hero-visual" aria-label="Logo de TopHouse">
           <div className="hero-brand-lockup">
-            <ScrollBrandMark />
+            <img
+              src="/assets/tophouse-logo.webp"
+              alt="TopHouse, Inmobiliaria y Arquitectura"
+              width="1774"
+              height="887"
+            />
           </div>
-          <div className="sun" />
-          <div className="building building-back" />
-          <div className="building building-front">
-            <span />
-            <span />
-            <span />
-          </div>
-          <p>
-            <strong>Selección TopHouse</strong>
-            <br />
-            Espacios con intención
-          </p>
         </div>
       </section>
       <section className="featured-section" aria-labelledby="featured-title">
