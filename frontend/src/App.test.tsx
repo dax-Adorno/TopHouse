@@ -254,7 +254,7 @@ describe("TopHouse App", () => {
 
   it("abre el detalle público desde una tarjeta del catálogo", async () => {
     const user = userEvent.setup();
-    vi.stubEnv("VITE_WHATSAPP_NUMBER", "+54 9 266 400-0000");
+    vi.stubEnv("VITE_WHATSAPP_NUMBER", "+54 9 2664 32-0295");
     const fetchMock = vi.fn((url: string) =>
       Promise.resolve({
         ok: true,
@@ -308,7 +308,7 @@ describe("TopHouse App", () => {
     expect(contactLink).toBeDefined();
     expect(contactLink).toHaveAttribute(
       "href",
-      expect.stringContaining("https://wa.me/5492664000000?text="),
+      expect.stringContaining("https://wa.me/5492664320295?text="),
     );
     expect(contactLink).toHaveAttribute(
       "href",
