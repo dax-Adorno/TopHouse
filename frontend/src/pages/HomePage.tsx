@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FeaturedCarousel } from "../components/FeaturedCarousel";
-import { HeroStarBurst } from "../components/HeroStarBurst";
+import { HeroPixelRain, HeroStarBurst } from "../components/HeroStarBurst";
+import { ScrollBrandMark } from "../components/ScrollBrandMark";
 import { listPublicProperties } from "../lib/api";
 import { buildGeneralContactHref } from "../lib/contact";
 import type { PublicProperty } from "../types/property";
@@ -69,6 +70,10 @@ export function HomePage() {
           </div>
         </div>
         <div className="hero-visual" aria-label="Arquitectura contemporánea">
+          <HeroPixelRain />
+          <div className="hero-brand-lockup">
+            <ScrollBrandMark />
+          </div>
           <div className="sun" />
           <div className="building building-back" />
           <div className="building building-front">
