@@ -125,5 +125,14 @@ test("navigates featured carousel and shows Dax credit", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Departamento en el centro de Merlo" }),
   ).toBeVisible();
-  await expect(page.getByText("Sitio elaborado por Dax")).toBeVisible();
+  await expect(page.getByText("por Dax Adorno")).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Instagram, próximamente" }),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: "Facebook, próximamente" }),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: "TikTok, próximamente" }),
+  ).toBeDisabled();
 });

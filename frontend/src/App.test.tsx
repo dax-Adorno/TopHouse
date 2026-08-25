@@ -164,11 +164,21 @@ describe("TopHouse App", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Tu próximo lugar",
     );
-    expect(screen.getByText("Sitio elaborado por Dax")).toBeInTheDocument();
+    expect(screen.getByText("Diseño y desarrollo web")).toBeInTheDocument();
+    expect(screen.getByText("por Dax Adorno")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Logo de Dax" })).toHaveAttribute(
       "src",
       "/assets/logo.webp",
     );
+    expect(
+      screen.getByRole("button", { name: "Instagram, próximamente" }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "Facebook, próximamente" }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "TikTok, próximamente" }),
+    ).toBeDisabled();
     expect(
       await screen.findByRole("heading", {
         level: 3,

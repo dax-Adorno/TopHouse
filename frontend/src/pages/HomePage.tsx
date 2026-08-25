@@ -68,19 +68,15 @@ export function HomePage() {
             </a>
           </div>
         </div>
-        <div className="hero-visual" aria-label="Arquitectura contemporánea">
-          <div className="sun" />
-          <div className="building building-back" />
-          <div className="building building-front">
-            <span />
-            <span />
-            <span />
+        <div className="hero-visual" aria-label="Logo de TopHouse">
+          <div className="hero-brand-lockup">
+            <img
+              src="/assets/tophouse-logo.webp"
+              alt="TopHouse, Inmobiliaria y Arquitectura"
+              width="1774"
+              height="887"
+            />
           </div>
-          <p>
-            <strong>Selección TopHouse</strong>
-            <br />
-            Espacios con intención
-          </p>
         </div>
       </section>
       <section className="featured-section" aria-labelledby="featured-title">

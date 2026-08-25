@@ -24,6 +24,7 @@ export function HeroStarBurst() {
       <div className="hero-star-burst-core" />
       {particles.map((particle, index) => (
         <span
+          className="hero-burst-ray"
           key={index}
           style={
             {
