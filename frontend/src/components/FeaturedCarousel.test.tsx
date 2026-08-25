@@ -59,6 +59,14 @@ describe("FeaturedCarousel", () => {
 
     expect(screen.getByRole("heading", { name: "Casa Uno" })).toBeVisible();
     expect(
+      screen.getAllByRole("link", {
+        name: "Contactar por esta propiedad",
+      })[0],
+    ).toHaveAttribute(
+      "href",
+      expect.stringContaining("%2Fpropiedades%2Fcasa-uno"),
+    );
+    expect(
       screen.getByRole("button", { name: "Propiedad destacada anterior" }),
     ).toBeDisabled();
 

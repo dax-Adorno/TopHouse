@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { buildGeneralContactHref, contactActionLabel } from "../lib/contact";
+import { ScrollBrandMark } from "./ScrollBrandMark";
 
 export function SiteLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,7 +15,7 @@ export function SiteLayout() {
       </a>
       <header className="site-header">
         <Link className="brand" to="/" aria-label="TopHouse, inicio">
-          <span className="brand-mark">TH</span>
+          <ScrollBrandMark />
           <span>TopHouse</span>
         </Link>
         <button

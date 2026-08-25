@@ -40,7 +40,14 @@ export function buildPropertyContactHref(property: PublicProperty): string {
   const location = [property.localidad, property.zona]
     .filter(Boolean)
     .join(", ");
-  const message = `Hola, quiero consultar por ${property.titulo} en ${location}. ${url}`;
+  const message = [
+    "Hola, quiero consultar por esta propiedad:",
+    property.titulo,
+    location,
+    url,
+  ]
+    .filter(Boolean)
+    .join("\n");
   if (whatsappNumber) {
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   }
@@ -51,4 +58,8 @@ export function buildPropertyContactHref(property: PublicProperty): string {
 
 export function contactActionLabel(): string {
   return getWhatsAppNumber() ? "Contactar por WhatsApp" : "Contactar";
+}
+
+export function propertyContactActionLabel(): string {
+  return "Contactar por esta propiedad";
 }

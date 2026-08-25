@@ -261,6 +261,15 @@ describe("TopHouse App", () => {
 
     render(<App />);
 
+    const catalogContactLink = await screen.findByRole("link", {
+      name: "Contactar por esta propiedad",
+    });
+    expect(catalogContactLink).toHaveAttribute(
+      "href",
+      expect.stringContaining("%2Fpropiedades%2Fcasa-luminosa-merlo"),
+    );
+    expect(catalogContactLink).toHaveAttribute("target", "_blank");
+
     await user.click(
       await screen.findByRole("link", { name: /Casa luminosa en Merlo/i }),
     );
@@ -281,7 +290,7 @@ describe("TopHouse App", () => {
     );
     const contactLink = screen
       .getAllByRole("link", {
-        name: "Contactar por WhatsApp",
+        name: "Contactar por esta propiedad",
       })
       .find((link) =>
         link.getAttribute("href")?.includes("quiero%20consultar"),

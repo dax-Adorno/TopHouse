@@ -87,12 +87,21 @@ test("navigates public property discovery flow", async ({ page }) => {
   await page.getByLabel("Localidad").fill("Merlo");
   await page.getByRole("button", { name: "Aplicar" }).click();
 
+  const catalogContact = page
+    .getByRole("link", { name: "Contactar por esta propiedad" })
+    .first();
+  await expect(catalogContact).toHaveAttribute("href", /casa-luminosa-merlo/);
+  await expect(catalogContact).toHaveAttribute("target", "_blank");
+
   await page.getByRole("link", { name: /Casa luminosa en Merlo/i }).click();
   await expect(page).toHaveURL(/\/propiedades\/casa-luminosa-merlo$/);
   await expect(
     page.getByRole("heading", { name: /Casa luminosa en Merlo/i }),
   ).toBeVisible();
   await expect(page.getByText("Descripción")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Contactar por esta propiedad" }),
+  ).toHaveAttribute("href", /casa-luminosa-merlo/);
   await expect(
     page.getByRole("link", {
       name: "Ver Piedra Blanca, Merlo, San Luis en el mapa",
@@ -106,6 +115,9 @@ test("navigates featured carousel and shows Dax credit", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Casa luminosa en Merlo" }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Contactar por esta propiedad" }).first(),
+  ).toHaveAttribute("href", /casa-luminosa-merlo/);
   await page
     .getByRole("button", { name: "Siguiente propiedad destacada" })
     .click();

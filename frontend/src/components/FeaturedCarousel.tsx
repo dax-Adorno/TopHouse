@@ -5,6 +5,10 @@ import {
 } from "react";
 import { Link } from "react-router-dom";
 import heroImage from "../assets/hero.png";
+import {
+  buildPropertyContactHref,
+  propertyContactActionLabel,
+} from "../lib/contact";
 import { formatMoney, operationLabel } from "../lib/propertyFormat";
 import type { PublicProperty } from "../types/property";
 
@@ -70,42 +74,55 @@ export function FeaturedCarousel({ properties }: FeaturedCarouselProps) {
           const offset = index - activeIndex;
           const isActive = offset === 0;
           return (
-            <Link
+            <article
               className="featured-card"
               data-active={isActive}
               aria-hidden={!isActive}
-              tabIndex={isActive ? 0 : -1}
               key={property.id}
-              to={`/propiedades/${property.slug}`}
               style={{
                 opacity: Math.abs(offset) > 1 ? 0 : isActive ? 1 : 0.52,
                 pointerEvents: Math.abs(offset) > 1 ? "none" : "auto",
                 transform: `translateX(${offset * 62}%) rotateY(${offset * -18}deg) scale(${isActive ? 1 : 0.82})`,
                 zIndex: properties.length - Math.abs(offset),
               }}
-              onClick={(event) => {
-                if (dragged.current) event.preventDefault();
-                else if (!isActive) {
-                  event.preventDefault();
-                  goTo(index);
-                }
-              }}
             >
-              <img
-                alt={property.titulo}
-                src={cover?.url_thumbnail ?? cover?.url ?? heroImage}
-                loading={isActive ? "eager" : "lazy"}
-              />
-              <span>{operationLabel(property.tipo_operacion)}</span>
-              <div>
-                <p>
-                  {property.localidad}
-                  {property.zona ? `, ${property.zona}` : ""}
-                </p>
-                <h3>{property.titulo}</h3>
-                <strong>{formatMoney(property)}</strong>
-              </div>
-            </Link>
+              <Link
+                className="featured-card-details"
+                tabIndex={isActive ? 0 : -1}
+                to={`/propiedades/${property.slug}`}
+                onClick={(event) => {
+                  if (dragged.current) event.preventDefault();
+                  else if (!isActive) {
+                    event.preventDefault();
+                    goTo(index);
+                  }
+                }}
+              >
+                <img
+                  alt={property.titulo}
+                  src={cover?.url_thumbnail ?? cover?.url ?? heroImage}
+                  loading={isActive ? "eager" : "lazy"}
+                />
+                <span>{operationLabel(property.tipo_operacion)}</span>
+                <div>
+                  <p>
+                    {property.localidad}
+                    {property.zona ? `, ${property.zona}` : ""}
+                  </p>
+                  <h3>{property.titulo}</h3>
+                  <strong>{formatMoney(property)}</strong>
+                </div>
+              </Link>
+              <a
+                className="featured-card-contact"
+                href={buildPropertyContactHref(property)}
+                target="_blank"
+                rel="noreferrer"
+                tabIndex={isActive ? 0 : -1}
+              >
+                {propertyContactActionLabel()}
+              </a>
+            </article>
           );
         })}
       </div>
