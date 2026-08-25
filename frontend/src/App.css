@@ -51,7 +51,6 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
   color: var(--ink);
   font-family: var(--display);
   font-size: 1.35rem;
@@ -62,47 +61,38 @@
   --brand-scrub: 0;
   position: relative;
   isolation: isolate;
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--olive);
-  color: white;
-  overflow: hidden;
-  box-shadow: 0 calc(var(--brand-scrub) * 5px)
-    calc(8px + var(--brand-scrub) * 8px) rgb(39 54 38 / 20%);
-  transform: perspective(120px) rotateY(calc(var(--brand-scrub) * 18deg))
-    rotateZ(calc(var(--brand-scrub) * -8deg));
+  width: clamp(116px, 12vw, 154px);
+  height: 60px;
+  display: block;
+  filter: drop-shadow(
+    0 calc(var(--brand-scrub) * 4px) calc(3px + var(--brand-scrub) * 4px)
+      rgb(0 126 194 / 24%)
+  );
+  transform: perspective(320px) rotateY(calc(var(--brand-scrub) * 10deg))
+    rotateZ(calc(var(--brand-scrub) * -2deg))
+    scale(calc(1 - var(--brand-scrub) * 0.04));
   transform-style: preserve-3d;
   will-change: transform;
 }
-.brand-mark-orbit {
-  position: absolute;
-  z-index: 2;
-  inset: 3px;
-  border: 1px solid rgb(255 255 255 / 70%);
-  border-radius: inherit;
-  clip-path: inset(0 calc((1 - var(--brand-scrub)) * 100%) 0 0);
-  transform: rotate(calc(var(--brand-scrub) * 220deg));
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
 }
-.brand-mark-house {
+.brand-mark-sheen {
   position: absolute;
-  z-index: 0;
-  width: 19px;
-  height: 19px;
-  bottom: -3px;
-  left: 9px;
-  border: 1px solid rgb(255 255 255 / 34%);
-  transform: translateY(calc((1 - var(--brand-scrub)) * 18px)) rotate(45deg);
-}
-.brand-mark-letters {
-  position: relative;
   z-index: 1;
-  font: 700 0.75rem var(--sans);
-  letter-spacing: 0.08em;
-  transform: translateY(calc(var(--brand-scrub) * -1px))
-    scale(calc(1 - var(--brand-scrub) * 0.06));
+  inset: 6px 4px;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgb(255 255 255 / 54%) 49%,
+    transparent 63%
+  );
+  clip-path: inset(0 calc((1 - var(--brand-scrub)) * 100%) 0 0);
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 .brand:hover .brand-mark,
 .brand:focus-visible .brand-mark {

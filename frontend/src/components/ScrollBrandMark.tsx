@@ -39,9 +39,8 @@ export function ScrollBrandMark() {
 
   return (
     <span ref={markRef} className="brand-mark" aria-hidden="true">
-      <span className="brand-mark-orbit" />
-      <span className="brand-mark-house" />
-      <span className="brand-mark-letters">TH</span>
+      <img src="/assets/tophouse-logo.webp" alt="" width="1774" height="887" />
+      <span className="brand-mark-sheen" />
     </span>
   );
 }

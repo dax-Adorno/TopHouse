@@ -16,7 +16,6 @@ export function SiteLayout() {
       <header className="site-header">
         <Link className="brand" to="/" aria-label="TopHouse, inicio">
           <ScrollBrandMark />
-          <span>TopHouse</span>
         </Link>
         <button
           className="menu-toggle"
