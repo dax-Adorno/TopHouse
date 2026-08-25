@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import heroImage from "../assets/hero.png";
 import { getPublicProperty } from "../lib/api";
-import { buildPropertyContactHref, contactActionLabel } from "../lib/contact";
+import {
+  buildPropertyContactHref,
+  propertyContactActionLabel,
+} from "../lib/contact";
 import {
   approximateLocationLabel,
   buildApproximateMapHref,
@@ -94,8 +97,10 @@ export function PropertyDetailPage() {
         <a
           className="button button-primary"
           href={buildPropertyContactHref(property)}
+          target="_blank"
+          rel="noreferrer"
         >
-          {contactActionLabel()}
+          {propertyContactActionLabel()}
         </a>
       </div>
       <div className="detail-gallery">
