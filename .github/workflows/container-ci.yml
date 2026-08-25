@@ -50,6 +50,6 @@ jobs:
           docker build
           --build-arg VITE_API_URL=
           --build-arg VITE_CONTACT_EMAIL=contacto@tophouse.com
-          --build-arg VITE_WHATSAPP_NUMBER=5492664000000
+          --build-arg VITE_WHATSAPP_NUMBER=5492664320295
           --tag tophouse-frontend:ci
           ./frontend

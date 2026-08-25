@@ -197,7 +197,7 @@ a `frontend/.env` si necesitás ajustar la API o el contacto comercial:
 ```text
 VITE_API_URL=http://localhost:8000
 VITE_CONTACT_EMAIL=contacto@tophouse.com
-VITE_WHATSAPP_NUMBER=5492664000000
+VITE_WHATSAPP_NUMBER=5492664320295
 ```
 
 `VITE_WHATSAPP_NUMBER` debe cargarse en formato internacional, sólo números.
