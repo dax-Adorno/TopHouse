@@ -90,10 +90,7 @@ test("navigates public property discovery flow", async ({ page }) => {
   const catalogContact = page
     .getByRole("link", { name: "Contactar por esta propiedad" })
     .first();
-  await expect(catalogContact).toHaveAttribute(
-    "href",
-    /casa-luminosa-merlo/,
-  );
+  await expect(catalogContact).toHaveAttribute("href", /casa-luminosa-merlo/);
   await expect(catalogContact).toHaveAttribute("target", "_blank");
 
   await page.getByRole("link", { name: /Casa luminosa en Merlo/i }).click();
@@ -119,9 +116,7 @@ test("navigates featured carousel and shows Dax credit", async ({ page }) => {
     page.getByRole("heading", { name: "Casa luminosa en Merlo" }),
   ).toBeVisible();
   await expect(
-    page
-      .getByRole("link", { name: "Contactar por esta propiedad" })
-      .first(),
+    page.getByRole("link", { name: "Contactar por esta propiedad" }).first(),
   ).toHaveAttribute("href", /casa-luminosa-merlo/);
   await page
     .getByRole("button", { name: "Siguiente propiedad destacada" })
