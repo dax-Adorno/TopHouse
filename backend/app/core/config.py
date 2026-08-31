@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Self
+from typing import Literal, Self
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parents[3]
 class Settings(BaseSettings):
     app_env: str = "development"
     debug: bool = False
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
 
     postgres_db: str
     postgres_user: str

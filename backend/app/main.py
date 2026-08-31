@@ -4,6 +4,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from app.core.config import settings
 from app.core.health import comprobar_dependencias
+from app.core.observability import RequestLoggingMiddleware, configurar_logging
 from app.core.security import SecurityHeadersMiddleware
 from app.modules.imagenes.api import router as imagenes_router
 from app.modules.imagenes.handlers import registrar_manejadores_imagenes
@@ -11,6 +12,8 @@ from app.modules.propiedades.api import router as propiedades_router
 from app.modules.propiedades.handlers import registrar_manejadores_propiedades
 from app.modules.propiedades.public_api import router as propiedades_publicas_router
 from app.modules.usuarios.api import router as usuarios_router
+
+configurar_logging(settings.log_level)
 
 app = FastAPI(
     title="TopHouse API",
@@ -28,9 +31,11 @@ app.add_middleware(
     allow_origins=settings.cors_allowed_origins,
     allow_credentials=True,
     allow_methods=["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"],
-    allow_headers=["Accept", "Content-Type", "X-CSRF-Token"],
+    allow_headers=["Accept", "Content-Type", "X-CSRF-Token", "X-Request-ID"],
+    expose_headers=["X-Request-ID"],
 )
 app.add_middleware(SecurityHeadersMiddleware, production=settings.is_production)
+app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(propiedades_router)
 app.include_router(propiedades_publicas_router)

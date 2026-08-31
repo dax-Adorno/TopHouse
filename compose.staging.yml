@@ -1,6 +1,7 @@
 x-backend-environment: &backend-environment
   APP_ENV: ${APP_ENV:-production}
   DEBUG: "false"
+  LOG_LEVEL: ${LOG_LEVEL:-INFO}
   POSTGRES_DB: ${POSTGRES_DB}
   POSTGRES_USER: ${POSTGRES_USER}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

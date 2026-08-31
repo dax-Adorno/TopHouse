@@ -35,6 +35,20 @@ disponibles; devuelve HTTP 503 sin exponer credenciales ni detalles internos
 si alguna dependencia falla. Docker usa `/ready` para decidir si el backend
 puede recibir tráfico.
 
+## Logs operativos
+
+El backend escribe un evento JSON por solicitud en la salida estándar del
+contenedor. Cada evento incluye método, ruta sin query string, código HTTP,
+duración y `request_id`; no registra cuerpos, cookies, tokens ni credenciales.
+El identificador también se devuelve en la cabecera `X-Request-ID` para poder
+correlacionar un error informado por el cliente con los logs del servidor.
+
+```bash
+docker compose --env-file .env.staging -f compose.staging.yml logs -f backend
+```
+
+`LOG_LEVEL` permite ajustar el nivel y usa `INFO` por defecto.
+
 Después se debe crear un usuario administrativo de prueba y ejecutar la lista
 de aceptación con el cliente: catálogo, filtros, detalle, creación y edición de
 propiedades, carga, portada, orden y eliminación de imágenes.
