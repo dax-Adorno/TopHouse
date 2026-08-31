@@ -26,7 +26,14 @@ credenciales privadas usadas por la API.
 docker compose --env-file .env.staging -f compose.staging.yml ps
 docker compose --env-file .env.staging -f compose.staging.yml logs migrate
 curl --fail https://staging.tophouse.example/health
+curl --fail https://staging.tophouse.example/ready
 ```
+
+`/health` confirma que el proceso de la API responde. `/ready` devuelve HTTP
+200 solamente cuando PostgreSQL y el bucket S3-compatible también están
+disponibles; devuelve HTTP 503 sin exponer credenciales ni detalles internos
+si alguna dependencia falla. Docker usa `/ready` para decidir si el backend
+puede recibir tráfico.
 
 Después se debe crear un usuario administrativo de prueba y ejecutar la lista
 de aceptación con el cliente: catálogo, filtros, detalle, creación y edición de
