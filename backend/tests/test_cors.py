@@ -30,3 +30,13 @@ def test_cors_rechaza_origen_no_configurado() -> None:
 
     assert response.status_code == 400
     assert "access-control-allow-origin" not in response.headers
+
+
+def test_cors_expone_request_id_al_frontend() -> None:
+    response = client.get(
+        "/health",
+        headers={"Origin": "http://localhost:5173"},
+    )
+
+    assert response.headers["access-control-expose-headers"] == "X-Request-ID"
+    assert "x-request-id" in response.headers
