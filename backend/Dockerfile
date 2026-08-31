@@ -25,6 +25,6 @@ USER tophouse
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD python -c "import os, urllib.request; host = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')[0]; request = urllib.request.Request('http://localhost:8000/health', headers={'Host': host}); urllib.request.urlopen(request, timeout=3)"
+    CMD python -c "import os, urllib.request; host = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')[0]; request = urllib.request.Request('http://localhost:8000/ready', headers={'Host': host}); urllib.request.urlopen(request, timeout=3)"
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips=*"]

@@ -1,8 +1,9 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from app.core.config import settings
+from app.core.health import comprobar_dependencias
 from app.core.security import SecurityHeadersMiddleware
 from app.modules.imagenes.api import router as imagenes_router
 from app.modules.imagenes.handlers import registrar_manejadores_imagenes
@@ -48,9 +49,27 @@ def health_check() -> dict[str, str]:
     """
     Comprueba que la API se encuentra disponible.
 
-    Este endpoint no consulta todavía la base de datos.
+    Este endpoint comprueba únicamente que el proceso responde.
     """
     return {
         "status": "ok",
         "service": "TopHouse API",
+    }
+
+
+@app.get(
+    "/ready",
+    tags=["Health"],
+    status_code=status.HTTP_200_OK,
+    responses={status.HTTP_503_SERVICE_UNAVAILABLE: {}},
+)
+def readiness_check(response: Response) -> dict[str, object]:
+    """Comprueba que PostgreSQL y el almacenamiento están disponibles."""
+    checks = comprobar_dependencias()
+    disponible = all(estado == "ok" for estado in checks.values())
+    if not disponible:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    return {
+        "status": "ready" if disponible else "unavailable",
+        "checks": checks,
     }
