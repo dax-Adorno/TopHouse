@@ -13,12 +13,6 @@ export function SiteLayout() {
         Saltar al contenido
       </a>
       <header className="site-header">
-        <Link className="brand" to="/" aria-label="TopHouse, inicio">
-          <span className="brand-compact-mark" aria-hidden="true">
-            TH
-          </span>
-          <span>TopHouse</span>
-        </Link>
         <button
           className="menu-toggle"
           type="button"
@@ -51,17 +45,32 @@ export function SiteLayout() {
             {contactActionLabel()}
           </a>
         </nav>
-        <a className="header-contact" href={buildGeneralContactHref()}>
-          {contactActionLabel()}
-        </a>
+        <div className="header-actions">
+          <span>+54 9 2664 32-0295</span>
+          <a className="header-contact" href={buildGeneralContactHref()}>
+            Agendar consulta
+          </a>
+        </div>
       </header>
       <main id="main-content" tabIndex={-1}>
         <Outlet />
       </main>
       <footer className="site-footer">
-        <div>
-          <strong>TopHouse</strong>
-          <p>Propiedades elegidas con criterio.</p>
+        <div className="footer-brand">
+          <div className="footer-brand-title">
+            <span aria-hidden="true">TH</span>
+            <strong>TopHouse</strong>
+          </div>
+          <p>
+            Inmobiliaria y arquitectura en Merlo, San Luis. Propiedades elegidas
+            con criterio, información clara y atención personal.
+          </p>
+        </div>
+        <div className="footer-navigation">
+          <strong>Navegación</strong>
+          <Link to="/">Inicio</Link>
+          <Link to="/propiedades">Propiedades</Link>
+          <Link to="/admin">Administración</Link>
         </div>
         <div className="footer-socials" aria-label="Redes sociales de TopHouse">
           <p>Seguinos</p>
@@ -102,7 +111,11 @@ export function SiteLayout() {
           <small>Enlaces próximamente</small>
         </div>
         <div className="footer-meta">
-          <p>Merlo, San Luis</p>
+          <div>
+            <strong>Contacto</strong>
+            <p>Merlo, San Luis</p>
+            <a href={buildGeneralContactHref()}>{contactActionLabel()}</a>
+          </div>
           <p className="footer-credit">
             <img
               src="/assets/logo.webp"

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import heroImage from "../assets/hero.png";
 import { listPublicProperties } from "../lib/api";
 import {
@@ -110,8 +111,19 @@ function PropertyCard({ property }: { property: PublicProperty }) {
 }
 
 export function CatalogPage() {
-  const [draftFilters, setDraftFilters] = useState(initialFilters);
-  const [appliedFilters, setAppliedFilters] = useState(initialFilters);
+  const [searchParams] = useSearchParams();
+  const queryFilters = useMemo<DraftFilters>(
+    () => ({
+      ...initialFilters,
+      tipo_operacion: (searchParams.get("tipo_operacion") ??
+        "") as DraftFilters["tipo_operacion"],
+      tipo_propiedad: searchParams.get("tipo_propiedad") ?? "",
+      localidad: searchParams.get("localidad") ?? "",
+    }),
+    [searchParams],
+  );
+  const [draftFilters, setDraftFilters] = useState(queryFilters);
+  const [appliedFilters, setAppliedFilters] = useState(queryFilters);
   const [page, setPage] = useState(initialPage);
   const [offset, setOffset] = useState(0);
   const [state, setState] = useState<LoadState>("loading");
@@ -168,15 +180,16 @@ export function CatalogPage() {
   return (
     <section className="catalog-page">
       <div className="page-intro catalog-intro">
-        <p className="eyebrow">Catálogo</p>
-        <h1>Propiedades para tu próxima etapa.</h1>
-        <p>
-          Explorá propiedades publicadas con filtros simples y datos preparados
-          para tomar una decisión sin perder tiempo.
-        </p>
+        <h1 className="catalog-title">Catálogo general</h1>
       </div>
       <div className="catalog-content">
         <aside className="catalog-sidebar" aria-label="Filtros del catálogo">
+          <div className="catalog-filter-heading">
+            <strong>Filtros avanzados</strong>
+            <button type="button" onClick={resetFilters}>
+              Limpiar
+            </button>
+          </div>
           <form className="catalog-filters" onSubmit={submitFilters}>
             <label>
               Operación

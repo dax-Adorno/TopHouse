@@ -125,10 +125,12 @@ export function PropertyDetailPage() {
       </div>
       <div className="detail-content">
         <article className="detail-description">
+          <p className="eyebrow">Concepto &amp; arquitectura</p>
           <h2>Descripción</h2>
           <p>{property.descripcion}</p>
         </article>
         <aside className="detail-summary" aria-label="Resumen de la propiedad">
+          <p className="eyebrow">Ficha técnica</p>
           <dl>
             <div>
               <dt>Tipo</dt>
@@ -158,6 +160,14 @@ export function PropertyDetailPage() {
               </dd>
             </div>
           </dl>
+          <a
+            className="button button-primary detail-summary-contact"
+            href={buildPropertyContactHref(property)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {propertyContactActionLabel()}
+          </a>
         </aside>
       </div>
       <div className="detail-location">
