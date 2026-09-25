@@ -80,7 +80,7 @@ test("navigates public property discovery flow", async ({ page }) => {
   await page.getByRole("link", { name: "Explorar propiedades" }).click();
   await expect(page).toHaveURL(/\/propiedades$/);
   await expect(
-    page.getByRole("heading", { name: /Propiedades para tu próxima etapa/i }),
+    page.getByRole("heading", { name: /Catálogo general/i }),
   ).toBeVisible();
 
   await page.getByLabel("Operación").selectOption("venta");
@@ -100,7 +100,9 @@ test("navigates public property discovery flow", async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByText("Descripción")).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Contactar por esta propiedad" }),
+    page
+      .getByRole("complementary", { name: "Resumen de la propiedad" })
+      .getByRole("link", { name: "Contactar por esta propiedad" }),
   ).toHaveAttribute("href", /casa-luminosa-merlo/);
   await expect(
     page.getByRole("link", {

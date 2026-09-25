@@ -197,7 +197,7 @@ describe("TopHouse App", () => {
       screen.getByRole("link", { name: "Explorar propiedades" }),
     );
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Propiedades para tu próxima etapa",
+      "Catálogo general",
     );
   });
 

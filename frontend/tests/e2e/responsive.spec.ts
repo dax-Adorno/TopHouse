@@ -43,7 +43,10 @@ test("exposes primary navigation on compact screens", async ({ page }) => {
 
   await menuButton.click();
   await expect(menuButton).toHaveAttribute("aria-expanded", "true");
-  await page.getByRole("link", { name: "Propiedades", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Navegación principal" })
+    .getByRole("link", { name: "Propiedades", exact: true })
+    .click();
 
   await expect(page).toHaveURL(/\/propiedades$/);
   await expect(menuButton).toHaveAttribute("aria-expanded", "false");
