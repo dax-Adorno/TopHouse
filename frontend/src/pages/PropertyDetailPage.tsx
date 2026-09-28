@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import heroImage from "../assets/hero.png";
+import { PropertyPhoto } from "../components/PropertyPhoto";
 import { getPublicProperty } from "../lib/api";
 import {
   buildPropertyContactHref,
@@ -21,8 +21,8 @@ function getGallery(property: PublicProperty): PropertyImage[] {
     : [
         {
           id: 0,
-          url: heroImage,
-          url_thumbnail: heroImage,
+          url: "",
+          url_thumbnail: "",
           ancho: 1200,
           alto: 800,
           orden: 0,
@@ -105,7 +105,7 @@ export function PropertyDetailPage() {
       </div>
       <div className="detail-gallery">
         <div className="detail-main-image">
-          <img alt={property.titulo} src={hero?.url ?? heroImage} />
+          <PropertyPhoto image={hero} alt={property.titulo} priority />
         </div>
         {gallery.length > 1 ? (
           <div className="detail-thumbs" aria-label="Galería de imágenes">
@@ -117,7 +117,7 @@ export function PropertyDetailPage() {
                 onClick={() => setSelectedImage(index)}
                 type="button"
               >
-                <img alt="" src={image.url_thumbnail} />
+                <PropertyPhoto image={image} alt="" thumbnail />
               </button>
             ))}
           </div>

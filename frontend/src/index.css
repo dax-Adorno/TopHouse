@@ -1,6 +1,18 @@
 :root {
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 5rem;
+  --section-space: clamp(4rem, 8vw, 7rem);
+  --gutter: clamp(1.25rem, 5vw, 5rem);
+  --content-width: 1280px;
+  --header-height: 88px;
+  --shadow: 0 16px 50px rgb(9 27 43 / 8%);
+  --motion: 220ms ease;
   --cream: #edf6fb;
-  --paper: #f7fafc;
+  --paper: #fbfcfd;
   --ink: #091b2b;
   --muted: #526779;
   --olive: #0077ae;
@@ -25,6 +37,7 @@
 }
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 24px);
 }
 body {
   margin: 0;
@@ -43,4 +56,29 @@ textarea {
 ::selection {
   color: white;
   background: var(--olive);
+}
+img {
+  max-width: 100%;
+}
+a,
+button,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+:focus-visible {
+  outline: 3px solid var(--brand-blue);
+  outline-offset: 5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

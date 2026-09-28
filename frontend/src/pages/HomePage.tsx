@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { FeaturedCarousel } from "../components/FeaturedCarousel";
+import { PropertyPhoto } from "../components/PropertyPhoto";
+import { SectionHeading } from "../components/SectionHeading";
 import { listPublicProperties } from "../lib/api";
 import { buildGeneralContactHref } from "../lib/contact";
 import type { PublicProperty } from "../types/property";
@@ -34,13 +35,15 @@ export function HomePage() {
   const heroImage =
     heroProperty?.imagenes.find((image) => image.es_portada) ??
     heroProperty?.imagenes[0];
-  const heroStyle = heroImage
-    ? ({ "--hero-image": `url("${heroImage.url}")` } as CSSProperties)
-    : undefined;
 
   return (
     <>
-      <section className="hero-section" style={heroStyle}>
+      <section className="hero-section">
+        {heroImage && (
+          <div className="hero-backdrop" aria-hidden="true">
+            <PropertyPhoto image={heroImage} alt="" priority />
+          </div>
+        )}
         <div className="hero-copy">
           <h1>Tu próximo lugar empieza con una buena elección.</h1>
           <div className="hero-actions">
@@ -96,15 +99,17 @@ export function HomePage() {
         </form>
       </section>
       <section className="featured-section" aria-labelledby="featured-title">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Curaduría local</p>
-            <h2 id="featured-title">Oportunidades elegidas en la zona.</h2>
-          </div>
-          <Link className="button button-secondary" to="/propiedades">
-            Ver catálogo
-          </Link>
-        </div>
+        <SectionHeading
+          id="featured-title"
+          eyebrow="Curaduría local"
+          action={
+            <Link className="button button-secondary" to="/propiedades">
+              Ver catálogo
+            </Link>
+          }
+        >
+          Oportunidades elegidas en la zona.
+        </SectionHeading>
         {featuredState === "loading" ? (
           <div className="featured-state" role="status">
             Cargando propiedades destacadas...
