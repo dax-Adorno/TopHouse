@@ -4,7 +4,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { Link } from "react-router-dom";
-import heroImage from "../assets/hero.png";
+import { PropertyPhoto } from "./PropertyPhoto";
 import {
   buildPropertyContactHref,
   propertyContactActionLabel,
@@ -29,7 +29,6 @@ export function FeaturedCarousel({ properties }: FeaturedCarouselProps) {
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     pointerStart.current = event.clientX;
     dragged.current = false;
-    event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -80,9 +79,10 @@ export function FeaturedCarousel({ properties }: FeaturedCarouselProps) {
               aria-hidden={!isActive}
               key={property.id}
               style={{
-                opacity: Math.abs(offset) > 1 ? 0 : isActive ? 1 : 0.52,
-                pointerEvents: Math.abs(offset) > 1 ? "none" : "auto",
-                transform: `translateX(${offset * 62}%) rotateY(${offset * -18}deg) scale(${isActive ? 1 : 0.82})`,
+                opacity: isActive ? 1 : 0,
+                visibility: isActive ? "visible" : "hidden",
+                pointerEvents: isActive ? "auto" : "none",
+                transform: `translateX(${offset * 4}%)`,
                 zIndex: properties.length - Math.abs(offset),
               }}
             >
@@ -98,11 +98,7 @@ export function FeaturedCarousel({ properties }: FeaturedCarouselProps) {
                   }
                 }}
               >
-                <img
-                  alt={property.titulo}
-                  src={cover?.url_thumbnail ?? cover?.url ?? heroImage}
-                  loading={isActive ? "eager" : "lazy"}
-                />
+                <PropertyPhoto image={cover} alt={property.titulo} />
                 <span>{operationLabel(property.tipo_operacion)}</span>
                 <div>
                   <p>

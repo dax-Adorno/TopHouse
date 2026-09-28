@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { buildGeneralContactHref, contactActionLabel } from "../lib/contact";
+import { publicNavigation } from "../lib/navigation";
 
 export function SiteLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -12,9 +14,18 @@ export function SiteLayout() {
       <a className="skip-link" href="#main-content">
         Saltar al contenido
       </a>
-      <header className="site-header">
+      <header
+        className="site-header"
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && isMenuOpen) {
+            closeMenu();
+            menuButton.current?.focus();
+          }
+        }}
+      >
         <button
           className="menu-toggle"
+          ref={menuButton}
           type="button"
           aria-expanded={isMenuOpen}
           aria-controls="primary-navigation"
@@ -28,12 +39,11 @@ export function SiteLayout() {
           aria-label="Navegación principal"
           data-open={isMenuOpen}
         >
-          <NavLink to="/" onClick={closeMenu}>
-            Inicio
-          </NavLink>
-          <NavLink to="/propiedades" onClick={closeMenu}>
-            Propiedades
-          </NavLink>
+          {publicNavigation.map(({ to, label }) => (
+            <NavLink key={to} to={to} end={to === "/"} onClick={closeMenu}>
+              {label}
+            </NavLink>
+          ))}
           <NavLink to="/admin" onClick={closeMenu}>
             Admin
           </NavLink>
@@ -46,7 +56,6 @@ export function SiteLayout() {
           </a>
         </nav>
         <div className="header-actions">
-          <span>+54 9 2664 32-0295</span>
           <a className="header-contact" href={buildGeneralContactHref()}>
             Agendar consulta
           </a>
@@ -68,8 +77,11 @@ export function SiteLayout() {
         </div>
         <div className="footer-navigation">
           <strong>Navegación</strong>
-          <Link to="/">Inicio</Link>
-          <Link to="/propiedades">Propiedades</Link>
+          {publicNavigation.map(({ to, label }) => (
+            <Link key={to} to={to}>
+              {label}
+            </Link>
+          ))}
           <Link to="/admin">Administración</Link>
         </div>
         <div className="footer-socials" aria-label="Redes sociales de TopHouse">

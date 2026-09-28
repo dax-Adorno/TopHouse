@@ -4,6 +4,11 @@ import { AdminPage } from "./pages/AdminPage";
 import { CatalogPage } from "./pages/CatalogPage";
 import { HomePage } from "./pages/HomePage";
 import { PropertyDetailPage } from "./pages/PropertyDetailPage";
+import {
+  ContactPage,
+  InstitutionalPage,
+  type InstitutionalSection,
+} from "./pages/InstitutionalPage";
 import "./App.css";
 
 export function App() {
@@ -15,6 +20,23 @@ export function App() {
           <Route path="propiedades" element={<CatalogPage />} />
           <Route path="propiedades/:slug" element={<PropertyDetailPage />} />
           <Route path="admin" element={<AdminPage />} />
+          {(
+            [
+              "nosotros",
+              "servicios",
+              "proyectos",
+              "obras",
+              "prensa",
+              "blog",
+            ] as InstitutionalSection[]
+          ).map((section) => (
+            <Route
+              key={section}
+              path={section}
+              element={<InstitutionalPage section={section} />}
+            />
+          ))}
+          <Route path="contacto" element={<ContactPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
