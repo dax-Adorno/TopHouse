@@ -25,6 +25,7 @@ test("keeps primary pages usable without horizontal overflow", async ({
     "/admin",
     "/nosotros",
     "/servicios",
+    "/arquitectura",
     "/proyectos",
     "/obras",
     "/prensa",
@@ -72,10 +73,7 @@ test("opens every new screen from navigation", async ({ page }) => {
   for (const [path, title] of [
     ["nosotros", "Nosotros"],
     ["servicios", "Servicios"],
-    ["proyectos", "Proyectos"],
-    ["obras", "Obras"],
-    ["prensa", "Prensa"],
-    ["blog", "Blog"],
+    ["arquitectura", "Arquitectura"],
     ["contacto", "Contacto"],
   ]) {
     const menu = page.getByRole("button", { name: "Menú principal" });

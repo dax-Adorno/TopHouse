@@ -1,0 +1,201 @@
+.architecture-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  padding: var(--section-space) var(--gutter);
+  color: white;
+  background: linear-gradient(120deg, #091b2b, #103e51);
+}
+.architecture-hero h1 {
+  font-size: clamp(3rem, 7vw, 6rem);
+  margin: 0 0 1.5rem;
+}
+.architecture-hero .eyebrow {
+  color: var(--brand-cyan);
+}
+.architecture-hero p {
+  max-width: 52ch;
+}
+.architecture-intro {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  line-height: 1.3;
+}
+.architecture-hero .button {
+  margin-top: 1.5rem;
+}
+.architecture-hero-art {
+  color: var(--brand-cyan);
+  border: 1px solid #ffffff30;
+  padding: 1.5rem;
+}
+.architecture-hero-art span {
+  display: block;
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.architecture-drawing {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.architecture-portfolio {
+  max-width: calc(var(--content-width) + 2 * var(--gutter));
+  margin: auto;
+  padding: var(--section-space) var(--gutter);
+}
+.architecture-portfolio h2,
+.architecture-contact h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 0 0 1.5rem;
+}
+.architecture-demo-note {
+  max-width: 85ch;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.architecture-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+.architecture-filters button {
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--line-dark);
+  background: white;
+  color: var(--ink);
+}
+.architecture-filters button[aria-pressed="true"] {
+  background: var(--ink);
+  color: white;
+  border-color: var(--ink);
+}
+.architecture-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+.architecture-card {
+  border: 1px solid var(--line);
+  background: white;
+  min-width: 0;
+}
+.architecture-card-art {
+  color: var(--brand-blue);
+  background: var(--cream);
+  padding: 1.25rem 0.75rem;
+}
+.architecture-status {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  background: white;
+  color: var(--ink);
+}
+.architecture-card-body {
+  padding: 1.5rem;
+}
+.architecture-card h3 {
+  font-size: 1.65rem;
+  margin: 0.5rem 0 1rem;
+}
+.architecture-card-body > p:not(.eyebrow) {
+  color: var(--muted);
+}
+.architecture-facts {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--line);
+}
+.architecture-card dt {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.architecture-card dd {
+  margin: 0.25rem 0 0;
+}
+.architecture-card summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--line);
+  font-weight: 650;
+  color: var(--brand-blue);
+  cursor: pointer;
+  list-style: none;
+}
+.architecture-card summary::-webkit-details-marker {
+  display: none;
+}
+.architecture-card details[open] summary span {
+  transform: rotate(45deg);
+}
+.architecture-plan {
+  background: var(--cream);
+  color: var(--brand-blue);
+  margin: 0.5rem -1rem 1rem;
+  padding: 0.5rem;
+}
+.architecture-plan p {
+  font-size: 0.75rem;
+  text-align: center;
+}
+.architecture-specs {
+  display: grid;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+.architecture-plan-note {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.architecture-contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 4rem var(--gutter);
+  background: var(--cream);
+}
+@media (max-width: 1000px) {
+  .architecture-grid {
+    grid-template-columns: 1fr;
+  }
+  .architecture-card {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+  .architecture-card-art {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+  }
+}
+@media (max-width: 700px) {
+  .architecture-hero {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .architecture-card {
+    display: block;
+  }
+  .architecture-contact {
+    align-items: start;
+    flex-direction: column;
+  }
+  .architecture-filters button {
+    flex-grow: 1;
+  }
+}
