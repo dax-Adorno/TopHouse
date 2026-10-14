@@ -3,6 +3,7 @@ import { SiteLayout } from "./components/SiteLayout";
 import { AdminPage } from "./pages/AdminPage";
 import { CatalogPage } from "./pages/CatalogPage";
 import { HomePage } from "./pages/HomePage";
+import { ArchitecturePage } from "./pages/ArchitecturePage";
 import { PropertyDetailPage } from "./pages/PropertyDetailPage";
 import {
   ContactPage,
@@ -17,6 +18,7 @@ export function App() {
       <Routes>
         <Route element={<SiteLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="arquitectura" element={<ArchitecturePage />} />
           <Route path="propiedades" element={<CatalogPage />} />
           <Route path="propiedades/:slug" element={<PropertyDetailPage />} />
           <Route path="admin" element={<AdminPage />} />
