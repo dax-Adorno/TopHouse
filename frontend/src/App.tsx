@@ -28,8 +28,6 @@ export function App() {
               "servicios",
               "proyectos",
               "obras",
-              "prensa",
-              "blog",
             ] as InstitutionalSection[]
           ).map((section) => (
             <Route

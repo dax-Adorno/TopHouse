@@ -44,9 +44,6 @@ export function SiteLayout() {
               {label}
             </NavLink>
           ))}
-          <NavLink to="/admin" onClick={closeMenu}>
-            Admin
-          </NavLink>
           <a
             className="mobile-contact"
             href={buildGeneralContactHref()}
@@ -82,7 +79,6 @@ export function SiteLayout() {
               {label}
             </Link>
           ))}
-          <Link to="/admin">Administración</Link>
         </div>
         <div className="footer-socials" aria-label="Redes sociales de TopHouse">
           <p>Seguinos</p>

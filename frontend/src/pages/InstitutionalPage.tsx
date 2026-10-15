@@ -25,17 +25,6 @@ const sections = {
     description: "Un espacio para conocer nuestras obras.",
     pending: "Próximamente compartiremos las obras y sus avances.",
   },
-  prensa: {
-    title: "Prensa",
-    description: "TopHouse en los medios.",
-    pending: "Todavía no hay notas de prensa publicadas en esta sección.",
-  },
-  blog: {
-    title: "Blog",
-    description: "Novedades de TopHouse.",
-    pending:
-      "Todavía no hay artículos publicados. Próximamente sumaremos contenido.",
-  },
 };
 
 export type InstitutionalSection = keyof typeof sections;
