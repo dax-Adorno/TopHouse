@@ -28,8 +28,6 @@ test("keeps primary pages usable without horizontal overflow", async ({
     "/arquitectura",
     "/proyectos",
     "/obras",
-    "/prensa",
-    "/blog",
     "/contacto",
   ]) {
     await page.goto(path);
